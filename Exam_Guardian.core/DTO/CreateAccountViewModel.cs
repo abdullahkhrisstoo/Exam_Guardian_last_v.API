@@ -5,6 +5,7 @@ namespace Exam_Guardian.core.DTO
 {
     public class CreateAccountViewModel
     {
+        //changed by abddullah
         //public decimal? UserId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
