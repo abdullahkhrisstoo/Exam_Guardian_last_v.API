@@ -1,6 +1,6 @@
-﻿namespace Exam_Guardian.core.ConstantDB
+﻿namespace Exam_Guardian.core.Utilities.PackagesConstants
 {
-    static public class ConstantDB
+    static public class AuthPackageConstant
     {
 
         public const string AUTH_PACKAGE_CREATE_USER = "AUTH_PACKAGE.CREATE_USER";

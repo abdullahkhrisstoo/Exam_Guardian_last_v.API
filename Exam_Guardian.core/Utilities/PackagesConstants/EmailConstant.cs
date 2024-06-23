@@ -1,4 +1,4 @@
-﻿namespace Exam_Guardian.core.ConstantDB
+﻿namespace Exam_Guardian.core.Utilities.PackagesConstants
 {
     public static class EmailConstant
     {

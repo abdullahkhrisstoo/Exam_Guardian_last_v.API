@@ -1,6 +1,6 @@
-﻿using Exam_Guardian.core.ConstantDB;
-using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.PackagesConstants;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
@@ -66,7 +66,7 @@ namespace Exam_Guardian.infra.Service
                     FirstName = authenticateResult.Principal.FindFirst(ClaimTypes.GivenName)?.Value,
                     LastName = authenticateResult.Principal.FindFirst(ClaimTypes.Surname)?.Value,
                     Password = "123456",
-                    RoleId = ConstantDB.EXAM_PROVIDER_ROLE
+                    RoleId = AuthPackageConstant.EXAM_PROVIDER_ROLE
                 };
                 await _authService.CreateUser(createAccountViewModel);
             }
