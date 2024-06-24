@@ -54,6 +54,13 @@ namespace Exam_Guardian.API.Controllers
             var result = await _planService.GetAllPlans();
             return Ok(result);
         }
+
+        [HttpGet("{planId}")]
+        public async Task<IActionResult> GetPlanFeaturesByPlanId(int planId)
+        {
+            var result = await _planService.GetPlanFeaturesByPlanId(planId);
+            return Ok(result);
+        }
     }
 
 }

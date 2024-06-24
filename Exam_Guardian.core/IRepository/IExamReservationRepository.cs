@@ -14,6 +14,8 @@ namespace Exam_Guardian.core.IRepository
         Task UpdateExamReservation(UpdateExamReservationViewModel updateExamReservationViewModel);
         Task<ExamReservationViewModel> GetExamReservationById(int id);
         Task<IEnumerable<ExamReservationViewModel>> GetAllExamReservations();
+        Task<IEnumerable<TimeSlotsViewModel>> GetTimeSlots();
+
     }
 
 }

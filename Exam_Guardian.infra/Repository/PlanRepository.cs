@@ -1,13 +1,16 @@
 ﻿using Dapper;
+using Exam_Guardian.core.Data;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.ICommon;
 using Exam_Guardian.core.IRepo;
 using Exam_Guardian.core.Mapper;
 using Exam_Guardian.core.Utilities.PackagesConstants;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,10 +19,13 @@ namespace Exam_Guardian.infra.Repo
     public class PlanRepository : IPlanRepository
     {
         private readonly IDbContext _dbContext;
+        private readonly ModelContext _modelContext;
 
-        public PlanRepository(IDbContext dbContext)
+
+        public PlanRepository(IDbContext dbContext , ModelContext modelContext)
         {
             _dbContext = dbContext;
+            _modelContext = modelContext;
             SetupMappings();
         }
         private void SetupMappings()
@@ -62,7 +68,12 @@ namespace Exam_Guardian.infra.Repo
 
         public async Task<IEnumerable<PlanViewModel>> GetAllPlans()
         {
-            var res = await _dbContext.Connection.QueryAsync<PlanViewModel>(PlanPackageConstant.PLAN_PACKAGE_GET_ALL_PLANS, commandType: CommandType.StoredProcedure);
+            var res = await _dbContext.Connection.QueryAsync<PlanViewModel>(PlanPackageConstant.PLAN_PACKAGE_GET_ALL_PLANS, commandType: CommandType.StoredProcedure);         
+            return res;
+        }
+        public async Task<IEnumerable<PlanFeature>> GetPlanFeaturesByPlanId(int planId)
+        {
+            var res = await _modelContext.PlanFeatures.Where(p => p.PlanId == planId).ToListAsync();
             return res;
         }
     }
