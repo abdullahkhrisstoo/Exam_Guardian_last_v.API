@@ -73,6 +73,13 @@ namespace Exam_Guardian.infra.Repository
             var res = await _dbContext.Connection.QueryAsync<ExamReservationViewModel>(ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_GET_ALL_EXAM_RESERVATIONS, commandType: CommandType.StoredProcedure);
             return res;
         }
+
+        public async Task<IEnumerable<TimeSlotsViewModel>> GetTimeSlots()
+        {
+            var res = await _dbContext.Connection.QueryAsync<TimeSlotsViewModel>
+                (ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_GET_TIME_SLOTS, commandType: CommandType.StoredProcedure);
+            return res;
+        }
     }
 
 }

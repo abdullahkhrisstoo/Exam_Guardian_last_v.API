@@ -27,7 +27,7 @@ namespace Exam_Guardian.API.Controllers
         public async Task<IActionResult> Update([FromBody] UpdateExamReservationViewModel updateExamReservationViewModel)
         {
             await _examReservationService.UpdateExamReservation(updateExamReservationViewModel);
-            return Ok(new { message = "Exam reservation updated successfully" });
+            return Ok(new { message = "Exam reservation updated successfully"});
         }
 
         [HttpDelete("{id}")]
@@ -52,6 +52,12 @@ namespace Exam_Guardian.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _examReservationService.GetAllExamReservations();
+            return Ok(result);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetTimeSlots()
+        {
+            var result = await _examReservationService.GetTimeSlots();
             return Ok(result);
         }
     }
