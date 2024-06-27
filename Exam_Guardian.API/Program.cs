@@ -78,12 +78,22 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IComplementService, ComplementService>();
             builder.Services.AddScoped<IExamReservationService, ExamReservationService>();
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+            builder.Services.AddScoped<IExamService, ExamService>();
+            builder.Services.AddScoped<IProctorService, ProctorService>();
+
+
+
+         
             //todo: repo
+            builder.Services.AddScoped<IExamProviderRepository, ExamProviderRepository>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IPlanRepository, PlanRepository>();
             builder.Services.AddScoped<IPlanFeatureRepository, PlanFeatureRepository>();
             builder.Services.AddScoped<IComplementRepository, ComplementRepository>();
             builder.Services.AddScoped<IExamReservationRepository, ExamReservationRepository>();
+            builder.Services.AddScoped<IProctorRepository, ProctorRepository>();
+
+
             builder.Services.AddControllers()
                           .AddJsonOptions(options =>
                                        {

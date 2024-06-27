@@ -5,6 +5,8 @@ using Exam_Guardian.core.ICommon;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.Mapper;
 using Exam_Guardian.core.Utilities.PackagesConstants;
+using Exam_Guardian.core.Utilities.UserRole;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,10 +19,12 @@ namespace Exam_Guardian.infra.Repository
     public class ExamReservationRepository : IExamReservationRepository
     {
         private readonly IDbContext _dbContext;
+        private readonly ModelContext _modelContext;
 
-        public ExamReservationRepository(IDbContext dbContext)
+        public ExamReservationRepository(IDbContext dbContext , ModelContext modelContext)
         {
             _dbContext = dbContext;
+            _modelContext = modelContext;
             SetupMappings();
         }
         private void SetupMappings()
@@ -79,6 +83,14 @@ namespace Exam_Guardian.infra.Repository
             var res = await _dbContext.Connection.QueryAsync<TimeSlotsViewModel>
                 (ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_GET_TIME_SLOTS, commandType: CommandType.StoredProcedure);
             return res;
+        }
+
+        public async Task<IEnumerable<ExamReservation>> GetExamReservationDependsProctor()
+        {
+            return await _modelContext.ExamReservations
+                .Include(p => p.User)
+                .Where(checkProctor => checkProctor!.User!.RoleId == UserRoleConstant.Proctor)
+                .ToListAsync();
         }
     }
 

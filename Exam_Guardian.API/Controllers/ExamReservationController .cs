@@ -60,6 +60,14 @@ namespace Exam_Guardian.API.Controllers
             var result = await _examReservationService.GetTimeSlots();
             return Ok(result);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetExamReservationDependsProctor()
+        {
+            var result = await _examReservationService.GetExamReservationDependsProctor();
+            return Ok(result);
+        }
     }
 
 }
