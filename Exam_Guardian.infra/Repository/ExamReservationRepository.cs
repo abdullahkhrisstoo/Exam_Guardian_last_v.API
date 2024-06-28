@@ -40,6 +40,12 @@ namespace Exam_Guardian.infra.Repository
             param.Add(name: ExamReservationPackageConstant.PROCTOR_TOKEN_EMAIL, createExamReservationViewModel.ProctorTokenEmail, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.UNIQUE_KEY, createExamReservationViewModel.UniqueKey, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.USER_ID, createExamReservationViewModel.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.STUDENT_NAME, createExamReservationViewModel.StudentName, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.PHONE, createExamReservationViewModel.Phone, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.SCORE, createExamReservationViewModel.score, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.EMAIL, createExamReservationViewModel.Email, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.EXAM_PROVIDER_ID, createExamReservationViewModel.EXAM_PROVIDER_ID, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
             var res = await _dbContext.Connection.ExecuteAsync(ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_CREATE_EXAM_RESERVATION, param, commandType: CommandType.StoredProcedure);
         }
 
@@ -60,6 +66,12 @@ namespace Exam_Guardian.infra.Repository
             param.Add(name: ExamReservationPackageConstant.PROCTOR_TOKEN_EMAIL, updateExamReservationViewModel.ProctorTokenEmail, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.UNIQUE_KEY, updateExamReservationViewModel.UniqueKey, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.USER_ID, updateExamReservationViewModel.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.STUDENT_NAME, updateExamReservationViewModel.StudentName, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.PHONE, updateExamReservationViewModel.Phone, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.SCORE, updateExamReservationViewModel.score, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.EMAIL, updateExamReservationViewModel.Email, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.EXAM_PROVIDER_ID, updateExamReservationViewModel.EXAM_PROVIDER_ID, dbType: DbType.Int32, direction: ParameterDirection.Input);
+
             var res = await _dbContext.Connection.ExecuteAsync(ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_UPDATE_EXAM_RESERVATION, param, commandType: CommandType.StoredProcedure);
         }
 

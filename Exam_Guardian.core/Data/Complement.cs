@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Exam_Guardian.core.Data
 {
-    //
     public partial class Complement
     {
         public decimal ComplementId { get; set; }

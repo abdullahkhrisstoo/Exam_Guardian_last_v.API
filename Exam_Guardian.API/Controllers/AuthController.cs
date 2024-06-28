@@ -2,6 +2,7 @@
 using Exam_Guardian.core.Data;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.infra.Repo;
 using Exam_Guardian.infra.Service;
 using Microsoft.AspNetCore.Authentication;
@@ -61,7 +62,24 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpGet]
-        public async Task<UserDataViewModel> GetUserByCredential(LoginViewModel userCredential) =>await _authService.GetUserByCredential(userCredential);
+        public async Task<IActionResult> GetUserByCredential(LoginViewModel userCredential)
+        {
+            try
+            {
+                var userData = await _authService.GetUserByCredential(userCredential);
+
+                if (userData == null)
+                {
+                    return this.ApiResponseNotFound("User not found", userCredential);
+                }
+
+                return this.ApiResponseOk("User found", userData);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, userCredential);
+            }
+        }
 
 
         [HttpPost]

@@ -30,21 +30,29 @@ namespace Exam_Guardian.infra.Repo
             var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_CREATE_USER, param, commandType: CommandType.StoredProcedure);
         }
 
-        public async Task DeleteUser(int id)
+        public async Task<int> DeleteUser(int id)
         {
             DynamicParameters param = new();
             param.Add(name: AuthPackageConstant.V_USER_ID, id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(name: AuthPackageConstant.V_IS_DELETED, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_delete_user, param, commandType: CommandType.StoredProcedure);
+            int deleted = param.Get<int>(AuthPackageConstant.V_IS_DELETED);
+            return deleted;
+
+
         }
 
-        public async Task UpdateUserPassword(UpdatePasswordViewModel updateProctorPasswordViewModel)
+        public async Task<int> UpdateUserPassword(UpdatePasswordViewModel updateProctorPasswordViewModel)
         {
             DynamicParameters param = new();
             param.Add(name: AuthPackageConstant.V_USER_CREDENTIAL_ID, updateProctorPasswordViewModel.CredentialId, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_LAST_PASSWORD, updateProctorPasswordViewModel.LastPassword, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_NEW_PASSWORD, updateProctorPasswordViewModel.NewPassword, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_CONFIRM_PASSWORD, updateProctorPasswordViewModel.ConfirmPassword, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.String, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_UPDATE_USER_PASSWORD, param, commandType: CommandType.StoredProcedure);
+            int updated = param.Get<int>(AuthPackageConstant.V_IS_UPDATED);
+            return updated;
         }
 
         public async Task<UserDataViewModel> GetUserById(int id)
@@ -65,32 +73,46 @@ namespace Exam_Guardian.infra.Repo
             return res.FirstOrDefault()!;
         }
 
-        public async Task UpdateName(UpdateNameViewModel update)
+        public async Task<int> UpdateName(UpdateNameViewModel update)
         {
             DynamicParameters param = new();
             param.Add(name: AuthPackageConstant.V_USER_ID, update.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_FIRST_NAME, update.FirstName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_LAST_NAME, update.LastName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_PASSWORD, update.Password, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.String, direction: ParameterDirection.Output);
+
             var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_UPDATE_NAME, param, commandType: CommandType.StoredProcedure);
+            int updated = param.Get<int>(AuthPackageConstant.V_IS_UPDATED);
+            return updated;
         }
 
-        public async Task UpdatePhone(UpdatePhoneViewModel update)
+        public async Task<int> UpdatePhone(UpdatePhoneViewModel update)
         {
             DynamicParameters param = new();
             param.Add(name: AuthPackageConstant.V_USER_ID, update.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_PHONENUM, update.PhoneNo, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_PASSWORD, update.Password, dbType: DbType.String, direction: ParameterDirection.Input);
+
+
+
+            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.String, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_UPDATE_PHONE, param, commandType: CommandType.StoredProcedure);
+            int updated = param.Get<int>(AuthPackageConstant.V_IS_UPDATED);
+            return updated;
         }
 
-        public async Task UpdateEmail(UpdateEmailViewModel update)
+        public async Task<int> UpdateEmail(UpdateEmailViewModel update)
         {
             DynamicParameters param = new();
             param.Add(name: AuthPackageConstant.V_USER_ID, update.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_EMAIL, update.Email, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_PASSWORD, update.Password, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.String, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_UPDATE_EMAIL, param, commandType: CommandType.StoredProcedure);
+            int updated = param.Get<int>(AuthPackageConstant.V_IS_UPDATED);
+            return updated;
+
         }
         public async Task<int> CheckEmailExist(string email)
         {

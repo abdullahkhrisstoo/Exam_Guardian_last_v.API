@@ -15,5 +15,6 @@ namespace Exam_Guardian.core.DTO
         public string? Email { get; set; }
         public string? Phonenum { get; set; }
         public decimal? RoleId { get; set; }
+
     }
 }
