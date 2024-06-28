@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,8 @@ namespace Exam_Guardian.core.IService
         Task<ExamReservationViewModel> GetExamReservationById(int id);
         Task<IEnumerable<ExamReservationViewModel>> GetAllExamReservations();
         Task<IEnumerable<UnavailableTimeViewModel>> GetTimeSlots();
+        Task<IEnumerable<ExamReservation>> GetExamReservationDependsProctor();
+
+        Task<IEnumerable<ExamReservation>> GetAllExamReservationsByProctorId(int id);
     }
 }

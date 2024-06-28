@@ -5,6 +5,7 @@ using Exam_Guardian.core.ICommon;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.Mapper;
 using Exam_Guardian.core.Utilities.PackagesConstants;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,10 +18,13 @@ namespace Exam_Guardian.infra.Repository
     public class ComplementRepository : IComplementRepository
     {
         private readonly IDbContext _dbContext;
+        private readonly ModelContext _modelContext;
 
-        public ComplementRepository(IDbContext dbContext)
+        public ComplementRepository(IDbContext dbContext, ModelContext modelContext)
         {
             _dbContext = dbContext;
+            
+            _modelContext = modelContext;
             SetupMappings();
         }
         private void SetupMappings()
@@ -66,6 +70,24 @@ namespace Exam_Guardian.infra.Repository
         {
             var res = await _dbContext.Connection.QueryAsync<ComplementViewModel>(ComplementPackageConstant.COMPLEMENT_PACKAGE_GET_ALL_COMPLEMENTS, commandType: CommandType.StoredProcedure);
             return res;
+        }
+
+        public async Task<Complement> GetComplementByExamReservation(int examreservationId)
+        {
+            var res = await _modelContext.Complements.Where(x => x.ExamReservationId == examreservationId).FirstOrDefaultAsync();
+            return res;
+
+        }
+        public async Task<IEnumerable<Complement>> GetComplementsByProctorId(int id)
+        {
+            var complements = await _modelContext.UserInfos
+                .Where(x => x.UserId == id && x.RoleId == 3)
+                .Include(x => x.ExamReservations)
+                    .ThenInclude(er => er.Complements)
+                .SelectMany(x => x.ExamReservations.SelectMany(er => er.Complements))
+                .ToListAsync();
+
+            return complements;
         }
     }
 

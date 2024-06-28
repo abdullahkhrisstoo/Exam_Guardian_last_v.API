@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,9 @@ namespace Exam_Guardian.core.IRepo
         Task UpdatePlan(UpdatePlanViewModel updatePlanViewModel);
         Task<PlanViewModel> GetPlanById(int id);
         Task<IEnumerable<PlanViewModel>> GetAllPlans();
+        Task<IEnumerable<PlanFeature>> GetPlanFeaturesByPlanId(int planId);
+        Task<Plan> GetPlanByExamBroviderId(int examproviderId);
+
     }
 
 }

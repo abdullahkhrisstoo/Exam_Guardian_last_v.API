@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepo;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.infra.Repo;
@@ -42,6 +43,16 @@ namespace Exam_Guardian.infra.Service
         public async Task<IEnumerable<PlanViewModel>> GetAllPlans()
         {
             return await _planRepository.GetAllPlans();
+        }
+
+        public async Task<IEnumerable<PlanFeature>> GetPlanFeaturesByPlanId(int planId)
+        {
+            return await _planRepository.GetPlanFeaturesByPlanId(planId);
+        }
+
+        public async Task<Plan> GetPlanByExamBroviderId(int examproviderId)
+        {
+            return await _planRepository.GetPlanByExamBroviderId(examproviderId);
         }
     }
 

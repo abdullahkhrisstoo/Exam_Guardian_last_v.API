@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
 using System;
@@ -135,6 +136,16 @@ namespace Exam_Guardian.infra.Service
                 .ToList();
 
             return groupedSlots;
+        }
+
+        public Task<IEnumerable<ExamReservation>> GetExamReservationDependsProctor()
+        {
+          return  _examReservationRepository.GetExamReservationDependsProctor();
+        }
+
+        public async Task<IEnumerable<ExamReservation>> GetAllExamReservationsByProctorId(int id)
+        {
+            return await _examReservationRepository.GetAllExamReservationsByProctorId(id);
         }
     }
 
