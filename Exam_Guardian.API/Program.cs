@@ -2,6 +2,7 @@ using Exam_Guardian.core.ICommon;
 using Exam_Guardian.core.IRepo;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities;
 using Exam_Guardian.infra.Repo;
 using Exam_Guardian.infra.Repository;
 using Exam_Guardian.infra.Service;
@@ -62,6 +63,7 @@ namespace Exam_Guardian.API
                                     ClockSkew = TimeSpan.Zero
                                     };
 });
+            builder.Services.Configure<WhatsAppSettings>(builder.Configuration.GetSection(nameof(WhatsAppSettings)));
 
 
 

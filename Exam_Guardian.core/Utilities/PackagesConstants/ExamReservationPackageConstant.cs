@@ -23,6 +23,13 @@ namespace Exam_Guardian.core.Utilities.PackagesConstants
         public const string PROCTOR_TOKEN_EMAIL = "PROCTOR_TOKEN_EMAIL";
         public const string UNIQUE_KEY = "UNIQUE_KEY";
         public const string USER_ID = "USER_ID";
+        public const string STUDENT_NAME = "STUDENT_NAME";
+        public const string PHONE = "PHONE";
+        public const string SCORE = "SCORE";
+        public const string EMAIL = "EMAIL";
+        public const string EXAM_PROVIDER_ID = "EXAM_PROVIDER_ID";
+
+
     }
 
 }
