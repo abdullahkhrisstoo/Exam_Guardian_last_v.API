@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
 using System;
@@ -41,6 +42,19 @@ namespace Exam_Guardian.infra.Service
         public async Task<IEnumerable<ComplementViewModel>> GetAllComplements()
         {
             return await _complementRepository.GetAllComplements();
+        }
+     
+      
+
+        public async Task<IEnumerable<Complement>> GetComplementsByProctorId(int id)
+        {
+            return await _complementRepository.GetComplementsByProctorId(id);
+        }
+
+        public async Task<Complement> GetComplementByExamReservation(int examreservationId)
+        {
+            return await _complementRepository.GetComplementByExamReservation(examreservationId);
+
         }
     }
 

@@ -2,12 +2,16 @@ using Exam_Guardian.core.ICommon;
 using Exam_Guardian.core.IRepo;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
-using Exam_Guardian.infra.Common;
 using Exam_Guardian.infra.Repo;
 using Exam_Guardian.infra.Repository;
 using Exam_Guardian.infra.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Exam_Guardian.API
 {
@@ -20,37 +24,51 @@ namespace Exam_Guardian.API
             // Add services to the container.
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddDbContext<core.Data.ModelContext>(x => x.UseOracle(builder.Configuration.GetConnectionString("DBConnectionString")));
+
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpContextAccessor();
 
 
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            builder.Services
+                .AddAuthentication(options =>
+                         {
+                            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                            options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                          })
+              .AddCookie(options => 
+                          {
+                           options.Cookie.IsEssential = true;
+                           })
+              .AddGoogle(googleOptions =>
+                          {
+                            googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                            googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                            googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+                            googleOptions.CallbackPath = "/signin-google";
+                           })
+              .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, x =>
+                           {
+                             x.TokenValidationParameters = new TokenValidationParameters
+                                  {
+                                     ValidateIssuer = false,
+                                     ValidateAudience = false,
+                                     ValidateLifetime = true,
+                                     ValidateIssuerSigningKey = true,
+                                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Belive in your self, keep going and never stop ... you are star and the sky is the limit., Belive in your self, keep going and never stop ... you are star and the sky is the limit ")),
+                                    ClockSkew = TimeSpan.Zero
+                                    };
+});
 
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            })
-           .AddCookie(options =>
-           {
-               options.Cookie.IsEssential = true;
-           })
-           .AddGoogle(googleOptions =>
-           {
-               googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
-               googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-               googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-               googleOptions.CallbackPath = "/signin-google";
-           });
 
 
 
             //todo: databse connection
-            builder.Services.AddScoped<IDbContext, DbContext>();
+            builder.Services.AddScoped<IDbContext,infra.Common.DbContext>();
 
             //todo: services
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -60,12 +78,27 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IComplementService, ComplementService>();
             builder.Services.AddScoped<IExamReservationService, ExamReservationService>();
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+            builder.Services.AddScoped<IExamService, ExamService>();
+            builder.Services.AddScoped<IProctorService, ProctorService>();
+
+
+
+         
             //todo: repo
+            builder.Services.AddScoped<IExamProviderRepository, ExamProviderRepository>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IPlanRepository, PlanRepository>();
             builder.Services.AddScoped<IPlanFeatureRepository, PlanFeatureRepository>();
             builder.Services.AddScoped<IComplementRepository, ComplementRepository>();
             builder.Services.AddScoped<IExamReservationRepository, ExamReservationRepository>();
+            builder.Services.AddScoped<IProctorRepository, ProctorRepository>();
+
+
+            builder.Services.AddControllers()
+                          .AddJsonOptions(options =>
+                                       {
+                                      options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                                        });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -74,7 +107,7 @@ namespace Exam_Guardian.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-          
+
 
 
 
@@ -82,7 +115,7 @@ namespace Exam_Guardian.API
 
             app.UseAuthorization();
             app.UseAuthentication();
-
+           
 
 
             app.MapControllers();

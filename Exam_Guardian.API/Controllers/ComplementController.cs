@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +54,21 @@ namespace Exam_Guardian.API.Controllers
         {
             var result = await _complementService.GetAllComplements();
             return Ok(result);
+        }
+        [HttpGet("{getcomplementbyreservation}")]
+        
+        public async Task<IActionResult> GetcomplementByExamreservation(int examreservationId)
+        {
+            var res = await _complementService.GetComplementByExamReservation(examreservationId);
+            return Ok(res);
+
+        }
+        [HttpGet("{GetComplementsByProctorId}")]
+        public async Task<IActionResult> GetComplementsByProctorId(int id)
+        {
+            var res= await _complementService.GetComplementsByProctorId(id);
+            return Ok(res);
+
         }
     }
 
