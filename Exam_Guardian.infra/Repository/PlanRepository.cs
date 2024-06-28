@@ -76,6 +76,24 @@ namespace Exam_Guardian.infra.Repo
             var res = await _modelContext.PlanFeatures.Where(p => p.PlanId == planId).ToListAsync();
             return res;
         }
+
+        public async Task<Plan> GetPlanByExamBroviderId(int examproviderId)
+        {
+            var examProvider = await _modelContext.ExamProviders.Where(x => x.ExamProviderId == examproviderId).FirstOrDefaultAsync();
+                                            
+
+            if (examProvider == null)
+            {
+                return null;
+            }
+
+            var plan = await _modelContext.Plans.Where(x => x.PlanId == examProvider.PlanId).FirstOrDefaultAsync();
+                                          
+
+            return plan;
+        }
+
+        
     }
 
 }

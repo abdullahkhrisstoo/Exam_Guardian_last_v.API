@@ -18,5 +18,6 @@ namespace Exam_Guardian.core.IService
         Task<IEnumerable<UnavailableTimeViewModel>> GetTimeSlots();
         Task<IEnumerable<ExamReservation>> GetExamReservationDependsProctor();
 
+        Task<IEnumerable<ExamReservation>> GetAllExamReservationsByProctorId(int id);
     }
 }
