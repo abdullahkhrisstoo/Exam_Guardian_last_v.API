@@ -49,6 +49,11 @@ namespace Exam_Guardian.infra.Service
         {
             return await _planRepository.GetPlanFeaturesByPlanId(planId);
         }
+
+        public async Task<Plan> GetPlanByExamBroviderId(int examproviderId)
+        {
+            return await _planRepository.GetPlanByExamBroviderId(examproviderId);
+        }
     }
 
 

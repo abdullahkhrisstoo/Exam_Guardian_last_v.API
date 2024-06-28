@@ -16,5 +16,6 @@ namespace Exam_Guardian.core.IService
         Task<PlanViewModel> GetPlanById(int id);
         Task<IEnumerable<PlanViewModel>> GetAllPlans();
         Task<IEnumerable<PlanFeature>> GetPlanFeaturesByPlanId(int planId);
+        Task<Plan> GetPlanByExamBroviderId(int examproviderId);
     }
 }

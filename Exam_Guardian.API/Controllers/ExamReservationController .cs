@@ -61,11 +61,10 @@ namespace Exam_Guardian.API.Controllers
             return Ok(result);
         }
 
-
-        [HttpGet]
-        public async Task<IActionResult> GetExamReservationDependsProctor()
+        [HttpGet("{proctorid}")]
+        public async Task<IActionResult>GetAllExamReservationsByProctorId(int id)
         {
-            var result = await _examReservationService.GetExamReservationDependsProctor();
+            var result = await _examReservationService.GetAllExamReservationsByProctorId(id);
             return Ok(result);
         }
     }

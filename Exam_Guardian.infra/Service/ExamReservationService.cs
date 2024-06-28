@@ -142,6 +142,11 @@ namespace Exam_Guardian.infra.Service
         {
           return  _examReservationRepository.GetExamReservationDependsProctor();
         }
+
+        public async Task<IEnumerable<ExamReservation>> GetAllExamReservationsByProctorId(int id)
+        {
+            return await _examReservationRepository.GetAllExamReservationsByProctorId(id);
+        }
     }
 
 }
