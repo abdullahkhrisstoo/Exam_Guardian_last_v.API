@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,13 @@ namespace Exam_Guardian.API.Controllers
         {
             var result = await _planService.GetPlanFeaturesByPlanId(planId);
             return Ok(result);
+        }
+        [HttpGet("{examproviderid}")]
+        public async Task<IActionResult> GetPlanByExamBroviderId(int examproviderId)
+        {
+            var result = await _planService.GetPlanFeaturesByPlanId(examproviderId);
+            return Ok(result);
+
         }
     }
 
