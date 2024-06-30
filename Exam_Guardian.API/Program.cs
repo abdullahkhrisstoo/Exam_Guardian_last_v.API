@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
-
+using Exam_Guardian.core.Utilities.TokenConstant;
 namespace Exam_Guardian.API
 {
     public class Program
@@ -59,7 +59,7 @@ namespace Exam_Guardian.API
                                      ValidateAudience = false,
                                      ValidateLifetime = true,
                                      ValidateIssuerSigningKey = true,
-                                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Belive in your self, keep going and never stop ... you are star and the sky is the limit., Belive in your self, keep going and never stop ... you are star and the sky is the limit ")),
+                                     IssuerSigningKey = TokenConstant.symmetricSecurityKey,
                                     ClockSkew = TimeSpan.Zero
                                     };
 });

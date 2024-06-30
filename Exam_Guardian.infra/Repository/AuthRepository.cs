@@ -63,13 +63,13 @@ namespace Exam_Guardian.infra.Repo
             return res.FirstOrDefault()!;
         }
 
-        public async Task<UserDataViewModel> GetUserByCredential(LoginViewModel userCredential)
+        public async Task<LoginResponseViewMdoel> GetUserByCredential(LoginViewModel userCredential)
         {
             DynamicParameters param = new();
             param.Add(name: AuthPackageConstant.V_PASSWORD, userCredential.Password, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_EMAIL, userCredential.Email, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_PHONENUM, userCredential.Phonenum, dbType: DbType.String, direction: ParameterDirection.Input);
-            var res = await _dbContext.Connection.QueryAsync<UserDataViewModel>(AuthPackageConstant.AUTH_PACKAGE_USER_LOGIN, param, commandType: CommandType.StoredProcedure);
+            var res = await _dbContext.Connection.QueryAsync<LoginResponseViewMdoel>(AuthPackageConstant.AUTH_PACKAGE_USER_LOGIN, param, commandType: CommandType.StoredProcedure);
             return res.FirstOrDefault()!;
         }
 

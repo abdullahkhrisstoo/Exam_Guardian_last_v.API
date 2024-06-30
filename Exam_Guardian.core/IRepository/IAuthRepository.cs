@@ -14,7 +14,7 @@ namespace Exam_Guardian.core.IRepo
         Task<int> UpdateUserPassword(UpdatePasswordViewModel updateProctorPasswordViewModel);
 
         Task<UserDataViewModel> GetUserById(int id);
-        Task<UserDataViewModel> GetUserByCredential(LoginViewModel userCredential);
+        Task<LoginResponseViewMdoel> GetUserByCredential(LoginViewModel userCredential);
 
 
 
