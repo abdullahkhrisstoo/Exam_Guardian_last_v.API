@@ -16,7 +16,7 @@ namespace Exam_Guardian.core.IService
         Task<int> UpdateUserPassword(UpdatePasswordViewModel updateProctorPasswordViewModel);
 
         Task<UserDataViewModel> GetUserById(int id);
-        Task<UserDataViewModel> GetUserByCredential(LoginViewModel userCredential);
+        Task<LoginResponseViewMdoel> GetUserByCredential(LoginViewModel userCredential);
 
         Task<int> UpdateName(UpdateNameViewModel update);
         Task<int> UpdatePhone(UpdatePhoneViewModel update);

@@ -1,5 +1,6 @@
 ﻿using Exam_Guardian.core.Data;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.ResponseHandler;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,32 +17,102 @@ namespace Exam_Guardian.API.Controllers
             _examService = examService;
         }
 
-        [HttpGet]
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllExamProviders()
+        //{
+        //    var result = await _examService.GetAllExamProviders();
+        //    return Ok(result);
+        //}
+        [HttpGet("all")]
         public async Task<IActionResult> GetAllExamProviders()
         {
-            var result = await _examService.GetAllExamProviders();
-            return Ok(result);
+            try
+            {
+                var result = await _examService.GetAllExamProviders();
+                if (result == null)
+                {
+                    return this.ApiResponseNotFound("ExamsProviders  not found", result);
+                }
+                return this.ApiResponseOk("All exam providers retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new {});
+            }
         }
 
-        [HttpGet("stateId")]
+
+        //[HttpGet("stateId")]
+        //public async Task<IActionResult> GetExamProvidersByStateId(int stateId)
+        //{
+        //    var result = await _examService.GetExamProvidersByStateId(stateId);
+        //    return Ok(result);
+        //}
+        [HttpGet("state/{stateId}")]
         public async Task<IActionResult> GetExamProvidersByStateId(int stateId)
         {
-            var result = await _examService.GetExamProvidersByStateId(stateId);
-            return Ok(result);
+            try
+            {
+                var result = await _examService.GetExamProvidersByStateId(stateId);
+                if (result == null)
+                {
+                    return this.ApiResponseNotFound("ExamsProviders  not found", result);
+                }
+                return this.ApiResponseOk("Exam providers by state ID retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { StateId = stateId });
+            }
         }
-        [HttpGet("planId")]
+        //[HttpGet("planId")]
+        //public async Task<IActionResult> GetExamProvidersByPlanId(int planId)
+        //{
+        //    var result = await _examService.GetExamProvidersByPlanId(planId);
+        //    return Ok(result);
+        //}
+
+        [HttpGet("plan/{planId}")]
         public async Task<IActionResult> GetExamProvidersByPlanId(int planId)
         {
-            var result = await _examService.GetExamProvidersByPlanId(planId);
-            return Ok(result);
+            try
+            {
+                var result = await _examService.GetExamProvidersByPlanId(planId);
+                if(result == null)
+                {
+                    return this.ApiResponseNotFound("ExamsProviders  not found", result);
+                }
+                return this.ApiResponseOk("Exam providers by plan ID retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { PlanId = planId });
+            }
         }
-        [HttpGet("id")]
+        //[HttpGet("id")]
+        //public async Task<IActionResult> GetExamProvidersById(int id)
+        //{
+        //    var result = await _examService.GetExamProvidersById(id);
+        //    return Ok(result);
+        //}
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetExamProvidersById(int id)
         {
-            var result = await _examService.GetExamProvidersById(id);
-            return Ok(result);
+            try
+            {
+                var result = await _examService.GetExamProvidersById(id);
+                if(result == null)
+                {
+                    return this.ApiResponseNotFound("ExamsProviders  not found", result);
+                }
+                return this.ApiResponseOk("Exam provider by ID retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { Id = id });
+            }
         }
 
-    
+
     }
 }
