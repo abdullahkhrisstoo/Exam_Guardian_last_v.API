@@ -3,6 +3,7 @@ using Exam_Guardian.core.Data;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.ResponseHandler;
+using Exam_Guardian.core.Utilities.UserRole;
 using Exam_Guardian.infra.Repo;
 using Exam_Guardian.infra.Service;
 using Microsoft.AspNetCore.Authentication;
@@ -64,7 +65,6 @@ namespace Exam_Guardian.API.Controllers
 
         //[HttpPut]
         //public async Task UpdateUserPassword([FromBody] UpdatePasswordViewModel updateProctorPasswordViewModel) => await _authService.UpdateUserPassword(updateProctorPasswordViewModel);
-
         [HttpPut]
         public async Task<IActionResult> UpdateUserPassword([FromBody] UpdatePasswordViewModel updateProctorPasswordViewModel)
         {
@@ -114,6 +114,7 @@ namespace Exam_Guardian.API.Controllers
         //[HttpPut]
         //public async Task UpdateName([FromBody] UpdateNameViewModel update)=> await _authService.UpdateName(update);
         [HttpPut]
+        [CheckClaimsAttribute()]
         public async Task<IActionResult> UpdateName([FromBody] UpdateNameViewModel update)
         {
             try
@@ -153,7 +154,7 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> GetUserByCredential(LoginViewModel userCredential)
         {
             try
