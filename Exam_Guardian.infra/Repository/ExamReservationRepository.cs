@@ -45,9 +45,9 @@ namespace Exam_Guardian.infra.Repository
             param.Add(name: ExamReservationPackageConstant.SCORE, createExamReservationViewModel.score, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.EMAIL, createExamReservationViewModel.Email, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.EXAM_PROVIDER_ID, createExamReservationViewModel.EXAM_PROVIDER_ID, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(name:ExamReservationPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_CREATE_EXAM_RESERVATION, param, commandType: CommandType.StoredProcedure);
-            int cid = param.Get<int>("C_id");
+            int cid = param.Get<int>(name: ExamReservationPackageConstant.C_id);
             return cid;
             
         }
@@ -56,9 +56,9 @@ namespace Exam_Guardian.infra.Repository
         {
             DynamicParameters param = new();
             param.Add(name: ExamReservationPackageConstant.EXAM_RESERVATION_ID, id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(name: ExamReservationPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_DELETE_EXAM_RESERVATION, param, commandType: CommandType.StoredProcedure);
-            int cid = param.Get<int>("C_id");
+            int cid = param.Get<int>(name: ExamReservationPackageConstant.C_id);
             return cid;
             
         }
@@ -78,9 +78,9 @@ namespace Exam_Guardian.infra.Repository
             param.Add(name: ExamReservationPackageConstant.SCORE, updateExamReservationViewModel.score, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.EMAIL, updateExamReservationViewModel.Email, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.EXAM_PROVIDER_ID, updateExamReservationViewModel.EXAM_PROVIDER_ID, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(name: ExamReservationPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_UPDATE_EXAM_RESERVATION, param, commandType: CommandType.StoredProcedure);
-            int cid = param.Get<int>("C_id");
+            int cid = param.Get<int>(name: ExamReservationPackageConstant.C_id);
             return cid;
             
         }

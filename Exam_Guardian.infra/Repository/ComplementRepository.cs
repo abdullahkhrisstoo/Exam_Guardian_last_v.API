@@ -38,9 +38,9 @@ namespace Exam_Guardian.infra.Repository
             param.Add(name: ComplementPackageConstant.PROCTOR_DESC, createComplementViewModel.ProctorDesc, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ComplementPackageConstant.STUDENT_DESC, createComplementViewModel.StudentDesc, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ComplementPackageConstant.EXAM_RESERVATION_ID, createComplementViewModel.ExamReservationId, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(name: ComplementPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var result = await _dbContext.Connection.ExecuteAsync(ComplementPackageConstant.COMPLEMENT_PACKAGE_CREATE_COMPLEMENT, param, commandType: CommandType.StoredProcedure);
-            int complementid = param.Get<int>("C_id");
+            int complementid = param.Get<int>(name: ComplementPackageConstant.C_id);
             return complementid;
             
         }
@@ -49,10 +49,10 @@ namespace Exam_Guardian.infra.Repository
         {
             DynamicParameters param = new();
             param.Add(name: ComplementPackageConstant.COMPLEMENT_ID, id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(name: ComplementPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             
             var res = await _dbContext.Connection.ExecuteAsync(ComplementPackageConstant.COMPLEMENT_PACKAGE_DELETE_COMPLEMENT, param, commandType: CommandType.StoredProcedure);
-        int complementid = param.Get<int>("C_id");
+        int complementid = param.Get<int>(name: ComplementPackageConstant.C_id);
             return complementid;
         }
 
@@ -63,9 +63,9 @@ namespace Exam_Guardian.infra.Repository
             param.Add(name: ComplementPackageConstant.PROCTOR_DESC, updateComplementViewModel.ProctorDesc, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ComplementPackageConstant.STUDENT_DESC, updateComplementViewModel.StudentDesc, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ComplementPackageConstant.EXAM_RESERVATION_ID, updateComplementViewModel.ExamReservationId, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(name: ComplementPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(ComplementPackageConstant.COMPLEMENT_PACKAGE_UPDATE_COMPLEMENT, param, commandType: CommandType.StoredProcedure);
-            int complementid = param.Get<int>("C_id");
+            int complementid = param.Get<int>(name: ComplementPackageConstant.C_id);
             return complementid;
         }
 

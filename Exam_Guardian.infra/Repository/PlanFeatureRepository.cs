@@ -33,11 +33,11 @@ namespace Exam_Guardian.infra.Repository
             DynamicParameters param = new();
             param.Add(name: PlanFeaturePackageConstant.FEATURES_NAME, createPlanFeatureViewModel.FeaturesName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: PlanFeaturePackageConstant.PLAN_ID, createPlanFeatureViewModel.PlanId, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(PlanFeaturePackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             
             
             var res = await _dbContext.Connection.ExecuteAsync(PlanFeaturePackageConstant.PLAN_FEATURE_PACKAGE_CREATE_PLAN_FEATURE, param, commandType: CommandType.StoredProcedure);
-       int cid = param.Get<int>("C_id");
+       int cid = param.Get<int>(PlanFeaturePackageConstant.C_id);
             return cid;
         }
 
@@ -45,11 +45,11 @@ namespace Exam_Guardian.infra.Repository
         {
             DynamicParameters param = new();
             param.Add(name: PlanFeaturePackageConstant.PLAN_FEATURE_ID, id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(PlanFeaturePackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             
             
             var res = await _dbContext.Connection.ExecuteAsync(PlanFeaturePackageConstant.PLAN_FEATURE_PACKAGE_DELETE_PLAN_FEATURE, param, commandType: CommandType.StoredProcedure);
-       int cid = param.Get<int>("C_id");
+       int cid = param.Get<int>(PlanFeaturePackageConstant.C_id);
             return cid; 
         }
 
@@ -60,11 +60,11 @@ namespace Exam_Guardian.infra.Repository
             param.Add(name: PlanFeaturePackageConstant.FEATURES_NAME, updatePlanFeatureViewModel.FeaturesName, dbType: DbType.String, direction: ParameterDirection.Input);
            
            param.Add(name: PlanFeaturePackageConstant.PLAN_ID, updatePlanFeatureViewModel.PlanId, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(name: PlanFeaturePackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             
             
             var res = await _dbContext.Connection.ExecuteAsync(PlanFeaturePackageConstant.PLAN_FEATURE_PACKAGE_UPDATE_PLAN_FEATURE, param, commandType: CommandType.StoredProcedure);
-        int cid = param.Get<int>("C_id");
+        int cid = param.Get<int>(PlanFeaturePackageConstant.C_id);
             return cid;}
 
         public async Task<PlanFeatureViewModel> GetPlanFeatureById(int id)
