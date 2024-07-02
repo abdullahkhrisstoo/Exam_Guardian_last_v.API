@@ -65,7 +65,16 @@ namespace Exam_Guardian.API
 });
             builder.Services.Configure<WhatsAppSettings>(builder.Configuration.GetSection(nameof(WhatsAppSettings)));
 
-
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalhost4200",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:4200")
+                               .AllowAnyHeader()
+                               .AllowAnyMethod();
+                    });
+            });
 
 
 
@@ -118,8 +127,8 @@ namespace Exam_Guardian.API
 
             app.UseAuthorization();
             app.UseAuthentication();
-           
 
+            app.UseCors("AllowLocalhost4200");
 
             app.MapControllers();
 

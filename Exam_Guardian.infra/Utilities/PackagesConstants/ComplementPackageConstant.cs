@@ -18,6 +18,7 @@ namespace Exam_Guardian.core.Utilities.PackagesConstants
         public const string PROCTOR_DESC = "V_PROCTOR_DESC";
         public const string STUDENT_DESC = "V_STUDENT_DESC";
         public const string EXAM_RESERVATION_ID = "V_EXAM_RESERVATION_ID";
+        public const string C_id = "C_id";
     }
 
 }

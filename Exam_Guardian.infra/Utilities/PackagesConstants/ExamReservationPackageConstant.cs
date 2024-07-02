@@ -28,6 +28,7 @@ namespace Exam_Guardian.core.Utilities.PackagesConstants
         public const string SCORE = "V_SCORE";
         public const string EMAIL = "V_EMAIL";
         public const string EXAM_PROVIDER_ID = "V_EXAM_PROVIDER_ID";
+        public const string C_id = "C_id";
 
 
     }

@@ -38,11 +38,11 @@ namespace Exam_Guardian.infra.Repo
             param.Add(name: PlanPackageConstant.PLAN_NAME, createPlanViewModel.PlanName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.PLAN_DESCRIPTION, createPlanViewModel.PlanDescription, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.PLAN_PRICE, createPlanViewModel.PlanPrice, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(name: PlanPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             
             
             var res = await _dbContext.Connection.ExecuteAsync(PlanPackageConstant.PLAN_PACKAGE_CREATE_PLAN, param, commandType: CommandType.StoredProcedure);
-       int cid = param.Get<int>("C_id");
+       int cid = param.Get<int>(name: PlanPackageConstant.C_id);
             return cid; 
         }
 
@@ -50,11 +50,11 @@ namespace Exam_Guardian.infra.Repo
         {
             DynamicParameters param = new();
             param.Add(name: PlanPackageConstant.PLAN_ID, id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(name: PlanPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
            
             
             var res = await _dbContext.Connection.ExecuteAsync(PlanPackageConstant.PLAN_PACKAGE_DELETE_PLAN, param, commandType: CommandType.StoredProcedure);
-        int cid = param.Get<int>("C_id");
+        int cid = param.Get<int>(name: PlanPackageConstant.C_id);
             return cid;
         }
 
@@ -65,11 +65,11 @@ namespace Exam_Guardian.infra.Repo
             param.Add(name: PlanPackageConstant.PLAN_NAME, updatePlanViewModel.PlanName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.PLAN_DESCRIPTION, updatePlanViewModel.PlanDescription, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.PLAN_PRICE, updatePlanViewModel.PlanPrice, dbType: DbType.Decimal, direction: ParameterDirection.Input);
-            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            param.Add(name: PlanPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             
             
             var res = await _dbContext.Connection.ExecuteAsync(PlanPackageConstant.PLAN_PACKAGE_UPDATE_PLAN, param, commandType: CommandType.StoredProcedure);
-        int cid = param.Get<int>("C_id");
+        int cid = param.Get<int>(name: PlanPackageConstant.C_id);
             return cid;
         }
 

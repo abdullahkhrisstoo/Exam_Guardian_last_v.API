@@ -29,7 +29,7 @@ namespace Exam_Guardian.API.Controllers
         [HttpPost]
 
 
-        [CheckClaimsAttribute("1")]// i handle it, we don't need to set RoleId word, and the admin id is 1,
+        //[CheckClaimsAttribute("1")]// i handle it, we don't need to set RoleId word, and the admin id is 1,
         public async Task<IActionResult> Create([FromBody] CreateComplementViewModel createComplementViewModel)
         {
             try
@@ -145,13 +145,13 @@ namespace Exam_Guardian.API.Controllers
 
         //}
 
-        [HttpGet("examreservation/{examreservationId}")]
+        [HttpGet("{examreservationId}")]
         public async Task<IActionResult> GetcomplementByExamreservation(int examreservationId)
         {
             try
             {
                 var res = await _complementService.GetComplementByExamReservation(examreservationId);
-                if (res == null)
+                if (res is null)
                 {
                     return this.ApiResponseNotFound("Complement not found", new { });
                 }
@@ -172,7 +172,7 @@ namespace Exam_Guardian.API.Controllers
 
         //}
 
-        [HttpGet("proctor/{proctorId}")]
+        [HttpGet("{proctorId}")]
         public async Task<IActionResult> GetComplementsByProctorId(int proctorId)
         {
             try

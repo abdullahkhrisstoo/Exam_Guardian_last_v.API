@@ -15,11 +15,13 @@ namespace Exam_Guardian.core.Utilities.PackagesConstants
         public const string PLAN_PACKAGE_GET_ALL_PLANS = "PLAN_PACKAGE.GET_ALL_PLANS";
 
         // Parameter names matching table column names
-        public const string PLAN_ID = "V_PLAN_ID";
-        public const string PLAN_NAME = "V_PLAN_NAME";
-        public const string PLAN_DESCRIPTION = "V_PLAN_DESCRIPTION";
-        public const string PLAN_PRICE = "V_PLAN_PRICE";
-        
+        public const string PLAN_ID = "V_plan_id";
+        public const string PLAN_NAME = "V_plan_name";
+        public const string PLAN_DESCRIPTION = "V_plan_description";
+        public const string PLAN_PRICE = "V_plan_price";
+        public const string C_id = "p_id";
+
+
     }
 
 }
