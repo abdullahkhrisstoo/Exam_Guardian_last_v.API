@@ -19,19 +19,19 @@ namespace Exam_Guardian.infra.Service
             _complementRepository = complementRepository;
         }
 
-        public async Task CreateComplement(CreateComplementViewModel createComplementViewModel)
+        public async Task<int> CreateComplement(CreateComplementViewModel createComplementViewModel)
         {
-            await _complementRepository.CreateComplement(createComplementViewModel);
+           return await _complementRepository.CreateComplement(createComplementViewModel);
         }
 
-        public async Task DeleteComplement(int id)
+        public async Task<int> DeleteComplement(int id)
         {
-            await _complementRepository.DeleteComplement(id);
+           return await _complementRepository.DeleteComplement(id);
         }
 
-        public async Task UpdateComplement(UpdateComplementViewModel updateComplementViewModel)
+        public async Task<int> UpdateComplement(UpdateComplementViewModel updateComplementViewModel)
         {
-            await _complementRepository.UpdateComplement(updateComplementViewModel);
+            return await _complementRepository.UpdateComplement(updateComplementViewModel);
         }
 
         public async Task<ComplementViewModel> GetComplementById(int id)

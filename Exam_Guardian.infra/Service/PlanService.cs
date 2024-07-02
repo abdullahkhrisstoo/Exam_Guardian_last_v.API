@@ -20,19 +20,19 @@ namespace Exam_Guardian.infra.Service
             _planRepository = planRepository;
         }
 
-        public async Task CreatePlan(CreatePlanViewModel createPlanViewModel)
+        public async Task<int> CreatePlan(CreatePlanViewModel createPlanViewModel)
         {
-            await _planRepository.CreatePlan(createPlanViewModel);
+           return await _planRepository.CreatePlan(createPlanViewModel);
         }
 
-        public async Task DeletePlan(int id)
+        public async Task<int> DeletePlan(int id)
         {
-            await _planRepository.DeletePlan(id);
+            return await _planRepository.DeletePlan(id);
         }
 
-        public async Task UpdatePlan(UpdatePlanViewModel updatePlanViewModel)
+        public async Task<int> UpdatePlan(UpdatePlanViewModel updatePlanViewModel)
         {
-            await _planRepository.UpdatePlan(updatePlanViewModel);
+            return await _planRepository.UpdatePlan(updatePlanViewModel);
         }
 
         public async Task<PlanViewModel> GetPlanById(int id)

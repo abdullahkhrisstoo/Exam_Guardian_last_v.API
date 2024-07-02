@@ -18,19 +18,19 @@ namespace Exam_Guardian.infra.Service
             _planFeatureRepository = planFeatureRepository;
         }
 
-        public async Task CreatePlanFeature(CreatePlanFeatureViewModel createPlanFeatureViewModel)
+        public async Task<int> CreatePlanFeature(CreatePlanFeatureViewModel createPlanFeatureViewModel)
         {
-            await _planFeatureRepository.CreatePlanFeature(createPlanFeatureViewModel);
+           return await _planFeatureRepository.CreatePlanFeature(createPlanFeatureViewModel);
         }
 
-        public async Task DeletePlanFeature(int id)
+        public async Task<int> DeletePlanFeature(int id)
         {
-            await _planFeatureRepository.DeletePlanFeature(id);
+            return await _planFeatureRepository.DeletePlanFeature(id);
         }
 
-        public async Task UpdatePlanFeature(UpdatePlanFeatureViewModel updatePlanFeatureViewModel)
+        public async Task<int> UpdatePlanFeature(UpdatePlanFeatureViewModel updatePlanFeatureViewModel)
         {
-            await _planFeatureRepository.UpdatePlanFeature(updatePlanFeatureViewModel);
+           return await _planFeatureRepository.UpdatePlanFeature(updatePlanFeatureViewModel);
         }
 
         public async Task<PlanFeatureViewModel> GetPlanFeatureById(int id)

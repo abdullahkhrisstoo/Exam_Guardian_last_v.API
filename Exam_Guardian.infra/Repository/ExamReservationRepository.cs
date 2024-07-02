@@ -31,7 +31,7 @@ namespace Exam_Guardian.infra.Repository
             PascalCaseMapper<ExamReservationViewModel>.SetTypeMap();
         }
 
-        public async Task CreateExamReservation(CreateExamReservationViewModel createExamReservationViewModel)
+        public async Task<int> CreateExamReservation(CreateExamReservationViewModel createExamReservationViewModel)
         {
             DynamicParameters param = new();
             param.Add(name: ExamReservationPackageConstant.STUDENT_TOKEN_EMAIL, createExamReservationViewModel.StudentTokenEmail, dbType: DbType.String, direction: ParameterDirection.Input);
@@ -45,18 +45,25 @@ namespace Exam_Guardian.infra.Repository
             param.Add(name: ExamReservationPackageConstant.SCORE, createExamReservationViewModel.score, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.EMAIL, createExamReservationViewModel.Email, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.EXAM_PROVIDER_ID, createExamReservationViewModel.EXAM_PROVIDER_ID, dbType: DbType.Int32, direction: ParameterDirection.Input);
-
+            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_CREATE_EXAM_RESERVATION, param, commandType: CommandType.StoredProcedure);
+            int cid = param.Get<int>("C_id");
+            return cid;
+            
         }
 
-        public async Task DeleteExamReservation(int id)
+        public async Task<int> DeleteExamReservation(int id)
         {
             DynamicParameters param = new();
             param.Add(name: ExamReservationPackageConstant.EXAM_RESERVATION_ID, id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_DELETE_EXAM_RESERVATION, param, commandType: CommandType.StoredProcedure);
+            int cid = param.Get<int>("C_id");
+            return cid;
+            
         }
 
-        public async Task UpdateExamReservation(UpdateExamReservationViewModel updateExamReservationViewModel)
+        public async Task <int> UpdateExamReservation(UpdateExamReservationViewModel updateExamReservationViewModel)
         {
             DynamicParameters param = new();
             param.Add(name: ExamReservationPackageConstant.EXAM_RESERVATION_ID, updateExamReservationViewModel.ExamReservationId, dbType: DbType.Int32, direction: ParameterDirection.Input);
@@ -71,8 +78,11 @@ namespace Exam_Guardian.infra.Repository
             param.Add(name: ExamReservationPackageConstant.SCORE, updateExamReservationViewModel.score, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.EMAIL, updateExamReservationViewModel.Email, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.EXAM_PROVIDER_ID, updateExamReservationViewModel.EXAM_PROVIDER_ID, dbType: DbType.Int32, direction: ParameterDirection.Input);
-
+            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_UPDATE_EXAM_RESERVATION, param, commandType: CommandType.StoredProcedure);
+            int cid = param.Get<int>("C_id");
+            return cid;
+            
         }
 
         public async Task<ExamReservationViewModel> GetExamReservationById(int id)

@@ -10,9 +10,9 @@ namespace Exam_Guardian.core.IRepo
 {
     public interface IPlanRepository
     {
-        Task CreatePlan(CreatePlanViewModel createPlanViewModel);
-        Task DeletePlan(int id);
-        Task UpdatePlan(UpdatePlanViewModel updatePlanViewModel);
+        Task <int> CreatePlan(CreatePlanViewModel createPlanViewModel);
+        Task <int> DeletePlan(int id);
+        Task <int> UpdatePlan(UpdatePlanViewModel updatePlanViewModel);
         Task<PlanViewModel> GetPlanById(int id);
         Task<IEnumerable<PlanViewModel>> GetAllPlans();
         Task<IEnumerable<PlanFeature>> GetPlanFeaturesByPlanId(int planId);

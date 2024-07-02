@@ -10,9 +10,9 @@ namespace Exam_Guardian.core.IRepository
 {
     public interface IExamReservationRepository
     {
-        Task CreateExamReservation(CreateExamReservationViewModel createExamReservationViewModel);
-        Task DeleteExamReservation(int id);
-        Task UpdateExamReservation(UpdateExamReservationViewModel updateExamReservationViewModel);
+        Task <int>CreateExamReservation(CreateExamReservationViewModel createExamReservationViewModel);
+        Task <int> DeleteExamReservation(int id);
+        Task <int> UpdateExamReservation(UpdateExamReservationViewModel updateExamReservationViewModel);
         Task<ExamReservationViewModel> GetExamReservationById(int id);
         Task<IEnumerable<ExamReservationViewModel>> GetAllExamReservations();
         Task<IEnumerable<TimeSlotsViewModel>> GetTimeSlots();

@@ -16,18 +16,18 @@ namespace Exam_Guardian.core.Utilities.PackagesConstants
         public const string EXAM_RESERVATION_PACKAGE_GET_TIME_SLOTS = "EXAM_RESERVATION_PACKAGE.get_time_slots";
 
         // Parameter names matching table column names
-        public const string EXAM_RESERVATION_ID = "EXAM_RESERVATION_ID";
-        public const string STUDENT_TOKEN_EMAIL = "STUDENT_TOKEN_EMAIL";
-        public const string START_DATE = "START_DATE";
-        public const string END_DATE = "END_DATE";
-        public const string PROCTOR_TOKEN_EMAIL = "PROCTOR_TOKEN_EMAIL";
-        public const string UNIQUE_KEY = "UNIQUE_KEY";
-        public const string USER_ID = "USER_ID";
-        public const string STUDENT_NAME = "STUDENT_NAME";
-        public const string PHONE = "PHONE";
-        public const string SCORE = "SCORE";
-        public const string EMAIL = "EMAIL";
-        public const string EXAM_PROVIDER_ID = "EXAM_PROVIDER_ID";
+        public const string EXAM_RESERVATION_ID = "V_EXAM_RESERVATION_ID";
+        public const string STUDENT_TOKEN_EMAIL = "V_STUDENT_TOKEN_EMAIL";
+        public const string START_DATE = "V_START_DATE";
+        public const string END_DATE = "V_END_DATE";
+        public const string PROCTOR_TOKEN_EMAIL = "V_PROCTOR_TOKEN_EMAIL";
+        public const string UNIQUE_KEY = "V_UNIQUE_KEY";
+        public const string USER_ID = "V_USER_ID";
+        public const string STUDENT_NAME = "V_STUDENT_NAME";
+        public const string PHONE = "V_PHONE";
+        public const string SCORE = "V_SCORE";
+        public const string EMAIL = "V_EMAIL";
+        public const string EXAM_PROVIDER_ID = "V_EXAM_PROVIDER_ID";
 
 
     }

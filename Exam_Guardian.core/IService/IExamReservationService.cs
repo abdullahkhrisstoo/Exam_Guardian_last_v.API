@@ -10,12 +10,12 @@ namespace Exam_Guardian.core.IService
 {
     public interface IExamReservationService
     {
-        Task CreateExamReservation(CreateExamReservationViewModel createExamReservationViewModel);
-        Task DeleteExamReservation(int id);
-        Task UpdateExamReservation(UpdateExamReservationViewModel updateExamReservationViewModel);
+        Task<int> CreateExamReservation(CreateExamReservationViewModel createExamReservationViewModel);
+        Task<int> DeleteExamReservation(int id);
+        Task<int> UpdateExamReservation(UpdateExamReservationViewModel updateExamReservationViewModel);
         Task<ExamReservationViewModel> GetExamReservationById(int id);
         Task<IEnumerable<ExamReservationViewModel>> GetAllExamReservations();
-        Task<IEnumerable<UnavailableTimeViewModel>> GetTimeSlots();
+        Task<IEnumerable<TimeSlotsViewModel>> GetTimeSlots();
         Task<IEnumerable<ExamReservation>> GetExamReservationDependsProctor();
 
         Task<IEnumerable<ExamReservation>> GetAllExamReservationsByProctorId(int id);

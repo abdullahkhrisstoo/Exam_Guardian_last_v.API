@@ -4,9 +4,9 @@ namespace Exam_Guardian.core.IService
 {
     public interface IComplementService
     {
-        Task CreateComplement(CreateComplementViewModel createComplementViewModel) ;
-        Task DeleteComplement(int id);
-        Task UpdateComplement(UpdateComplementViewModel updateComplementViewModel);
+        Task<int> CreateComplement(CreateComplementViewModel createComplementViewModel);
+        Task<int> DeleteComplement(int id);
+        Task<int> UpdateComplement(UpdateComplementViewModel updateComplementViewModel);
         Task<ComplementViewModel> GetComplementById(int id);
         Task<IEnumerable<ComplementViewModel>> GetAllComplements();
         Task<Complement> GetComplementByExamReservation(int examreservationId);

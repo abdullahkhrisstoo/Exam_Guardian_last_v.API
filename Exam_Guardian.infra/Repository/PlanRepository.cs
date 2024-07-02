@@ -32,30 +32,45 @@ namespace Exam_Guardian.infra.Repo
         {
             PascalCaseMapper<PlanViewModel>.SetTypeMap();
         }
-        public async Task CreatePlan(CreatePlanViewModel createPlanViewModel)
+        public async Task<int> CreatePlan(CreatePlanViewModel createPlanViewModel)
         {
             DynamicParameters param = new();
             param.Add(name: PlanPackageConstant.PLAN_NAME, createPlanViewModel.PlanName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.PLAN_DESCRIPTION, createPlanViewModel.PlanDescription, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.PLAN_PRICE, createPlanViewModel.PlanPrice, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            
+            
             var res = await _dbContext.Connection.ExecuteAsync(PlanPackageConstant.PLAN_PACKAGE_CREATE_PLAN, param, commandType: CommandType.StoredProcedure);
+       int cid = param.Get<int>("C_id");
+            return cid; 
         }
 
-        public async Task DeletePlan(int id)
+        public async Task<int> DeletePlan(int id)
         {
             DynamicParameters param = new();
             param.Add(name: PlanPackageConstant.PLAN_ID, id, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+           
+            
             var res = await _dbContext.Connection.ExecuteAsync(PlanPackageConstant.PLAN_PACKAGE_DELETE_PLAN, param, commandType: CommandType.StoredProcedure);
+        int cid = param.Get<int>("C_id");
+            return cid;
         }
 
-        public async Task UpdatePlan(UpdatePlanViewModel updatePlanViewModel)
+        public async Task<int> UpdatePlan(UpdatePlanViewModel updatePlanViewModel)
         {
             DynamicParameters param = new();
             param.Add(name: PlanPackageConstant.PLAN_ID, updatePlanViewModel.PlanId, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.PLAN_NAME, updatePlanViewModel.PlanName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.PLAN_DESCRIPTION, updatePlanViewModel.PlanDescription, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.PLAN_PRICE, updatePlanViewModel.PlanPrice, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+            param.Add("C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            
+            
             var res = await _dbContext.Connection.ExecuteAsync(PlanPackageConstant.PLAN_PACKAGE_UPDATE_PLAN, param, commandType: CommandType.StoredProcedure);
+        int cid = param.Get<int>("C_id");
+            return cid;
         }
 
         public async Task<PlanViewModel> GetPlanById(int id)

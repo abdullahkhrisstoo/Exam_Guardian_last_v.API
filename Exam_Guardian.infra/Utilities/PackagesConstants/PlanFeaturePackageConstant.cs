@@ -15,9 +15,9 @@ namespace Exam_Guardian.core.Utilities.PackagesConstants
         public const string PLAN_FEATURE_PACKAGE_GET_ALL_PLAN_FEATURES = "PLAN_FEATURE_PACKAGE.GET_ALL_PLAN_FEATURES";
 
         // Parameter names matching table column names
-        public const string PLAN_FEATURE_ID = "PLAN_FEATURE_ID";
-        public const string FEATURES_NAME = "FEATURES_NAME";
-        public const string PLAN_ID = "PLAN_ID";
+        public const string PLAN_FEATURE_ID = "V_PLAN_FEATURE_ID";
+        public const string FEATURES_NAME = "V_FEATURES_NAME";
+        public const string PLAN_ID = "V_PLAN_ID";
     }
 
 }
