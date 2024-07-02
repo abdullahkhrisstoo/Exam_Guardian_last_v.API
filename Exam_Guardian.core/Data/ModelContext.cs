@@ -23,7 +23,6 @@ namespace Exam_Guardian.core.Data
         public virtual DbSet<Plan> Plans { get; set; } = null!;
         public virtual DbSet<PlanFeature> PlanFeatures { get; set; } = null!;
         public virtual DbSet<TermsAndCondition> TermsAndConditions { get; set; } = null!;
-        public virtual DbSet<Testimonial> Testimonials { get; set; } = null!;
         public virtual DbSet<UserCredential> UserCredentials { get; set; } = null!;
         public virtual DbSet<UserInfo> UserInfos { get; set; } = null!;
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
@@ -86,7 +85,7 @@ namespace Exam_Guardian.core.Data
             modelBuilder.Entity<ContactU>(entity =>
             {
                 entity.HasKey(e => e.ContactId)
-                    .HasName("SYS_C008590");
+                    .HasName("PK_CONTACT_ID");
 
                 entity.ToTable("CONTACT_US");
 
@@ -331,7 +330,7 @@ namespace Exam_Guardian.core.Data
             modelBuilder.Entity<TermsAndCondition>(entity =>
             {
                 entity.HasKey(e => e.TermsId)
-                    .HasName("SYS_C008592");
+                    .HasName("PK_TERMS_ID");
 
                 entity.ToTable("TERMS_AND_CONDITIONS");
 
@@ -348,7 +347,7 @@ namespace Exam_Guardian.core.Data
                 entity.Property(e => e.CreatedAt)
                     .HasPrecision(6)
                     .HasColumnName("CREATED_AT")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP ");
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Title)
                     .HasMaxLength(255)
@@ -360,49 +359,16 @@ namespace Exam_Guardian.core.Data
                     .HasColumnName("UPDATED_AT");
             });
 
-            modelBuilder.Entity<Testimonial>(entity =>
-            {
-                entity.ToTable("TESTIMONIAL");
-
-                entity.Property(e => e.TestimonialId)
-                    .HasColumnType("NUMBER")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("TESTIMONIAL_ID");
-
-                entity.Property(e => e.CreatedAt)
-                    .HasPrecision(6)
-                    .HasColumnName("CREATED_AT")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                entity.Property(e => e.TestimonialText)
-                    .HasColumnType("CLOB")
-                    .HasColumnName("TESTIMONIAL_TEXT");
-
-                entity.Property(e => e.UpdatedAt)
-                    .HasPrecision(6)
-                    .HasColumnName("UPDATED_AT");
-
-                entity.Property(e => e.UserId)
-                    .HasColumnType("NUMBER")
-                    .HasColumnName("USER_ID");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Testimonials)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK_USER_INFO");
-            });
-
             modelBuilder.Entity<UserCredential>(entity =>
             {
-                entity.HasKey(e => e.CredentialId)
-                    .HasName("SYS_C008571");
+                entity.HasKey(e => e.CredentialId);
 
                 entity.ToTable("USER_CREDENTIAL");
 
-                entity.HasIndex(e => e.Email, "SYS_C008572")
+                entity.HasIndex(e => e.Email, "SYS_C0013374")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Phonenum, "SYS_C008573")
+                entity.HasIndex(e => e.Phonenum, "SYS_C0013375")
                     .IsUnique();
 
                 entity.Property(e => e.CredentialId)
@@ -439,7 +405,7 @@ namespace Exam_Guardian.core.Data
             modelBuilder.Entity<UserInfo>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("SYS_C008570");
+                    .HasName("PK_USER_ID");
 
                 entity.ToTable("USER_INFO");
 
@@ -507,7 +473,7 @@ namespace Exam_Guardian.core.Data
             modelBuilder.Entity<UserRole>(entity =>
             {
                 entity.HasKey(e => e.RoleId)
-                    .HasName("SYS_C008575");
+                    .HasName("PK_ROLE_ID");
 
                 entity.ToTable("USER_ROLE");
 
@@ -535,7 +501,7 @@ namespace Exam_Guardian.core.Data
             modelBuilder.Entity<UserState>(entity =>
             {
                 entity.HasKey(e => e.StateId)
-                    .HasName("SYS_C008577");
+                    .HasName("PK_STATE_ID");
 
                 entity.ToTable("USER_STATES");
 
