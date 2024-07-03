@@ -178,11 +178,14 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var res = await _complementService.GetComplementsByProctorId(proctorId);
-                if (res == null)
+                if (res == null || !res.Any())
                 {
                     return this.ApiResponseNotFound("Complement not found", new { });
                 }
-                return this.ApiResponseOk("Complements by proctor ID retrieved successfully", res);
+                else
+                {
+                    return this.ApiResponseOk("Complements by proctor ID retrieved successfully", res);
+                }
             }
             catch (Exception ex)
             {

@@ -120,12 +120,13 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var result = await _planService.GetAllPlans();
-                if (result == null)
+                if (result == null || !result.Any())
                 {
                     return this.ApiResponseNotFound("Plans not found", new { });
                 }
+                else { 
                 return this.ApiResponseOk("All plans retrieved successfully", result);
-            }
+            }}
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { });
@@ -144,13 +145,13 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var result = await _planService.GetPlanFeaturesByPlanId(planId);
-                if (result == null)
+                if (result == null || !result.Any())
                 {
                     return this.ApiResponseNotFound("Plan not found", new { });
                 }
-
+                else {
                 return this.ApiResponseOk("Plan features retrieved successfully", result);
-            }
+            } }
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { PlanId = planId });
@@ -169,7 +170,7 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var result = await _planService.GetPlanByExamBroviderId(examProviderId);
-                if (result == null)
+                if (result == null )
                 {
                     return this.ApiResponseNotFound("Plan not found", new { });
                 }

@@ -96,7 +96,7 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var result = await _examReservationService.GetExamReservationById(id);
-                if (result == null)
+                if (result == null )
                 {
                     return this.ApiResponseNotFound("Exam reservation not found", new { ExamReservationId = id });
                 }
@@ -121,11 +121,13 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var result = await _examReservationService.GetAllExamReservations();
-                if (result == null)
+                if (result == null || !result.Any())
                 {
                     return this.ApiResponseNotFound("Exam reservation not found", result);
                 }
+                else { 
                 return this.ApiResponseOk("All exam reservations retrieved successfully", result);
+            }
             }
             catch (Exception ex)
             {
@@ -144,11 +146,12 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var result = await _examReservationService.GetTimeSlots();
-                if (result == null)
+                if (result == null || !result.Any())
                 {
                     return this.ApiResponseNotFound("Time Slots not found", result);
                 }
-                return this.ApiResponseOk("Time slots retrieved successfully", result);
+                else { 
+                return this.ApiResponseOk("Time slots retrieved successfully", result);}
             }
             catch (Exception ex)
             {
@@ -169,11 +172,12 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var result = await _examReservationService.GetAllExamReservationsByProctorId(proctorId);
-                if (result == null)
+                if (result == null || !result.Any())
                 {
                     return this.ApiResponseNotFound("Exam Reservation not found", result);
                 }
-                return this.ApiResponseOk("All exam reservations by proctor ID retrieved successfully", result);
+                else { return this.ApiResponseOk("All exam reservations by proctor ID retrieved successfully", result);}
+                
             }
             catch (Exception ex)
             {
