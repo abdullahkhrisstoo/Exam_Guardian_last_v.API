@@ -92,11 +92,10 @@ namespace Exam_Guardian.infra.Repository
         public async Task<IEnumerable<Complement>> GetComplementsByProctorId(int id)
         {
             var complements = await _modelContext.UserInfos
-                .Where(x => x.UserId == id && x.RoleId == 3)
-                .Include(x => x.ExamReservations)
-                    .ThenInclude(er => er.Complements)
-                .SelectMany(x => x.ExamReservations.SelectMany(er => er.Complements))
-                .ToListAsync();
+        .Where(user => user.UserId == id && user.RoleId == 3)
+        .SelectMany(user => user.ExamReservations)
+        .SelectMany(reservation => reservation.Complements)
+        .ToListAsync();
 
             return complements;
         }

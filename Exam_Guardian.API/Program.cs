@@ -32,37 +32,52 @@ namespace Exam_Guardian.API
             builder.Services.AddHttpContextAccessor();
 
 
+            builder.Services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x => x.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = TokenConstant.symmetricSecurityKey,
+                ClockSkew = TimeSpan.Zero
+            }); ;
 
-            builder.Services
-                .AddAuthentication(options =>
-                         {
-                            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                            options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-                          })
-              .AddCookie(options => 
-                          {
-                           options.Cookie.IsEssential = true;
-                           })
-              .AddGoogle(googleOptions =>
-                          {
-                            googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                            googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-                            googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-                            googleOptions.CallbackPath = "/signin-google";
-                           })
-              .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, x =>
-                           {
-                             x.TokenValidationParameters = new TokenValidationParameters
-                                  {
-                                     ValidateIssuer = false,
-                                     ValidateAudience = false,
-                                     ValidateLifetime = true,
-                                     ValidateIssuerSigningKey = true,
-                                     IssuerSigningKey = TokenConstant.symmetricSecurityKey,
-                                    ClockSkew = TimeSpan.Zero
-                                    };
-});
+
+
+            //            builder.Services
+            //                .AddAuthentication(options =>
+            //                         {
+            //                            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //                            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //                            options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //                          })
+            //              .AddCookie(options => 
+            //                          {
+            //                           options.Cookie.IsEssential = true;
+            //                           })
+            //              .AddGoogle(googleOptions =>
+            //                          {
+            //                            googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //                            googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+            //                            googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            //                            googleOptions.CallbackPath = "/signin-google";
+            //                           })
+            //              .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, x =>
+            //                           {
+            //                             x.TokenValidationParameters = new TokenValidationParameters
+            //                                  {
+            //                                     ValidateIssuer = false,
+            //                                     ValidateAudience = false,
+            //                                     ValidateLifetime = true,
+            //                                     ValidateIssuerSigningKey = true,
+            //                                     IssuerSigningKey = TokenConstant.symmetricSecurityKey,
+            //                                    ClockSkew = TimeSpan.Zero
+            //                                    };
+            //});
             builder.Services.Configure<WhatsAppSettings>(builder.Configuration.GetSection(nameof(WhatsAppSettings)));
 
             builder.Services.AddCors(options =>
@@ -125,8 +140,8 @@ namespace Exam_Guardian.API
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseCors("AllowLocalhost4200");
 

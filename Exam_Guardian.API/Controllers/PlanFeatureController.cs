@@ -118,12 +118,16 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var result = await _planFeatureService.GetAllPlanFeatures();
-                if(result == null)
+                if(result == null || !result.Any())
                 {
                     return this.ApiResponseNotFound("Plan feature not found", new { });
                 }
+                else
+                {
+
+                
                 return this.ApiResponseOk("All plan features retrieved successfully", result);
-            }
+            }}
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { });

@@ -18,7 +18,7 @@ namespace Exam_Guardian.core.Utilities.PackagesConstants
         public const string PLAN_FEATURE_ID = "V_PLAN_FEATURE_ID";
         public const string FEATURES_NAME = "V_FEATURES_NAME";
         public const string PLAN_ID = "V_PLAN_ID";
-        public const string C_id = "C_id";
+        public const string C_id = "P_id";
     }
 
 }

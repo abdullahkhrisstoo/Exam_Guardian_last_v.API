@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Policy;
 using TheLearningHub.API.Controllers;
 
@@ -34,6 +35,8 @@ namespace Exam_Guardian.API.Controllers
 
         
         [HttpPost]
+        [CheckClaimsAttribute("2", "1", "3")]
+
         public async Task<IActionResult> CreateUser([FromBody] CreateAccountViewModel createProctorViewModel)
         {
             try
@@ -49,6 +52,8 @@ namespace Exam_Guardian.API.Controllers
         //[HttpDelete("{id}")]
         //public async Task DeleteUser(int id)=> await _authService.DeleteUser(id);
         [HttpDelete("{id}")]
+        [CheckClaimsAttribute("2", "1", "3")]
+
         public async Task<IActionResult> DeleteUser(int id)
         {
             try
@@ -66,6 +71,8 @@ namespace Exam_Guardian.API.Controllers
         //[HttpPut]
         //public async Task UpdateUserPassword([FromBody] UpdatePasswordViewModel updateProctorPasswordViewModel) => await _authService.UpdateUserPassword(updateProctorPasswordViewModel);
         [HttpPut]
+        [CheckClaimsAttribute("2", "1", "3")]
+
         public async Task<IActionResult> UpdateUserPassword([FromBody] UpdatePasswordViewModel updateProctorPasswordViewModel)
         {
             try
@@ -81,7 +88,10 @@ namespace Exam_Guardian.API.Controllers
         //[HttpPut]
         //public async Task UpdateEmail([FromBody] UpdateEmailViewModel update)=> await _authService.UpdateEmail(update);
 
+        
         [HttpPut]
+        [CheckClaimsAttribute("2", "1", "3")]
+
         public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailViewModel update)
         {
             try
@@ -98,6 +108,8 @@ namespace Exam_Guardian.API.Controllers
         //[HttpPut]
         //public async Task UpdatePhone([FromBody] UpdatePhoneViewModel update)=> await _authService.UpdatePhone(update);
         [HttpPut]
+        [CheckClaimsAttribute("2", "1", "3")]
+
         public async Task<IActionResult> UpdatePhone([FromBody] UpdatePhoneViewModel update)
         {
             try
@@ -114,7 +126,7 @@ namespace Exam_Guardian.API.Controllers
         //[HttpPut]
         //public async Task UpdateName([FromBody] UpdateNameViewModel update)=> await _authService.UpdateName(update);
         [HttpPut]
-        [CheckClaimsAttribute()]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider, UserRoleConstant.SProctor)]
         public async Task<IActionResult> UpdateName([FromBody] UpdateNameViewModel update)
         {
             try
@@ -273,4 +285,5 @@ namespace Exam_Guardian.API.Controllers
         }
 
     }
+    
 }

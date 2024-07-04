@@ -49,7 +49,7 @@ namespace Exam_Guardian.infra.Repo
             param.Add(name: AuthPackageConstant.V_LAST_PASSWORD, updateProctorPasswordViewModel.LastPassword, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_NEW_PASSWORD, updateProctorPasswordViewModel.NewPassword, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_CONFIRM_PASSWORD, updateProctorPasswordViewModel.ConfirmPassword, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.String, direction: ParameterDirection.Output);
+            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_UPDATE_USER_PASSWORD, param, commandType: CommandType.StoredProcedure);
             int updated = param.Get<int>(AuthPackageConstant.V_IS_UPDATED);
             return updated;
@@ -80,7 +80,7 @@ namespace Exam_Guardian.infra.Repo
             param.Add(name: AuthPackageConstant.V_FIRST_NAME, update.FirstName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_LAST_NAME, update.LastName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_PASSWORD, update.Password, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.String, direction: ParameterDirection.Output);
+            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
             var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_UPDATE_NAME, param, commandType: CommandType.StoredProcedure);
             int updated = param.Get<int>(AuthPackageConstant.V_IS_UPDATED);
@@ -96,7 +96,7 @@ namespace Exam_Guardian.infra.Repo
 
 
 
-            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.String, direction: ParameterDirection.Output);
+            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_UPDATE_PHONE, param, commandType: CommandType.StoredProcedure);
             int updated = param.Get<int>(AuthPackageConstant.V_IS_UPDATED);
             return updated;
@@ -108,7 +108,7 @@ namespace Exam_Guardian.infra.Repo
             param.Add(name: AuthPackageConstant.V_USER_ID, update.UserId, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_EMAIL, update.Email, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_PASSWORD, update.Password, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.String, direction: ParameterDirection.Output);
+            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_UPDATE_EMAIL, param, commandType: CommandType.StoredProcedure);
             int updated = param.Get<int>(AuthPackageConstant.V_IS_UPDATED);
             return updated;
