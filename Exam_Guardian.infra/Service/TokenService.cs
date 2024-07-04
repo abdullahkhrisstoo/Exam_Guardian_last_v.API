@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,13 @@ namespace Exam_Guardian.infra.Service
             var key = TokenConstant.symmetricSecurityKey;
             var signCred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = TokenConstant.SetClaims(roleId, userId);
+            var claims  = new List<Claim>
+               {
+                new Claim("RoleId", roleId.ToString()),
+                new Claim("UserId", userId.ToString())
+              };
+
+
 
             var tokenOptions = new JwtSecurityToken(
                 claims: claims,

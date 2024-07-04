@@ -25,12 +25,13 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var result = await _proctorService.GetAllProctor();
-                if (result == null)
+                if (result == null || result.Any())
                 {
                     return this.ApiResponseNotFound("Proctors not found", new { });
                 }
+                else { 
                 return this.ApiResponseOk("All proctors retrieved successfully", result);
-            }
+            }}
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { });
@@ -73,7 +74,7 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var result = await _proctorService.GetProctorsByExamReservationId(examReservationId);
-                if (result == null)
+                if (result == null )
                 {
                     return this.ApiResponseNotFound("Proctor not found by Exam Reservation ID", new { ExamReservationId = examReservationId });
                 }

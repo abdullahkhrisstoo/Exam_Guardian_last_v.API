@@ -44,7 +44,7 @@ namespace Exam_Guardian.infra.Service
                 {
                     var tokenService = new TokenService();
 
-                    var tokenGenerated = _tokenService.GenerateToken(roleId, userId, 10);
+                    var tokenGenerated = _tokenService.GenerateToken(roleId, userId, 120);
                     userData.Token = tokenGenerated;
                     return userData;
                 }

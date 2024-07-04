@@ -29,11 +29,15 @@ namespace Exam_Guardian.API.Controllers
             try
             {
                 var result = await _examService.GetAllExamProviders();
-                if (result == null)
+                if (result == null || !result.Any())
                 {
-                    return this.ApiResponseNotFound("ExamsProviders  not found", result);
+                    return this.ApiResponseNotFound("ExamsProviders  not found or there is no Exam Provider", result);
                 }
-                return this.ApiResponseOk("All exam providers retrieved successfully", result);
+                else
+                {
+return this.ApiResponseOk("All exam providers retrieved successfully", result);
+                }
+                
             }
             catch (Exception ex)
             {
