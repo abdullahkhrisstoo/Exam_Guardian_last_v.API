@@ -1,8 +1,10 @@
 ﻿using Exam_Guardian.core.Data;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.ResponseHandler;
+using Exam_Guardian.core.Utilities.UserRole;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TheLearningHub.API.Controllers;
 
 namespace Exam_Guardian.API.Controllers
 {
@@ -24,6 +26,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("all")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAllExamProviders()
         {
             try
@@ -53,6 +56,7 @@ return this.ApiResponseOk("All exam providers retrieved successfully", result);
         //    return Ok(result);
         //}
         [HttpGet("state/{stateId}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)] //note 
         public async Task<IActionResult> GetExamProvidersByStateId(int stateId)
         {
             try
@@ -77,6 +81,7 @@ return this.ApiResponseOk("All exam providers retrieved successfully", result);
         //}
 
         [HttpGet("plan/{planId}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetExamProvidersByPlanId(int planId)
         {
             try
@@ -100,6 +105,7 @@ return this.ApiResponseOk("All exam providers retrieved successfully", result);
         //    return Ok(result);
         //}
         [HttpGet("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SExamProvider)]//exam provider can get his info
         public async Task<IActionResult> GetExamProvidersById(int id)
         {
             try

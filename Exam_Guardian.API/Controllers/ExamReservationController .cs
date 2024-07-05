@@ -1,9 +1,11 @@
 ﻿using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.ResponseHandler;
+using Exam_Guardian.core.Utilities.UserRole;
 using Exam_Guardian.infra.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TheLearningHub.API.Controllers;
 
 namespace Exam_Guardian.API.Controllers
 {
@@ -25,6 +27,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Exam reservation created successfully" });
         //}
         [HttpPost]
+        [CheckClaimsAttribute(UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> Create([FromBody] CreateExamReservationViewModel createExamReservationViewModel)
         {
             try
@@ -45,6 +48,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Exam reservation updated successfully"});
         //}
         [HttpPut]
+        [CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> Update([FromBody] UpdateExamReservationViewModel updateExamReservationViewModel)
         {
             try
@@ -66,6 +70,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Exam reservation deleted successfully" });
         //}
         [HttpDelete("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -91,6 +96,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("{id}")]
+        [CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -116,6 +122,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -141,6 +148,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("timeslots")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetTimeSlots()
         {
             try
@@ -167,6 +175,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet("proctor/{proctorId}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAllExamReservationsByProctorId(int proctorId)
         {
             try
