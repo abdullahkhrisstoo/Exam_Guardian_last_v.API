@@ -107,7 +107,8 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IExamService, ExamService>();
             builder.Services.AddScoped<IProctorService, ProctorService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-
+            builder.Services.AddScoped<ITestimonalRepositary,TestimonalRepositary>();
+            builder.Services.AddScoped<ITestimonalService,TestimonalService>();
 
         
 

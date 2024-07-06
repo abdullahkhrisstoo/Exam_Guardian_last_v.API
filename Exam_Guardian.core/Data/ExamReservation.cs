@@ -24,8 +24,10 @@ namespace Exam_Guardian.core.Data
         public decimal? Score { get; set; }
         public string? Email { get; set; }
         public decimal? ExamProviderId { get; set; }
+        public decimal? Examreservationstateid { get; set; }
 
         public virtual ExamProvider? ExamProvider { get; set; }
+        public virtual Examreservationstate? Examreservationstate { get; set; }
         public virtual UserInfo? User { get; set; }
         public virtual ICollection<Complement> Complements { get; set; }
     }

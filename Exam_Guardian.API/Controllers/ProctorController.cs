@@ -1,7 +1,9 @@
 ﻿using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.ResponseHandler;
+using Exam_Guardian.core.Utilities.UserRole;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TheLearningHub.API.Controllers;
 
 namespace Exam_Guardian.API.Controllers
 {
@@ -19,7 +21,8 @@ namespace Exam_Guardian.API.Controllers
         //    var result = await _proctorService.GetAllProctor();
         //    return Ok(result);
         //}
-        [HttpGet()]
+        [HttpGet("all")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAllProctor()
         {
             try
@@ -45,6 +48,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("{proctorId}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
         public async Task<IActionResult> GetProctorById(int proctorId)
         {
             try
@@ -68,7 +72,8 @@ namespace Exam_Guardian.API.Controllers
         //    var result = await _proctorService.GetProctorsByExamReservationId( examReservationId);
         //    return Ok(result);
         //}
-        [HttpGet("{examReservationId}")]
+        [HttpGet("examReservation/{examReservationId}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
         public async Task<IActionResult> GetAllProctor(int examReservationId)
         {
             try

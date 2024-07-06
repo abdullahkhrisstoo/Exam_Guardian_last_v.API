@@ -8,6 +8,7 @@ using Exam_Guardian.infra.Repo;
 using Exam_Guardian.infra.Service;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -35,7 +36,7 @@ namespace Exam_Guardian.API.Controllers
 
         
         [HttpPost]
-        [CheckClaimsAttribute("2", "1", "3")]
+        [AllowAnonymous]
 
         public async Task<IActionResult> CreateUser([FromBody] CreateAccountViewModel createProctorViewModel)
         {
@@ -52,8 +53,6 @@ namespace Exam_Guardian.API.Controllers
         //[HttpDelete("{id}")]
         //public async Task DeleteUser(int id)=> await _authService.DeleteUser(id);
         [HttpDelete("{id}")]
-        [CheckClaimsAttribute("2", "1", "3")]
-
         public async Task<IActionResult> DeleteUser(int id)
         {
             try
@@ -71,8 +70,6 @@ namespace Exam_Guardian.API.Controllers
         //[HttpPut]
         //public async Task UpdateUserPassword([FromBody] UpdatePasswordViewModel updateProctorPasswordViewModel) => await _authService.UpdateUserPassword(updateProctorPasswordViewModel);
         [HttpPut]
-        [CheckClaimsAttribute("2", "1", "3")]
-
         public async Task<IActionResult> UpdateUserPassword([FromBody] UpdatePasswordViewModel updateProctorPasswordViewModel)
         {
             try
@@ -90,8 +87,6 @@ namespace Exam_Guardian.API.Controllers
 
         
         [HttpPut]
-        [CheckClaimsAttribute("2", "1", "3")]
-
         public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailViewModel update)
         {
             try
@@ -108,8 +103,6 @@ namespace Exam_Guardian.API.Controllers
         //[HttpPut]
         //public async Task UpdatePhone([FromBody] UpdatePhoneViewModel update)=> await _authService.UpdatePhone(update);
         [HttpPut]
-        [CheckClaimsAttribute("2", "1", "3")]
-
         public async Task<IActionResult> UpdatePhone([FromBody] UpdatePhoneViewModel update)
         {
             try
@@ -126,7 +119,7 @@ namespace Exam_Guardian.API.Controllers
         //[HttpPut]
         //public async Task UpdateName([FromBody] UpdateNameViewModel update)=> await _authService.UpdateName(update);
         [HttpPut]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider, UserRoleConstant.SProctor)]
+        [CheckClaimsAttribute()]
         public async Task<IActionResult> UpdateName([FromBody] UpdateNameViewModel update)
         {
             try
@@ -149,6 +142,7 @@ namespace Exam_Guardian.API.Controllers
         //public async Task<UserDataViewModel> GetUserById(int id) =>await _authService.GetUserById(id);
 
         [HttpGet("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetUserById(int id)
         {
             try
@@ -167,6 +161,7 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> GetUserByCredential(LoginViewModel userCredential)
         {
             try
@@ -206,6 +201,7 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpGet]
+        
     public IActionResult GoogleLogin()
     {
         var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleCallback") };
@@ -238,23 +234,7 @@ namespace Exam_Guardian.API.Controllers
         }
 
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetPlans()
-        //{
-        //   return Ok((await _planService.GetAllPlans()));
-
-        //}
-
-        [HttpGet]
-        public async Task<IActionResult> GetPlans()
-        {
-            try
-            {
-                var plans = await _planService.GetAllPlans();
-                if (plans == null)
-                {
-                    return this.ApiResponseNotFound("plans not found", plans);
-                }
+        
 
                 return this.ApiResponseOk("Plans retrieved successfully", plans);
             }
@@ -285,5 +265,4 @@ namespace Exam_Guardian.API.Controllers
         }
 
     }
-    
 }

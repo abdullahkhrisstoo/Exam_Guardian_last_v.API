@@ -2,8 +2,10 @@
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.ResponseHandler;
+using Exam_Guardian.core.Utilities.UserRole;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TheLearningHub.API.Controllers;
 
 namespace Exam_Guardian.API.Controllers
 {
@@ -25,6 +27,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Plan created successfully" });
         //}
         [HttpPost]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Create([FromBody] CreatePlanViewModel createPlanViewModel)
         {
             try
@@ -45,6 +48,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Plan updated successfully" });
         //}
         [HttpPut]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Update([FromBody] UpdatePlanViewModel updatePlanViewModel)
         {
             try
@@ -65,6 +69,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Plan deleted successfully" });
         //}
         [HttpDelete("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -90,6 +95,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -115,6 +121,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -140,6 +147,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("features/{planId}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetPlanFeaturesByPlanId(int planId)
         {
             try
@@ -165,6 +173,7 @@ namespace Exam_Guardian.API.Controllers
 
         //}
         [HttpGet("examprovider/{examProviderId}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetPlanByExamProviderId(int examProviderId)
         {
             try
