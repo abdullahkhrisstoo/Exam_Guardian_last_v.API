@@ -79,18 +79,22 @@ namespace Exam_Guardian.API
             //                                    };
             //});
             builder.Services.Configure<WhatsAppSettings>(builder.Configuration.GetSection(nameof(WhatsAppSettings)));
-
+            builder.Services.AddControllers().AddNewtonsoftJson();
+            builder.Services.AddSignalR();
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowLocalhost4200",
+                options.AddPolicy("AllowAngularDev",
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200")
+                        builder.WithOrigins("http://localhost:4200", "http://192.168.1.17:4200")
                                .AllowAnyHeader()
-                               .AllowAnyMethod();
+                               .AllowAnyMethod()
+                               .AllowCredentials(); // Allow credentials (cookies, authorization headers)
                     });
             });
 
+
+         
 
 
             //todo: databse connection
@@ -107,7 +111,8 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IExamService, ExamService>();
             builder.Services.AddScoped<IProctorService, ProctorService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-
+            builder.Services.AddScoped<ITestimonalRepositary,TestimonalRepositary>();
+            builder.Services.AddScoped<ITestimonalService,TestimonalService>();
 
         
 
@@ -135,16 +140,22 @@ namespace Exam_Guardian.API
                 app.UseSwaggerUI();
             }
 
+            app.UseRouting(); // Add this line to enable routing
 
 
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors("AllowLocalhost4200");
+            app.UseCors("AllowAngularDev");
 
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<VideoCallHub>("/videoCallHub");
+                endpoints.MapControllers();
+            });
             app.MapControllers();
 
             app.Run();

@@ -23,10 +23,11 @@ namespace Exam_Guardian.core.Data
         public string? Phone { get; set; }
         public decimal? Score { get; set; }
         public string? Email { get; set; }
-        public decimal? ExamProviderId { get; set; }
+        public decimal? ExamId { get; set; }
 
-        public virtual ExamProvider? ExamProvider { get; set; }
+        public virtual ExamInfo? Exam { get; set; }
         public virtual UserInfo? User { get; set; }
+        public virtual ExamInfo? ExamInfo { get; set; }
         public virtual ICollection<Complement> Complements { get; set; }
     }
 }

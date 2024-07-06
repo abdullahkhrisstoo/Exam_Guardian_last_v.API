@@ -2,6 +2,8 @@
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.ResponseHandler;
+using Exam_Guardian.core.Utilities.UserRole;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TheLearningHub.API.Controllers;
@@ -27,7 +29,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpPost]
-
+        [AllowAnonymous]// note there is no  exam taker in this system
 
         //[CheckClaimsAttribute("1")]// i handle it, we don't need to set RoleId word, and the admin id is 1,
         public async Task<IActionResult> Create([FromBody] CreateComplementViewModel createComplementViewModel)
@@ -51,6 +53,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Complement updated successfully" });
         //}
         [HttpPut]
+        [CheckClaimsAttribute(UserRoleConstant.SProctor)]// note that the taker also can update the complement
         public async Task<IActionResult> Update([FromBody] UpdateComplementViewModel updateComplementViewModel)
         {
             try
@@ -71,6 +74,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Complement deleted successfully" });
         //}
         [HttpDelete("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -96,6 +100,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SProctor)]//each proctor can see his own complement
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -120,6 +125,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -146,6 +152,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet("{examreservationId}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetcomplementByExamreservation(int examreservationId)
         {
             try
@@ -173,6 +180,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet("{proctorId}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetComplementsByProctorId(int proctorId)
         {
             try

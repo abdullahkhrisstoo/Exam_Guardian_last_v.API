@@ -7,7 +7,7 @@ namespace Exam_Guardian.core.Data
     {
         public ExamProvider()
         {
-            ExamReservations = new HashSet<ExamReservation>();
+            ExamInfos = new HashSet<ExamInfo>();
         }
 
         public decimal ExamProviderId { get; set; }
@@ -21,6 +21,7 @@ namespace Exam_Guardian.core.Data
 
         public virtual Plan? Plan { get; set; }
         public virtual UserInfo? User { get; set; }
-        public virtual ICollection<ExamReservation> ExamReservations { get; set; }
+        public virtual Testimonial? Testimonial { get; set; }
+        public virtual ICollection<ExamInfo> ExamInfos { get; set; }
     }
 }

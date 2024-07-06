@@ -18,11 +18,15 @@ namespace Exam_Guardian.core.Data
 
         public virtual DbSet<Complement> Complements { get; set; } = null!;
         public virtual DbSet<ContactU> ContactUs { get; set; } = null!;
+        public virtual DbSet<ExamInfo> ExamInfos { get; set; } = null!;
         public virtual DbSet<ExamProvider> ExamProviders { get; set; } = null!;
         public virtual DbSet<ExamReservation> ExamReservations { get; set; } = null!;
+        public virtual DbSet<Examreservationstate> Examreservationstates { get; set; } = null!;
         public virtual DbSet<Plan> Plans { get; set; } = null!;
         public virtual DbSet<PlanFeature> PlanFeatures { get; set; } = null!;
         public virtual DbSet<TermsAndCondition> TermsAndConditions { get; set; } = null!;
+        public virtual DbSet<Testimonalstate> Testimonalstates { get; set; } = null!;
+        public virtual DbSet<Testimonial> Testimonials { get; set; } = null!;
         public virtual DbSet<UserCredential> UserCredentials { get; set; } = null!;
         public virtual DbSet<UserInfo> UserInfos { get; set; } = null!;
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
@@ -123,6 +127,52 @@ namespace Exam_Guardian.core.Data
                     .HasColumnName("UPDATED_AT");
             });
 
+            modelBuilder.Entity<ExamInfo>(entity =>
+            {
+                entity.HasKey(e => e.ExamId)
+                    .HasName("SYS_C0014499");
+
+                entity.ToTable("EXAM_INFO");
+
+                entity.Property(e => e.ExamId)
+                    .HasColumnType("NUMBER(38)")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("EXAM_ID");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasPrecision(6)
+                    .HasColumnName("CREATED_AT");
+
+                entity.Property(e => e.ExamImage)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("EXAM_IMAGE");
+
+                entity.Property(e => e.ExamProviderId)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("EXAM_PROVIDER_ID");
+
+                entity.Property(e => e.ExamTitle)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("EXAM_TITLE");
+
+                entity.Property(e => e.UpdatedAt)
+                    .HasPrecision(6)
+                    .HasColumnName("UPDATED_AT");
+
+                entity.HasOne(d => d.Exam)
+                    .WithOne(p => p.ExamInfo)
+                    .HasForeignKey<ExamInfo>(d => d.ExamId)
+                    .HasConstraintName("EXAM_INFO_FK1");
+
+                entity.HasOne(d => d.ExamProvider)
+                    .WithMany(p => p.ExamInfos)
+                    .HasForeignKey(d => d.ExamProviderId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("EXAM_INFO_FK2");
+            });
+
             modelBuilder.Entity<ExamProvider>(entity =>
             {
                 entity.ToTable("EXAM_PROVIDER");
@@ -200,9 +250,9 @@ namespace Exam_Guardian.core.Data
                     .HasPrecision(6)
                     .HasColumnName("END_DATE");
 
-                entity.Property(e => e.ExamProviderId)
+                entity.Property(e => e.ExamId)
                     .HasColumnType("NUMBER")
-                    .HasColumnName("EXAM_PROVIDER_ID");
+                    .HasColumnName("EXAM_ID");
 
                 entity.Property(e => e.Phone)
                     .HasMaxLength(200)
@@ -246,17 +296,32 @@ namespace Exam_Guardian.core.Data
                     .HasColumnType("NUMBER(38)")
                     .HasColumnName("USER_ID");
 
-                entity.HasOne(d => d.ExamProvider)
+                entity.HasOne(d => d.Exam)
                     .WithMany(p => p.ExamReservations)
-                    .HasForeignKey(d => d.ExamProviderId)
+                    .HasForeignKey(d => d.ExamId)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("EXAM_PROVIDER_ID");
+                    .HasConstraintName("EXAM_INFO_FK");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.ExamReservations)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_USERSID");
+            });
+
+            modelBuilder.Entity<Examreservationstate>(entity =>
+            {
+                entity.ToTable("EXAMRESERVATIONSTATE");
+
+                entity.Property(e => e.Examreservationstateid)
+                    .HasColumnType("NUMBER")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("EXAMRESERVATIONSTATEID");
+
+                entity.Property(e => e.Examreservationstate1)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasColumnName("EXAMRESERVATIONSTATE");
             });
 
             modelBuilder.Entity<Plan>(entity =>
@@ -359,16 +424,79 @@ namespace Exam_Guardian.core.Data
                     .HasColumnName("UPDATED_AT");
             });
 
+            modelBuilder.Entity<Testimonalstate>(entity =>
+            {
+                entity.ToTable("TESTIMONALSTATE");
+
+                entity.Property(e => e.Testimonalstateid)
+                    .HasColumnType("NUMBER")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("TESTIMONALSTATEID");
+
+                entity.Property(e => e.Testimonalstate1)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasColumnName("TESTIMONALSTATE");
+            });
+
+            modelBuilder.Entity<Testimonial>(entity =>
+            {
+                entity.ToTable("TESTIMONIAL");
+
+                entity.Property(e => e.Testimonialid)
+                    .HasColumnType("NUMBER")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("TESTIMONIALID");
+
+                entity.Property(e => e.Createdat)
+                    .HasColumnType("DATE")
+                    .HasColumnName("CREATEDAT");
+
+                entity.Property(e => e.Testimonalstateid)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("TESTIMONALSTATEID");
+
+                entity.Property(e => e.Testimonialtext)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false)
+                    .HasColumnName("TESTIMONIALTEXT");
+
+                entity.Property(e => e.Updatedat)
+                    .HasColumnType("DATE")
+                    .HasColumnName("UPDATEDAT");
+
+                entity.Property(e => e.Userid)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("USERID");
+
+                entity.HasOne(d => d.Testimonalstate)
+                    .WithMany(p => p.Testimonials)
+                    .HasForeignKey(d => d.Testimonalstateid)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_TESTIMONALSTATEID");
+
+                entity.HasOne(d => d.TestimonialNavigation)
+                    .WithOne(p => p.Testimonial)
+                    .HasForeignKey<Testimonial>(d => d.Testimonialid)
+                    .HasConstraintName("TESTIMONIAL_EXAMPROVIDER");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Testimonials)
+                    .HasForeignKey(d => d.Userid)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_USERID");
+            });
+
             modelBuilder.Entity<UserCredential>(entity =>
             {
                 entity.HasKey(e => e.CredentialId);
 
                 entity.ToTable("USER_CREDENTIAL");
 
-                entity.HasIndex(e => e.Email, "SYS_C0013374")
+                entity.HasIndex(e => e.Email, "SYS_C0014501")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Phonenum, "SYS_C0013375")
+                entity.HasIndex(e => e.Phonenum, "SYS_C0014502")
                     .IsUnique();
 
                 entity.Property(e => e.CredentialId)
