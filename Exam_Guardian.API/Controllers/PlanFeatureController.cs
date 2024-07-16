@@ -26,7 +26,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Plan feature created successfully" });
         //}
         [HttpPost]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Create([FromBody] CreatePlanFeatureViewModel createPlanFeatureViewModel)
         {
             try
@@ -47,7 +47,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Plan feature updated successfully" });
         //}
         [HttpPut]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Update([FromBody] UpdatePlanFeatureViewModel updatePlanFeatureViewModel)
         {
             try
@@ -69,7 +69,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpDelete("{id}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -94,7 +94,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("{id}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -119,7 +119,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetAll()
         {
             try

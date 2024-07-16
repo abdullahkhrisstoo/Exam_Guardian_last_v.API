@@ -76,6 +76,8 @@ namespace Exam_Guardian.infra.Repository
             {
                 throw;
             }
+
         }
+     
     }
 }

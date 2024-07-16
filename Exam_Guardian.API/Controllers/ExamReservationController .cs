@@ -96,7 +96,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("{id}")]
-        [CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
+        //[CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -122,7 +122,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAll()
         {
             try

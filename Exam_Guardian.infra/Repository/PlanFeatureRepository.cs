@@ -64,7 +64,7 @@ namespace Exam_Guardian.infra.Repository
             
             
             var res = await _dbContext.Connection.ExecuteAsync(PlanFeaturePackageConstant.PLAN_FEATURE_PACKAGE_UPDATE_PLAN_FEATURE, param, commandType: CommandType.StoredProcedure);
-        int cid = param.Get<int>(PlanFeaturePackageConstant.C_id);
+            int cid = param.Get<int>(PlanFeaturePackageConstant.C_id);
             return cid;}
 
         public async Task<PlanFeatureViewModel> GetPlanFeatureById(int id)

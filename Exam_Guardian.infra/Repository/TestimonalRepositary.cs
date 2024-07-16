@@ -1,149 +1,140 @@
-﻿using Dapper;
+﻿
+
 using Exam_Guardian.core.Data;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.ICommon;
 using Exam_Guardian.core.IRepository;
-using Exam_Guardian.core.Utilities.PackagesConstants;
-using Exam_Guardian.infra.Utilities.PackagesConstants;
+using Microsoft.Extensions.Logging;
+using Exam_Guardian.infra.Utilities;
 using Exam_Guardian.infra.Utilities.States;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Exam_Guardian.infra.Repository
 {
-    public class TestimonalRepositary : ITestimonalRepositary
+    public class TestimonialRepository : ITestimonalRepositary
     {
         private readonly IDbContext _dbContext;
         private readonly ModelContext _modelContext;
+        private readonly ILogger<TestimonialRepository> _logger;
 
-
-        public TestimonalRepositary(IDbContext dbContext, ModelContext modelContext)
+        public TestimonialRepository(IDbContext dbContext, ModelContext modelContext, ILogger<TestimonialRepository> logger)
         {
             _dbContext = dbContext;
             _modelContext = modelContext;
-            
-        }
-        public async  Task <int>CreateTestimonal(TestimonalModel testimonial)
-        {
-            DynamicParameters param = new();
-            param.Add(name: CreateTestimonals.TestimonalStateId,testimonial.Testimonalstateid , dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add(name: CreateTestimonals.UserId, testimonial.Userid, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add(name: CreateTestimonals.TestimonialText, testimonial.Testimonialtext, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(name: CreateTestimonals.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-
-            var res = await _dbContext.Connection.ExecuteAsync(CreateTestimonals.Testimonal_PROCEDURE_CREATE, param, commandType: CommandType.StoredProcedure);
-            int cid = param.Get<int>(name: CreateTestimonals.C_id);
-            return cid;
+            _logger = logger;
         }
 
-        public async Task DeleteTestimonal(decimal id)
+        public async Task CreateTestimonialAsync(TestimonalModel testimonial)
         {
-            var test = await _modelContext.Testimonials.FindAsync(id);
-            if (test != null)
+            if (testimonial == null)
+                throw new ArgumentNullException(nameof(testimonial));
+
+            var creatTestimonial = new Testimonial
             {
-                _modelContext.Testimonials.Remove(test);
+
+
+                Testimonialtext = testimonial.Testimonialtext,
+                Testimonalstateid = testimonial.Testimonalstateid,
+                ExamProviderId = testimonial.ExamProviderId,
+
+                Userid = testimonial.Userid,
+
+            };
+
+            try
+            {
+                await _modelContext.Testimonials.AddAsync(creatTestimonial);
                 await _modelContext.SaveChangesAsync();
             }
-        }
-
-        public async Task<IEnumerable<Testimonial>> GetAllApprovedTestimonal()
-        {
-            return await _modelContext.Testimonials
-             .Where(t => t.Testimonalstateid == TestimaonalState.Accepted).ToListAsync(); 
-             
-        }
-
-        public async Task<IEnumerable<Testimonial>> GetAllRejectedTestimoanl()
-        {
-            return await _modelContext.Testimonials
-             .Where(t => t.Testimonalstateid == TestimaonalState.Rejected).ToListAsync();
-        }
-
-        public async Task<IEnumerable<Testimonial>> GetAllTestimonal()
-        {
-            return await _modelContext.Testimonials.ToListAsync();
-        }
-
-        public async Task<Testimonial> GetTestimonialById(int id)
-        {
-            return await _modelContext.Testimonials.Where(x=>x.Testimonialid==id).SingleOrDefaultAsync();
-        }
-
-        public async Task<IEnumerable<Testimonial>> GetAllTestimonals(int? stateId = null, int? testimonialId = null)
-        {
-            IQueryable<Testimonial> query = _modelContext.Testimonials;
-
-            if (testimonialId.HasValue)
+            catch (Exception ex)
             {
-                query = query.Where(x => x.Testimonialid == testimonialId.Value);
-
+                _logger.LogError(ex, "Error creating testimonial");
+                throw;
             }
-            else if (stateId.HasValue)
-            {
-                query = query.Where(t => t.Testimonalstateid == stateId.Value);
-            }
-
-            return await query.ToListAsync();
         }
 
+        public async Task DeleteTestimonialAsync(decimal id)
+        {
+            try
+            {
+                var testimonial = await _modelContext.Testimonials.FindAsync(id);
+                if (testimonial != null)
+                {
+                    _modelContext.Testimonials.Remove(testimonial);
+                    await _modelContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting testimonial");
+                throw;
+            }
+        }
 
+        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllApprovedTestimonialsAsync()
+        {
 
+            return await GetTestimonialsByStateAsync(TestimaonalState.Accepted);
+        }
 
+        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllRejectedTestimonialsAsync()
+        {
+            return await GetTestimonialsByStateAsync(TestimaonalState.Rejected);
+        }
 
-        //public async Task<int> CreateTestimonal(Testimonial testimonial)
-        //{
-        //    DynamicParameters param = new();
-        //    param.Add(name: nameof(testimonial.Testimonalstate), testimonial.Testimonalstate, DbType.Int32, ParameterDirection.Input);
-        //    param.Add(name: nameof(testimonial.Userid), testimonial.Userid, DbType.Int32, ParameterDirection.Input);
-        //    param.Add(name: nameof(testimonial.Testimonialtext), testimonial.Testimonialtext, DbType.String, ParameterDirection.Input);
-        //    param.Add(name: "C_id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllTestimonialsAsync()
+        {
+            return await GetTestimonialsByStateAsync(null);
+        }
 
-        //    await _dbContext.Connection.ExecuteAsync("Testimonal_PROCEDURE_CREATE", param, commandType: CommandType.StoredProcedure);
-        //    int cid = param.Get<int>("C_id");
-        //    return cid;
-        //}
+        public async Task<GetTestimonialViewModel> GetTestimonialByIdAsync(int id)
+        {
+            return (await GetTestimonialsByStateAsync(null, id)).FirstOrDefault() ?? new GetTestimonialViewModel();
+        }
 
-        //public async Task DeleteTestimonal(decimal id)
-        //{
-        //    var test = await _modelContext.Testimonials.FindAsync(id);
-        //    if (test != null)
-        //    {
-        //        _modelContext.Testimonials.Remove(test);
-        //        await _modelContext.SaveChangesAsync();
-        //    }
-        //}
+        public async Task<IEnumerable<GetTestimonialViewModel>> GetPendingTestimonialsAsync()
+        {
+            return await GetTestimonialsByStateAsync(TestimaonalState.Pending);
+        }
 
-        //public async Task<IEnumerable<Testimonial>> GetAllTestimonals(int? stateId = null, int? testimonialId = null)
-        //{
-        //    IQueryable<Testimonial> query = _modelContext.Testimonials;
+        private async Task<IEnumerable<GetTestimonialViewModel>> GetTestimonialsByStateAsync(int? stateId = null, int? testimonialId = null)
+        {
+            try
+            {
+                var query = _modelContext.Testimonials.AsQueryable();
 
-        //    if (testimonialId.HasValue)
-        //    {
-        //        query = query.Where(x => x.Testimonialid == testimonialId.Value);
-        //    }
-        //    else if (stateId.HasValue)
-        //    {
-        //        query = query.Where(t => t.Testimonalstateid == stateId.Value);
-        //    }
+                if (testimonialId.HasValue)
+                {
+                    query = query.Where(t => t.Testimonialid == testimonialId.Value);
+                }
+                else if (stateId.HasValue)
+                {
+                    query = query.Where(t => t.Testimonalstateid == stateId.Value);
+                }
 
-        //    return await query.ToListAsync();
-        //}
+                var testimonials = await query
+                    .Include(t => t.ExamProvider)
+                    .Include(t => t.User)
+                    .Select(t => new GetTestimonialViewModel
+                    {
+                        Testimonialid = t.Testimonialid,
+                        Testimonalstateid = t.Testimonalstateid,
+                        Userid = t.Userid,
+                        Testimonialtext = t.Testimonialtext,
+                        Createdat = t.Createdat,
+                        Updatedat = t.Updatedat,
+                        ExamProviderId = t.ExamProvider.ExamProviderId,
+                        Image = t.ExamProvider.Image,
+                        FirstName = t.User.FirstName,
+                        LastName = t.User.LastName,
+                    }).ToListAsync();
 
-        //public async Task<Testimonial> GetTestimonialById(int id)
-        //{
-        //    return await _modelContext.Testimonials.SingleOrDefaultAsync(x => x.Testimonialid == id);
-        //}
-
-
-
-
-
-
+                return testimonials;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving testimonials");
+                throw;
+            }
+        }
     }
 }

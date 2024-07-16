@@ -19,39 +19,39 @@ namespace Exam_Guardian.infra.Service
             _testimonalRepositary = testimonalRepositary;
         }
 
-        public async Task<int> CreateTestimonal(TestimonalModel testimonial)
+        public async Task CreateTestimonialAsync(TestimonalModel testimonial)
         {
-           return await _testimonalRepositary.CreateTestimonal(testimonial);
+           await _testimonalRepositary.CreateTestimonialAsync(testimonial);
         }
 
-        public async Task DeleteTestimonal(decimal id)
+        public async Task DeleteTestimonialAsync(decimal id)
         {
-            await _testimonalRepositary.DeleteTestimonal(id);
+            await _testimonalRepositary.DeleteTestimonialAsync(id);
         }
 
-        public async Task<IEnumerable<Testimonial>> GetAllApprovedTestimonal()
+        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllApprovedTestimonialsAsync()
         {
-            return await _testimonalRepositary.GetAllApprovedTestimonal();
+            return await _testimonalRepositary.GetAllApprovedTestimonialsAsync();
         }
 
-        public async Task<IEnumerable<Testimonial>> GetAllRejectedTestimoanl()
+        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllRejectedTestimonialsAsync()
         {
-            return await _testimonalRepositary.GetAllRejectedTestimoanl();
+            return await _testimonalRepositary.GetAllRejectedTestimonialsAsync();
         }
 
-        public  async Task<IEnumerable<Testimonial>> GetAllTestimonal()
+        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllTestimonialsAsync()
         {
-            return await _testimonalRepositary.GetAllTestimonal();
+            return await _testimonalRepositary.GetAllTestimonialsAsync();
         }
 
-        public async Task<IEnumerable<Testimonial>> GetAllTestimonals(int? stateId = null, int? testimonialId = null)
+        public async Task<IEnumerable<GetTestimonialViewModel>> GetPendingTestimonialsAsync()
         {
-            return await _testimonalRepositary.GetAllTestimonals(stateId, testimonialId);
+            return await _testimonalRepositary.GetPendingTestimonialsAsync();
         }
 
-        public  async Task<Testimonial> GetTestimonialById(int id)
+        public async Task<GetTestimonialViewModel> GetTestimonialByIdAsync(int id)
         {
-            return await _testimonalRepositary.GetTestimonialById(id);
+            return await _testimonalRepositary.GetTestimonialByIdAsync(id);
         }
     }
 }

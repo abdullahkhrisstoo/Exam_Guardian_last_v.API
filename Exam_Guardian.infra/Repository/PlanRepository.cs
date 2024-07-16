@@ -102,13 +102,26 @@ namespace Exam_Guardian.infra.Repo
                 return null;
             }
 
-            var plan = await _modelContext.Plans.Where(x => x.PlanId == examProvider.PlanId).FirstOrDefaultAsync();
+            var plan = await _modelContext.Plans
+                .Include(p=>p.PlanFeatures)
+                .Where(x => x.PlanId == examProvider.PlanId)
+                .FirstOrDefaultAsync();
                                           
 
             return plan;
         }
 
-        
+        public async Task<List<Plan>> GetAllPlansWithFeatures()
+        {
+            return await _modelContext.Plans.Include(p => p.PlanFeatures).OrderBy(p=>p.PlanPrice).ToListAsync();
+        }
+
+        public async Task<Plan> GetPlanWithFeatures(decimal id)
+        {
+            return await _modelContext.Plans!.Include(p => p.PlanFeatures)
+                              !.FirstOrDefaultAsync(p => p.PlanId == id)!;
+        }
+
     }
 
 }

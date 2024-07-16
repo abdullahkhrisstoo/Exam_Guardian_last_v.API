@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Exam_Guardian.core.Data
+namespace Exam_Guardian.core.DTO
 {
-    public partial class Testimonial
+    public class GetTestimonialViewModel
     {
         public decimal Testimonialid { get; set; }
         public decimal? Testimonalstateid { get; set; }
@@ -11,10 +14,9 @@ namespace Exam_Guardian.core.Data
         public string? Testimonialtext { get; set; }
         public DateTime? Createdat { get; set; }
         public DateTime? Updatedat { get; set; }
-        public decimal? ExamProviderId { get; set; }
-
-        public virtual ExamProvider? ExamProvider { get; set; }
-        public virtual Testimonalstate? Testimonalstate { get; set; }
-        public virtual UserInfo? User { get; set; }
+        public decimal ExamProviderId { get; set; }
+        public string? Image { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
     }
 }

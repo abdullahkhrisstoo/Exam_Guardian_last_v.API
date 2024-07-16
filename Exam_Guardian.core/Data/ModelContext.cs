@@ -16,6 +16,8 @@ namespace Exam_Guardian.core.Data
         {
         }
 
+        public virtual DbSet<About> Abouts { get; set; } = null!;
+        public virtual DbSet<Aboutpoint> Aboutpoints { get; set; } = null!;
         public virtual DbSet<Complement> Complements { get; set; } = null!;
         public virtual DbSet<ContactU> ContactUs { get; set; } = null!;
         public virtual DbSet<ExamInfo> ExamInfos { get; set; } = null!;
@@ -45,6 +47,46 @@ namespace Exam_Guardian.core.Data
         {
             modelBuilder.HasDefaultSchema("C##SYS_GUARDIAN")
                 .UseCollation("USING_NLS_COMP");
+
+            modelBuilder.Entity<About>(entity =>
+            {
+                entity.ToTable("ABOUT");
+
+                entity.Property(e => e.AboutId)
+                    .HasColumnType("NUMBER(38)")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("ABOUT_ID");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(255)
+                    .HasColumnName("TITLE");
+            });
+
+            modelBuilder.Entity<Aboutpoint>(entity =>
+            {
+                entity.HasKey(e => e.AboutpointsId)
+                    .HasName("SYS_C0014701");
+
+                entity.ToTable("ABOUTPOINTS");
+
+                entity.Property(e => e.AboutpointsId)
+                    .HasColumnType("NUMBER(38)")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("ABOUTPOINTS_ID");
+
+                entity.Property(e => e.AboutId)
+                    .HasColumnType("NUMBER(38)")
+                    .HasColumnName("ABOUT_ID");
+
+                entity.Property(e => e.Listitem)
+                    .HasMaxLength(255)
+                    .HasColumnName("LISTITEM");
+
+                entity.HasOne(d => d.About)
+                    .WithMany(p => p.Aboutpoints)
+                    .HasForeignKey(d => d.AboutId)
+                    .HasConstraintName("SYS_C0014702");
+            });
 
             modelBuilder.Entity<Complement>(entity =>
             {
@@ -117,10 +159,10 @@ namespace Exam_Guardian.core.Data
                     .IsUnicode(false)
                     .HasColumnName("NAME");
 
-                entity.Property(e => e.Phone)
+                entity.Property(e => e.Subject)
                     .HasMaxLength(15)
                     .IsUnicode(false)
-                    .HasColumnName("PHONE");
+                    .HasColumnName("SUBJECT");
 
                 entity.Property(e => e.UpdatedAt)
                     .HasPrecision(6)
@@ -452,6 +494,10 @@ namespace Exam_Guardian.core.Data
                     .HasColumnType("DATE")
                     .HasColumnName("CREATEDAT");
 
+                entity.Property(e => e.ExamProviderId)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("EXAM_PROVIDER_ID");
+
                 entity.Property(e => e.Testimonalstateid)
                     .HasColumnType("NUMBER")
                     .HasColumnName("TESTIMONALSTATEID");
@@ -469,16 +515,17 @@ namespace Exam_Guardian.core.Data
                     .HasColumnType("NUMBER")
                     .HasColumnName("USERID");
 
+                entity.HasOne(d => d.ExamProvider)
+                    .WithMany(p => p.Testimonials)
+                    .HasForeignKey(d => d.ExamProviderId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_EXAM_PROVIDER");
+
                 entity.HasOne(d => d.Testimonalstate)
                     .WithMany(p => p.Testimonials)
                     .HasForeignKey(d => d.Testimonalstateid)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TESTIMONALSTATEID");
-
-                entity.HasOne(d => d.TestimonialNavigation)
-                    .WithOne(p => p.Testimonial)
-                    .HasForeignKey<Testimonial>(d => d.Testimonialid)
-                    .HasConstraintName("TESTIMONIAL_EXAMPROVIDER");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Testimonials)

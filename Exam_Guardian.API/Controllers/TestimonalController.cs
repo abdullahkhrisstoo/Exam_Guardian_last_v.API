@@ -24,7 +24,7 @@ namespace Exam_Guardian.API.Controllers
         {
             try
             {
-                await _testimonalService.CreateTestimonal(testimonial);
+                await _testimonalService.CreateTestimonialAsync(testimonial);
                 return this.ApiResponseOk("Testimonal created successfully", testimonial);
             }
             catch (Exception ex)
@@ -37,7 +37,7 @@ namespace Exam_Guardian.API.Controllers
         {
             try
             {
-                await _testimonalService.DeleteTestimonal(id);
+                await _testimonalService.DeleteTestimonialAsync(id);
                 return this.ApiResponseOk("Complement deleted successfully", id);
             }
             catch (Exception ex)
@@ -46,12 +46,12 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        [HttpGet("approved")]
+        [HttpGet]
         public async Task<IActionResult> GetAllApprovedTestimonial()
         {
             try
             {
-                var test = await _testimonalService.GetAllApprovedTestimonal();
+                var test = await _testimonalService.GetAllApprovedTestimonialsAsync();
                 if (test == null)
                 {
                     return this.ApiResponseNotFound("testimonal not found", new {  });
@@ -64,12 +64,12 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        [HttpGet("rejected")]
+        [HttpGet]
         public async Task<IActionResult> GetAllRejectedTestimonial()
         {
             try
             {
-                var test = await _testimonalService.GetAllRejectedTestimoanl();
+                var test = await _testimonalService.GetAllRejectedTestimonialsAsync();
                 if (test == null)
                 {
                     return this.ApiResponseNotFound("testimonal not found", new { });
@@ -87,7 +87,7 @@ namespace Exam_Guardian.API.Controllers
         {
             try
             {
-                var test = await _testimonalService.GetAllTestimonal();
+                var test = await _testimonalService.GetAllTestimonialsAsync();
                 return this.ApiResponseOk("Complements retrieved successfully", test);
             }
             catch (Exception ex)
@@ -101,7 +101,7 @@ namespace Exam_Guardian.API.Controllers
         {
             try
             {
-                var test = await _testimonalService.GetTestimonialById(id);
+                var test = await _testimonalService.GetTestimonialByIdAsync(id);
                 if (test == null) { 
                     return this.ApiResponseNotFound("testimonal not found", new { });
                 }
@@ -116,11 +116,11 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTestimonals([FromQuery] int? stateId = null, [FromQuery] int? testimonialId = null)
+        public async Task<IActionResult> GetAllPendingTestimonals()
         {
             try
             {
-                var testimonials = await _testimonalService.GetAllTestimonals(stateId, testimonialId);
+                var testimonials = await _testimonalService.GetPendingTestimonialsAsync();
                 if (testimonials == null || !testimonials.Any())
                 {
                     return this.ApiResponseNotFound("No testimonials found", new { });

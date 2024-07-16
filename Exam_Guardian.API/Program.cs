@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
 using Exam_Guardian.core.Utilities.TokenConstant;
+using Newtonsoft.Json;
 namespace Exam_Guardian.API
 {
     public class Program
@@ -111,12 +112,16 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IExamService, ExamService>();
             builder.Services.AddScoped<IProctorService, ProctorService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.AddScoped<ITestimonalRepositary,TestimonalRepositary>();
-            builder.Services.AddScoped<ITestimonalService,TestimonalService>();
+            builder.Services.AddScoped<ITestimonalRepositary,TestimonialRepository>();
+            builder.Services.AddScoped<ITestimonalService, TestimonalService>();
+            builder.Services.AddScoped<IContactUsServices, ContactUsServices>();
+            builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+            builder.Services.AddScoped<IAboutService, AboutService>();
 
-        
 
-         
+
+
+
             //todo: repo
             builder.Services.AddScoped<IExamProviderRepository, ExamProviderRepository>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
@@ -125,12 +130,20 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IComplementRepository, ComplementRepository>();
             builder.Services.AddScoped<IExamReservationRepository, ExamReservationRepository>();
             builder.Services.AddScoped<IProctorRepository, ProctorRepository>();
+            builder.Services.AddScoped<IContactUsRepository, ContactUsRepository>();
+            builder.Services.AddScoped<IAboutRepository, AboutRepository>();
 
             builder.Services.AddControllers()
                           .AddJsonOptions(options =>
                                        {
-                                      options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                                         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                                         });
+
+            builder.Services.AddControllers()
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

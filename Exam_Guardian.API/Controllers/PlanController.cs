@@ -27,7 +27,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Plan created successfully" });
         //}
         [HttpPost]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Create([FromBody] CreatePlanViewModel createPlanViewModel)
         {
             try
@@ -48,7 +48,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Plan updated successfully" });
         //}
         [HttpPut]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Update([FromBody] UpdatePlanViewModel updatePlanViewModel)
         {
             try
@@ -69,13 +69,13 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Plan deleted successfully" });
         //}
         [HttpDelete("{id}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await _planService.DeletePlan(id);
-                return this.ApiResponseOk("Plan deleted successfully",id);
+                return this.ApiResponseOk("Plan deleted successfully", id);
             }
             catch (Exception ex)
             {
@@ -95,7 +95,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet("{id}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -121,7 +121,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -131,9 +131,9 @@ namespace Exam_Guardian.API.Controllers
                 {
                     return this.ApiResponseNotFound("Plans not found", new { });
                 }
-                else { 
-                return this.ApiResponseOk("All plans retrieved successfully", result);
-            }}
+                else {
+                    return this.ApiResponseOk("All plans retrieved successfully", result);
+                } }
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { });
@@ -146,8 +146,8 @@ namespace Exam_Guardian.API.Controllers
         //    var result = await _planService.GetPlanFeaturesByPlanId(planId);
         //    return Ok(result);
         //}
-        [HttpGet("features/{planId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
+        [HttpGet("{planId}")]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetPlanFeaturesByPlanId(int planId)
         {
             try
@@ -158,8 +158,8 @@ namespace Exam_Guardian.API.Controllers
                     return this.ApiResponseNotFound("Plan not found", new { });
                 }
                 else {
-                return this.ApiResponseOk("Plan features retrieved successfully", result);
-            } }
+                    return this.ApiResponseOk("Plan features retrieved successfully", result);
+                } }
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { PlanId = planId });
@@ -172,14 +172,14 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
 
         //}
-        [HttpGet("examprovider/{examProviderId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        [HttpGet("{examProviderId}")]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetPlanByExamProviderId(int examProviderId)
         {
             try
             {
                 var result = await _planService.GetPlanByExamBroviderId(examProviderId);
-                if (result == null )
+                if (result == null)
                 {
                     return this.ApiResponseNotFound("Plan not found", new { });
                 }
@@ -188,6 +188,38 @@ namespace Exam_Guardian.API.Controllers
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { ExamProviderId = examProviderId });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllPlansWithFeatures() {
+            try
+            {
+                var result = await _planService.GetAllPlansWithFeatures();
+                if (result == null)
+                {
+                    return this.ApiResponseNotFound("Plan not found", new { });
+                }
+                return this.ApiResponseOk("Get All Plans With Features  retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
+            }
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPlanWithFeatures(decimal id) {
+            try
+            {
+                var result = await _planService.GetPlanWithFeatures(id);
+                if (result == null)
+                {
+                    return this.ApiResponseNotFound("Plan not found", new { });
+                }
+                return this.ApiResponseOk("Get Plan With Features  retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { ExamProviderId = id });
             }
         }
     }
