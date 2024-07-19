@@ -19,7 +19,7 @@ namespace Exam_Guardian.core.DTO
         public string Phone { get; set; }
         public int score { get; set; }
         public string Email { get; set; }
-        public int EXAM_PROVIDER_ID { get; set; }
+        public int EXAM_ID { get; set; }
 
     }
 
