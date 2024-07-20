@@ -26,7 +26,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("all")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAllExamProviders()
         {
             try
@@ -56,7 +56,7 @@ return this.ApiResponseOk("All exam providers retrieved successfully", result);
         //    return Ok(result);
         //}
         [HttpGet("state/{stateId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)] //note 
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)] //note 
         public async Task<IActionResult> GetExamProvidersByStateId(int stateId)
         {
             try
@@ -81,7 +81,7 @@ return this.ApiResponseOk("All exam providers retrieved successfully", result);
         //}
 
         [HttpGet("plan/{planId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetExamProvidersByPlanId(int planId)
         {
             try
@@ -105,7 +105,7 @@ return this.ApiResponseOk("All exam providers retrieved successfully", result);
         //    return Ok(result);
         //}
         [HttpGet("{id}")]
-        [CheckClaimsAttribute(UserRoleConstant.SExamProvider)]//exam provider can get his info
+        //[CheckClaimsAttribute(UserRoleConstant.SExamProvider)]//exam provider can get his info
         public async Task<IActionResult> GetExamProvidersById(int id)
         {
             try

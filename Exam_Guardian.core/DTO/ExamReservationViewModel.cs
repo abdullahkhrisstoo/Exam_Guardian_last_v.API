@@ -15,7 +15,7 @@
         public string Phone { get; set; }
         public int score { get; set; }
         public string Email { get; set; }
-        public int EXAM_ID { get; set; }
+        public int EXAMID { get; set; }
 
 
     }

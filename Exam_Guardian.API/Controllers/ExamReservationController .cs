@@ -27,7 +27,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Exam reservation created successfully" });
         //}
         [HttpPost]
-        [CheckClaimsAttribute(UserRoleConstant.SExamProvider)]
+        //[CheckClaimsAttribute(UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> Create([FromBody] CreateExamReservationViewModel createExamReservationViewModel)
         {
             try
@@ -48,7 +48,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Exam reservation updated successfully"});
         //}
         [HttpPut]
-        [CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
+        //[CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> Update([FromBody] UpdateExamReservationViewModel updateExamReservationViewModel)
         {
             try
@@ -70,7 +70,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(new { message = "Exam reservation deleted successfully" });
         //}
         [HttpDelete("{id}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -148,7 +148,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("timeslots")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetTimeSlots()
         {
             try
@@ -175,7 +175,7 @@ namespace Exam_Guardian.API.Controllers
         //}
 
         [HttpGet("proctor/{proctorId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAllExamReservationsByProctorId(int proctorId)
         {
             try

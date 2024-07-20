@@ -22,7 +22,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("all")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAllProctor()
         {
             try
@@ -48,7 +48,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("{proctorId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
         public async Task<IActionResult> GetProctorById(int proctorId)
         {
             try
@@ -73,7 +73,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("examReservation/{examReservationId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
         public async Task<IActionResult> GetAllProctor(int examReservationId)
         {
             try
