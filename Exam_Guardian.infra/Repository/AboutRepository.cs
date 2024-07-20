@@ -34,7 +34,6 @@ namespace Exam_Guardian.infra.Repository
             };
 
             await _context.Abouts.AddAsync(about);
-
             await _context.SaveChangesAsync();
         }
 

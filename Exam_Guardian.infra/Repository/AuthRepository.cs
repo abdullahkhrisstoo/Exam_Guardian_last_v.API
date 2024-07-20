@@ -80,12 +80,16 @@ namespace Exam_Guardian.infra.Repo
             param.Add(name: AuthPackageConstant.V_FIRST_NAME, update.FirstName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_LAST_NAME, update.LastName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_PASSWORD, update.Password, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(name: AuthPackageConstant.V_IS_UPDATED, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-            var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_UPDATE_NAME, param, commandType: CommandType.StoredProcedure);
-            int updated = param.Get<int>(AuthPackageConstant.V_IS_UPDATED);
-            return updated;
+            await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_UPDATE_NAME, param, commandType: CommandType.StoredProcedure);
+
+           
+
+            return 1;
         }
+
+
+
 
         public async Task<int> UpdatePhone(UpdatePhoneViewModel update)
         {

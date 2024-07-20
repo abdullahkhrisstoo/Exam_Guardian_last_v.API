@@ -13,7 +13,9 @@ namespace Exam_Guardian.core.IRepository
         Task<List<ExamProvider>> GetExamProvidersByStateId(int StateId);
         Task<List<ExamProvider>> GetExamProvidersByPlanId(int planId);
         Task<ExamProvider> GetExamProvidersById(int id);
-        
+        Task<ExamProvider> GetExamProvidersByUserId(int id);
+
+        Task<List<ExamProvider>> GetTopExamProvider(int count);
 
 
     }

@@ -1,5 +1,6 @@
 ﻿using Exam_Guardian.core.Data;
 using Exam_Guardian.core.IRepository;
+using Exam_Guardian.infra.Utilities.States;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,9 @@ namespace Exam_Guardian.infra.Repository
         private IQueryable<ExamProvider> IncludeDependencies(IQueryable<ExamProvider> query)
         {
             return query.Include(info => info.User)
-                        .Include(credential => credential.User.Credential)
                         .Include(p => p.Plan)
-                        .Include(planFet => planFet.Plan.PlanFeatures);
+                        .Include(planFet => planFet.Plan.PlanFeatures)
+                        .Include(exam=>exam.ExamInfos);
         }
 
         public async Task<List<ExamProvider>> GetAllExamProviders()
@@ -78,6 +79,45 @@ namespace Exam_Guardian.infra.Repository
             }
 
         }
-     
+
+        public async Task<ExamProvider> GetExamProvidersByUserId(int id)
+        {
+            try
+            {
+                return await IncludeDependencies(_modelContext.ExamProviders)
+                             .Where(check => check.User.UserId == id)
+                             .SingleOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<ExamProvider>> GetTopExamProvider(int count)
+        {
+            try
+            {
+                var totalProviders = await _modelContext.ExamProviders
+                                                        .Where(check => check.User.StateId == UserStateConst.Approved)
+                                                        .CountAsync();
+
+                if (count > totalProviders)
+                {
+            
+                    count = totalProviders;
+                }
+
+                return await IncludeDependencies(_modelContext.ExamProviders)
+                             .Where(check => check.User.StateId == UserStateConst.Approved)
+                             .Take(count)
+                             .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

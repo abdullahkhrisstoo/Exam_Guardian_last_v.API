@@ -164,11 +164,11 @@ namespace Exam_Guardian.API
 
             app.UseCors("AllowAngularDev");
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHub<VideoCallHub>("/videoCallHub");
-                endpoints.MapControllers();
-            });
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapHub<VideoCallHub>("/videoCallHub");
+            //    endpoints.MapControllers();
+            //});
             app.MapControllers();
 
             app.Run();

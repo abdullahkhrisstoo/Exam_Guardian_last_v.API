@@ -25,7 +25,7 @@ namespace Exam_Guardian.API.Controllers
         //    var result = await _examService.GetAllExamProviders();
         //    return Ok(result);
         //}
-        [HttpGet("all")]
+        [HttpGet("")]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAllExamProviders()
         {
@@ -123,6 +123,40 @@ return this.ApiResponseOk("All exam providers retrieved successfully", result);
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetExamProvidersByUserId(int id)
+        {
+            try
+            {
+                var result = await _examService.GetExamProvidersByUserId(id);
+                if (result == null)
+                {
+                    return this.ApiResponseNotFound("ExamsProviders  not found", result);
+                }
+                return this.ApiResponseOk("Exam provider by ID retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { Id = id });
+            }
+        }
 
+        [HttpGet("{count}")]
+        public async Task<IActionResult> GetTopExamProvider(int count)
+        {
+            try
+            {
+                var result = await _examService.GetTopExamProvider(count);
+                if (result == null)
+                {
+                    return this.ApiResponseNotFound("ExamsProviders  not found", result);
+                }
+                return this.ApiResponseOk("Exam provider by count retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { Id = count });
+            }
+        }
     }
 }

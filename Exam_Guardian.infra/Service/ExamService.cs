@@ -36,5 +36,16 @@ namespace Exam_Guardian.infra.Service
         {
             return _examProviderRepository.GetExamProvidersByStateId(StateId);
         }
+
+        public Task<ExamProvider> GetExamProvidersByUserId(int id)
+        {
+
+            return _examProviderRepository.GetExamProvidersByUserId(id);
+        }
+
+        public Task<List<ExamProvider>> GetTopExamProvider(int count)
+        {
+            return _examProviderRepository.GetTopExamProvider(count);
+        }
     }
 }
