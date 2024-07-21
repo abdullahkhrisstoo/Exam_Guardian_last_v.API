@@ -44,7 +44,7 @@ namespace Exam_Guardian.infra.Repository
             param.Add(name: ExamReservationPackageConstant.PHONE, createExamReservationViewModel.Phone, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.SCORE, createExamReservationViewModel.score, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.EMAIL, createExamReservationViewModel.Email, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(name: ExamReservationPackageConstant.EXAM_ID, createExamReservationViewModel.EXAMID, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.EXAM_ID, createExamReservationViewModel.EXAM_ID, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name:ExamReservationPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_CREATE_EXAM_RESERVATION, param, commandType: CommandType.StoredProcedure);
             int cid = param.Get<int>(name: ExamReservationPackageConstant.C_id);
@@ -77,7 +77,7 @@ namespace Exam_Guardian.infra.Repository
             param.Add(name: ExamReservationPackageConstant.PHONE, updateExamReservationViewModel.Phone, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.SCORE, updateExamReservationViewModel.score, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.EMAIL, updateExamReservationViewModel.Email, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(name: ExamReservationPackageConstant.EXAM_ID, updateExamReservationViewModel.EXAMID, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(name: ExamReservationPackageConstant.EXAM_ID, updateExamReservationViewModel.EXAM_ID, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: ExamReservationPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(ExamReservationPackageConstant.EXAM_RESERVATION_PACKAGE_UPDATE_EXAM_RESERVATION, param, commandType: CommandType.StoredProcedure);
             int cid = param.Get<int>(name: ExamReservationPackageConstant.C_id);

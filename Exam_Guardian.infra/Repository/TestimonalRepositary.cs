@@ -122,8 +122,8 @@ namespace Exam_Guardian.infra.Repository
                         Testimonialtext = t.Testimonialtext,
                         Createdat = t.Createdat,
                         Updatedat = t.Updatedat,
-                        //ExamProviderId = t.ExamProvider.ExamProviderId,
-                        //Image = t.ExamProvider.Image,
+                        ExamProviderId = t.ExamProvider.ExamProviderId,
+                        Image = t.ExamProvider.Image,
                         FirstName = t.User.FirstName,
                         LastName = t.User.LastName,
                     }).ToListAsync();

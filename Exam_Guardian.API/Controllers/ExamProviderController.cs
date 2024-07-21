@@ -151,7 +151,7 @@ return this.ApiResponseOk("All exam providers retrieved successfully", result);
                 {
                     return this.ApiResponseNotFound("ExamsProviders  not found", result);
                 }
-                return this.ApiResponseOk("Exam provider by count retrieved successfully", result);
+                return this.ApiResponseOk("Exam provider by  retrieved successfully", result);
             }
             catch (Exception ex)
             {
