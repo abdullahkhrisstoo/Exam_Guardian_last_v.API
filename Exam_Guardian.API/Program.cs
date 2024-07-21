@@ -7,13 +7,13 @@ using Exam_Guardian.infra.Repo;
 using Exam_Guardian.infra.Repository;
 using Exam_Guardian.infra.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+
 using System.Text;
 using System.Text.Json.Serialization;
 using Exam_Guardian.core.Utilities.TokenConstant;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 namespace Exam_Guardian.API
 {
