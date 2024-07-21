@@ -1,7 +1,10 @@
 ﻿using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.ResponseHandler;
+using Exam_Guardian.core.Utilities.UserRole;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TheLearningHub.API.Controllers;
 
 namespace Exam_Guardian.API.Controllers
 {
@@ -16,43 +19,126 @@ namespace Exam_Guardian.API.Controllers
             _planFeatureService = planFeatureService;
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> Create([FromBody] CreatePlanFeatureViewModel createPlanFeatureViewModel)
+        //{
+        //    await _planFeatureService.CreatePlanFeature(createPlanFeatureViewModel);
+        //    return Ok(new { message = "Plan feature created successfully" });
+        //}
         [HttpPost]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Create([FromBody] CreatePlanFeatureViewModel createPlanFeatureViewModel)
         {
-            await _planFeatureService.CreatePlanFeature(createPlanFeatureViewModel);
-            return Ok(new { message = "Plan feature created successfully" });
+            try
+            {
+                await _planFeatureService.CreatePlanFeature(createPlanFeatureViewModel);
+                return this.ApiResponseOk("Plan feature created successfully", createPlanFeatureViewModel);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
+            }
         }
 
+        //[HttpPut]
+        //public async Task<IActionResult> Update([FromBody] UpdatePlanFeatureViewModel updatePlanFeatureViewModel)
+        //{
+        //    await _planFeatureService.UpdatePlanFeature(updatePlanFeatureViewModel);
+        //    return Ok(new { message = "Plan feature updated successfully" });
+        //}
         [HttpPut]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Update([FromBody] UpdatePlanFeatureViewModel updatePlanFeatureViewModel)
         {
-            await _planFeatureService.UpdatePlanFeature(updatePlanFeatureViewModel);
-            return Ok(new { message = "Plan feature updated successfully" });
+            try
+            {
+                await _planFeatureService.UpdatePlanFeature(updatePlanFeatureViewModel);
+                return this.ApiResponseOk("Plan feature updated successfully", updatePlanFeatureViewModel);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
+            }
         }
+
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //    await _planFeatureService.DeletePlanFeature(id);
+        //    return Ok(new { message = "Plan feature deleted successfully" });
+        //}
 
         [HttpDelete("{id}")]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> Delete(int id)
         {
-            await _planFeatureService.DeletePlanFeature(id);
-            return Ok(new { message = "Plan feature deleted successfully" });
+            try
+            {
+                await _planFeatureService.DeletePlanFeature(id);
+                return this.ApiResponseOk("Plan feature deleted successfully",id);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { PlanFeatureId = id });
+            }
         }
 
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetById(int id)
+        //{
+        //    var result = await _planFeatureService.GetPlanFeatureById(id);
+        //    if (result == null)
+        //    {
+        //        return NotFound(new { message = "Plan feature not found" });
+        //    }
+        //    return Ok(result);
+        //}
         [HttpGet("{id}")]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await _planFeatureService.GetPlanFeatureById(id);
-            if (result == null)
+            try
             {
-                return NotFound(new { message = "Plan feature not found" });
+                var result = await _planFeatureService.GetPlanFeatureById(id);
+                if (result == null)
+                {
+                    return this.ApiResponseNotFound("Plan feature not found", new { PlanFeatureId = id });
+                }
+                return this.ApiResponseOk("Plan feature found", result);
             }
-            return Ok(result);
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { PlanFeatureId = id });
+            }
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    var result = await _planFeatureService.GetAllPlanFeatures();
+        //    return Ok(result);
+        //}
         [HttpGet]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _planFeatureService.GetAllPlanFeatures();
-            return Ok(result);
+            try
+            {
+                var result = await _planFeatureService.GetAllPlanFeatures();
+                if(result == null || !result.Any())
+                {
+                    return this.ApiResponseNotFound("Plan feature not found", new { });
+                }
+                else
+                {
+
+                
+                return this.ApiResponseOk("All plan features retrieved successfully", result);
+            }}
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
+            }
         }
     }
 

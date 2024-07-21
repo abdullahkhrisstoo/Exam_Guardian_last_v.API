@@ -9,9 +9,9 @@ namespace Exam_Guardian.core.IService
 {
     public interface IPlanFeatureService
     {
-        Task CreatePlanFeature(CreatePlanFeatureViewModel createPlanFeatureViewModel);
-        Task DeletePlanFeature(int id);
-        Task UpdatePlanFeature(UpdatePlanFeatureViewModel updatePlanFeatureViewModel);
+        Task<int> CreatePlanFeature(CreatePlanFeatureViewModel createPlanFeatureViewModel);
+        Task<int> DeletePlanFeature(int id);
+        Task<int> UpdatePlanFeature(UpdatePlanFeatureViewModel updatePlanFeatureViewModel);
         Task<PlanFeatureViewModel> GetPlanFeatureById(int id);
         Task<IEnumerable<PlanFeatureViewModel>> GetAllPlanFeatures();
     }

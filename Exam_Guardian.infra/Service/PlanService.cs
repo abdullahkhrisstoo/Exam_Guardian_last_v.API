@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepo;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.infra.Repo;
@@ -19,19 +20,19 @@ namespace Exam_Guardian.infra.Service
             _planRepository = planRepository;
         }
 
-        public async Task CreatePlan(CreatePlanViewModel createPlanViewModel)
+        public async Task<int> CreatePlan(CreatePlanViewModel createPlanViewModel)
         {
-            await _planRepository.CreatePlan(createPlanViewModel);
+           return await _planRepository.CreatePlan(createPlanViewModel);
         }
 
-        public async Task DeletePlan(int id)
+        public async Task<int> DeletePlan(int id)
         {
-            await _planRepository.DeletePlan(id);
+            return await _planRepository.DeletePlan(id);
         }
 
-        public async Task UpdatePlan(UpdatePlanViewModel updatePlanViewModel)
+        public async Task<int> UpdatePlan(UpdatePlanViewModel updatePlanViewModel)
         {
-            await _planRepository.UpdatePlan(updatePlanViewModel);
+            return await _planRepository.UpdatePlan(updatePlanViewModel);
         }
 
         public async Task<PlanViewModel> GetPlanById(int id)
@@ -42,6 +43,26 @@ namespace Exam_Guardian.infra.Service
         public async Task<IEnumerable<PlanViewModel>> GetAllPlans()
         {
             return await _planRepository.GetAllPlans();
+        }
+
+        public async Task<IEnumerable<PlanFeature>> GetPlanFeaturesByPlanId(int planId)
+        {
+            return await _planRepository.GetPlanFeaturesByPlanId(planId);
+        }
+
+        public async Task<Plan> GetPlanByExamBroviderId(int examproviderId)
+        {
+            return await _planRepository.GetPlanByExamBroviderId(examproviderId);
+        }
+
+        public async Task<List<Plan>> GetAllPlansWithFeatures()
+        {
+            return await _planRepository.GetAllPlansWithFeatures();
+        }
+
+        public async Task<Plan> GetPlanWithFeatures(decimal id)
+        {
+            return await _planRepository.GetPlanWithFeatures(id);
         }
     }
 

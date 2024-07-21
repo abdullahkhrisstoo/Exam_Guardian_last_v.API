@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
 using System;
@@ -18,19 +19,19 @@ namespace Exam_Guardian.infra.Service
             _complementRepository = complementRepository;
         }
 
-        public async Task CreateComplement(CreateComplementViewModel createComplementViewModel)
+        public async Task<int> CreateComplement(CreateComplementViewModel createComplementViewModel)
         {
-            await _complementRepository.CreateComplement(createComplementViewModel);
+           return await _complementRepository.CreateComplement(createComplementViewModel);
         }
 
-        public async Task DeleteComplement(int id)
+        public async Task<int> DeleteComplement(int id)
         {
-            await _complementRepository.DeleteComplement(id);
+           return await _complementRepository.DeleteComplement(id);
         }
 
-        public async Task UpdateComplement(UpdateComplementViewModel updateComplementViewModel)
+        public async Task<int> UpdateComplement(UpdateComplementViewModel updateComplementViewModel)
         {
-            await _complementRepository.UpdateComplement(updateComplementViewModel);
+            return await _complementRepository.UpdateComplement(updateComplementViewModel);
         }
 
         public async Task<ComplementViewModel> GetComplementById(int id)
@@ -41,6 +42,19 @@ namespace Exam_Guardian.infra.Service
         public async Task<IEnumerable<ComplementViewModel>> GetAllComplements()
         {
             return await _complementRepository.GetAllComplements();
+        }
+     
+      
+
+        public async Task<IEnumerable<Complement>> GetComplementsByProctorId(int id)
+        {
+            return await _complementRepository.GetComplementsByProctorId(id);
+        }
+
+        public async Task<Complement> GetComplementByExamReservation(int examreservationId)
+        {
+            return await _complementRepository.GetComplementByExamReservation(examreservationId);
+
         }
     }
 

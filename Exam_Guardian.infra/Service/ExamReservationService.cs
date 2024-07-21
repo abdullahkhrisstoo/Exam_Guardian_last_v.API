@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
 using System;
@@ -19,19 +20,19 @@ namespace Exam_Guardian.infra.Service
             _examReservationRepository = examReservationRepository;
         }
 
-        public async Task CreateExamReservation(CreateExamReservationViewModel createExamReservationViewModel)
+        public async Task<int> CreateExamReservation(CreateExamReservationViewModel createExamReservationViewModel)
         {
-            await _examReservationRepository.CreateExamReservation(createExamReservationViewModel);
+            return await _examReservationRepository.CreateExamReservation(createExamReservationViewModel);
         }
 
-        public async Task DeleteExamReservation(int id)
+        public async Task<int> DeleteExamReservation(int id)
         {
-            await _examReservationRepository.DeleteExamReservation(id);
+            return await _examReservationRepository.DeleteExamReservation(id);
         }
 
-        public async Task UpdateExamReservation(UpdateExamReservationViewModel updateExamReservationViewModel)
+        public async Task<int> UpdateExamReservation(UpdateExamReservationViewModel updateExamReservationViewModel)
         {
-            await _examReservationRepository.UpdateExamReservation(updateExamReservationViewModel);
+            return await _examReservationRepository.UpdateExamReservation(updateExamReservationViewModel);
         }
 
         public async Task<ExamReservationViewModel> GetExamReservationById(int id)
@@ -135,6 +136,21 @@ namespace Exam_Guardian.infra.Service
                 .ToList();
 
             return groupedSlots;
+        }
+
+        public Task<IEnumerable<ExamReservation>> GetExamReservationDependsProctor()
+        {
+          return  _examReservationRepository.GetExamReservationDependsProctor();
+        }
+
+        public async Task<IEnumerable<ExamReservation>> GetAllExamReservationsByProctorId(int id)
+        {
+            return await _examReservationRepository.GetAllExamReservationsByProctorId(id);
+        }
+
+        async Task<IEnumerable<TimeSlotsViewModel>> IExamReservationService.GetTimeSlots()
+        {
+            return await _examReservationRepository.GetTimeSlots();
         }
     }
 

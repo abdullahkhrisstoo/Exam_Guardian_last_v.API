@@ -29,6 +29,10 @@
         public const string V_LAST_PASSWORD = "v_last_password";
         public const string V_NEW_PASSWORD = "v_new_password";
         public const string V_CONFIRM_PASSWORD = "v_confirm_password";
+        public const string V_IS_DELETED = "v_is_deleted";
+        public const string V_IS_UPDATED = "v_is_updated";
+
+
 
 
         public const int EXAM_PROVIDER_ROLE = 2;
