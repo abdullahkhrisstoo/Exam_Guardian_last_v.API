@@ -1,4 +1,5 @@
 ﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
 using System;
@@ -32,6 +33,11 @@ namespace Exam_Guardian.infra.Service
         public Task<UserInfo> GetProctorsByExamReservationId(int examReservationId)
         {
             return _proctorRepo.GetProctorsByExamReservationId(examReservationId);
+        }
+
+        public Task UpdateProctor(decimal id, CreateAccountViewModel createAccountViewModel)
+        {
+            return _proctorRepo.UpdateProctor(id, createAccountViewModel);
         }
     }
 }

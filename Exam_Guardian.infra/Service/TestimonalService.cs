@@ -53,5 +53,10 @@ namespace Exam_Guardian.infra.Service
         {
             return await _testimonalRepositary.GetTestimonialByIdAsync(id);
         }
+
+        public async Task UpdateTestimonial(int id, int testimonalstateid)
+        {
+             await _testimonalRepositary.UpdateTestimonial(id, testimonalstateid);
+        }
     }
 }

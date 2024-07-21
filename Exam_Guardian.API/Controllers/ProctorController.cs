@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.core.IService;
+﻿using Exam_Guardian.core.DTO;
+using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.core.Utilities.UserRole;
 using Microsoft.AspNetCore.Http;
@@ -21,14 +22,14 @@ namespace Exam_Guardian.API.Controllers
         //    var result = await _proctorService.GetAllProctor();
         //    return Ok(result);
         //}
-        [HttpGet("all")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        [HttpGet()]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAllProctor()
         {
             try
             {
                 var result = await _proctorService.GetAllProctor();
-                if (result == null || result.Any())
+                if (result == null )
                 {
                     return this.ApiResponseNotFound("Proctors not found", new { });
                 }
@@ -48,7 +49,7 @@ namespace Exam_Guardian.API.Controllers
         //    return Ok(result);
         //}
         [HttpGet("{proctorId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
         public async Task<IActionResult> GetProctorById(int proctorId)
         {
             try
@@ -72,8 +73,8 @@ namespace Exam_Guardian.API.Controllers
         //    var result = await _proctorService.GetProctorsByExamReservationId( examReservationId);
         //    return Ok(result);
         //}
-        [HttpGet("examReservation/{examReservationId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
+        [HttpGet("{examReservationId}")]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
         public async Task<IActionResult> GetAllProctor(int examReservationId)
         {
             try
@@ -88,6 +89,22 @@ namespace Exam_Guardian.API.Controllers
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { ExamReservationId = examReservationId });
+            }
+        }
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProctor(decimal id,[FromBody] CreateAccountViewModel createAccountViewModel)
+        {
+            try
+            {
+               await  _proctorService.UpdateProctor(id,createAccountViewModel);
+               
+                return this.ApiResponseOk("Proctors Updated successfully",new { });
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new {  });
             }
         }
     } 

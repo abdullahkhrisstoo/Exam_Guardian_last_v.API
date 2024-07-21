@@ -136,6 +136,20 @@ namespace Exam_Guardian.API.Controllers
 
 
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTestimonial(int id,[FromBody] int testimonalstateid)
+        {
+            try
+            {
+                await _testimonalService.UpdateTestimonial(id, testimonalstateid);
+                
+                return this.ApiResponseOk("Testimonials Updated", new{ });
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
+            }
+        }
 
 
 

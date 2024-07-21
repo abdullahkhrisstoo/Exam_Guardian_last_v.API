@@ -32,7 +32,6 @@ namespace Exam_Guardian.infra.Repository
                     Listitem = item
                 }).ToList()
             };
-
             await _context.Abouts.AddAsync(about);
             await _context.SaveChangesAsync();
         }

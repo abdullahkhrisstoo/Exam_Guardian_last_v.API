@@ -15,5 +15,8 @@ namespace Exam_Guardian.core.IRepository
 
         Task<UserInfo> GetProctorsByExamReservationId(int examReservationId);
 
+
+        Task UpdateProctor(decimal id, CreateAccountViewModel createAccountViewModel);
+
     }
 }

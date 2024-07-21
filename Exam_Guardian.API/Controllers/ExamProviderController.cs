@@ -38,7 +38,7 @@ namespace Exam_Guardian.API.Controllers
                 }
                 else
                 {
-return this.ApiResponseOk("All exam providers retrieved successfully", result);
+                    return this.ApiResponseOk("All exam providers retrieved successfully", result);
                 }
                 
             }

@@ -21,7 +21,6 @@ namespace Exam_Guardian.core.Data
         public decimal? StateId { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
         public virtual UserCredential? Credential { get; set; }
         public virtual UserRole? Role { get; set; }
         public virtual UserState? State { get; set; }

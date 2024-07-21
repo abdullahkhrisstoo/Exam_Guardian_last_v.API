@@ -90,7 +90,6 @@ namespace Exam_Guardian.API.Controllers
 
         [HttpPut("{id}")]
         public async Task<IActionResult>  UpdateAbout(decimal id, [FromBody]AboutDTO aboutDto)
-
         {
             if (aboutDto == null)
                 return this.ApiResponseBadRequest("About data is required.",new { });

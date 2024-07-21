@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Exam_Guardian.infra.Utilities;
 using Exam_Guardian.infra.Utilities.States;
 using Microsoft.EntityFrameworkCore;
+using Exam_Guardian.infra.Common;
 namespace Exam_Guardian.infra.Repository
 {
     public class TestimonialRepository : ITestimonalRepositary
@@ -72,7 +73,6 @@ namespace Exam_Guardian.infra.Repository
 
         public async Task<IEnumerable<GetTestimonialViewModel>> GetAllApprovedTestimonialsAsync()
         {
-
             return await GetTestimonialsByStateAsync(TestimaonalState.Accepted);
         }
 
@@ -136,5 +136,24 @@ namespace Exam_Guardian.infra.Repository
                 throw;
             }
         }
+
+
+        public async Task UpdateTestimonial(int id, int testimonalstateid)
+        {
+            var testimonial = await _modelContext.Testimonials.FindAsync(id);
+
+            if (testimonial == null)
+            {
+                throw new KeyNotFoundException($"Testimonial with Id {id} not found.");
+            }
+
+            testimonial.Testimonalstateid = testimonalstateid;
+            testimonial.Updatedat = DateTime.UtcNow;
+
+            _modelContext.Testimonials.Update(testimonial);
+            await _modelContext.SaveChangesAsync();
+        }
+
+
     }
 }

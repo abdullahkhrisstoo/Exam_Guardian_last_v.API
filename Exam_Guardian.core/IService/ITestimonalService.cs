@@ -17,5 +17,6 @@ namespace Exam_Guardian.core.IService
         Task<IEnumerable<GetTestimonialViewModel>> GetAllTestimonialsAsync();
         Task<GetTestimonialViewModel> GetTestimonialByIdAsync(int id);
         Task<IEnumerable<GetTestimonialViewModel>> GetPendingTestimonialsAsync();
+        Task UpdateTestimonial(int id, int testimonalstateid);
     }
 }
