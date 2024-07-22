@@ -1,4 +1,5 @@
 ﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.core.Utilities.UserRole;
@@ -156,6 +157,23 @@ return this.ApiResponseOk("All exam providers retrieved successfully", result);
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { Id = count });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateExamProvider([FromBody] ExamProviderDto examProviderDto)
+        {
+            try
+            {
+                var result = await _examService.CreateExamProvider(examProviderDto);
+                if (result == null)
+                {
+                    return this.ApiResponseNotFound("Failed to create ExamProvider", result);
+                }
+                return this.ApiResponseOk("ExamProvider created successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { ExamProvider = examProviderDto });
             }
         }
     }

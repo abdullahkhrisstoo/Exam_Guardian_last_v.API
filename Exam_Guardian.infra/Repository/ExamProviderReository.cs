@@ -1,4 +1,5 @@
 ﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.infra.Utilities.States;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ namespace Exam_Guardian.infra.Repository
             return query.Include(info => info.User)
                         .Include(p => p.Plan)
                         .Include(planFet => planFet.Plan.PlanFeatures)
-                        .Include(exam=>exam.ExamInfos);
+                        .Include(exam => exam.ExamInfos);
         }
 
         public async Task<List<ExamProvider>> GetAllExamProviders()
@@ -104,7 +105,7 @@ namespace Exam_Guardian.infra.Repository
 
                 if (count > totalProviders)
                 {
-            
+
                     count = totalProviders;
                 }
 
@@ -118,6 +119,32 @@ namespace Exam_Guardian.infra.Repository
                 throw;
             }
         }
+        public async Task<ExamProvider> CreateExamProvider(ExamProviderDto examProviderDto)
+        {
+            try
+            {
+                var examProvider = new ExamProvider
+                {
+                    ExamProviderUniqueKey = examProviderDto.ExamProviderUniqueKey,
+                    PlanId = examProviderDto.PlanId,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                    UserId = examProviderDto.UserId,
+                    CommercialRecordImg = examProviderDto.CommercialRecordImg,
+                    Image = examProviderDto.Image
+                };
 
+                _modelContext.ExamProviders.Add(examProvider);
+                await _modelContext.SaveChangesAsync();
+                return examProvider;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                throw;
+            }
+        }
     }
 }
+    
+
