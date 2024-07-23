@@ -41,7 +41,8 @@ namespace Exam_Guardian.API.Controllers
         {
             try
             {
-                await _authService.CreateUser(createProctorViewModel);
+               int userId =  await _authService.CreateUser(createProctorViewModel);
+                createProctorViewModel.UserId = userId;
                 return this.ApiResponseOk("User created successfully", createProctorViewModel);
             }
             catch (Exception ex)

@@ -9,7 +9,7 @@ namespace Exam_Guardian.core.IRepo
 {
     public interface IAuthRepository
     {
-        Task CreateUser(CreateAccountViewModel createProctorViewModel);
+        Task<int> CreateUser(CreateAccountViewModel createProctorViewModel);
         Task<int> DeleteUser(int id);
         Task<int> UpdateUserPassword(UpdatePasswordViewModel updateProctorPasswordViewModel);
 

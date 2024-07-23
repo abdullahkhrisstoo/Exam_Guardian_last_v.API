@@ -24,7 +24,6 @@ namespace Exam_Guardian.core.Data
         public decimal? Score { get; set; }
         public string? Email { get; set; }
         public decimal? ExamId { get; set; }
-
         public virtual ExamInfo? Exam { get; set; }
         public virtual UserInfo? User { get; set; }
         public virtual ExamInfo? ExamInfo { get; set; }

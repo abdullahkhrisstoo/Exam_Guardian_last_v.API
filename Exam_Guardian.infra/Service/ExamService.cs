@@ -1,4 +1,5 @@
 ﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
 using System;
@@ -37,7 +38,7 @@ namespace Exam_Guardian.infra.Service
             return _examProviderRepository.GetExamProvidersByStateId(StateId);
         }
 
-        public Task<ExamProvider> GetExamProvidersByUserId(int id)
+        public Task<GetExamProviderByUserIdDto> GetExamProvidersByUserId(int id)
         {
 
             return _examProviderRepository.GetExamProvidersByUserId(id);
@@ -46,6 +47,11 @@ namespace Exam_Guardian.infra.Service
         public Task<List<ExamProvider>> GetTopExamProvider(int count)
         {
             return _examProviderRepository.GetTopExamProvider(count);
+        }
+
+        public async Task<ExamProvider> CreateExamProvider(ExamProviderDto examProviderDto)
+        {
+            return await _examProviderRepository.CreateExamProvider(examProviderDto);
         }
     }
 }
