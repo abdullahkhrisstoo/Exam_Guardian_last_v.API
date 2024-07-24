@@ -85,7 +85,7 @@ namespace Exam_Guardian.core.Data
                 entity.HasOne(d => d.About)
                     .WithMany(p => p.Aboutpoints)
                     .HasForeignKey(d => d.AboutId)
-                    .HasConstraintName("SYS_C0014702");
+                    .HasConstraintName("ABOUTPOINTS_FK1");
             });
 
             modelBuilder.Entity<Complement>(entity =>

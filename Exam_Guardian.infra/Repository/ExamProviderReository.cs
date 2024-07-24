@@ -22,8 +22,7 @@ namespace Exam_Guardian.infra.Repository
         private IQueryable<ExamProvider> IncludeDependencies(IQueryable<ExamProvider> query)
         {
             return query.Include(info => info.User)
-                        .Include(p => p.Plan)
-                        .Include(planFet => planFet.Plan.PlanFeatures)
+                        .Include(p => p.Plan).ThenInclude(p => p.PlanFeatures)
                         .Include(exam => exam.ExamInfos);
         }
 
@@ -81,16 +80,47 @@ namespace Exam_Guardian.infra.Repository
 
         }
 
-        public async Task<ExamProvider> GetExamProvidersByUserId(int id)
+        public async Task<GetExamProviderByUserIdDto> GetExamProvidersByUserId(int id)
         {
             try
             {
-                return await IncludeDependencies(_modelContext.ExamProviders)
-                             .Where(check => check.User.UserId == id)
-                             .SingleOrDefaultAsync();
+                var examProvider = await IncludeDependencies(_modelContext.ExamProviders)
+                                          .Where(ep => ep.User.UserId == id)
+                                          .SingleOrDefaultAsync();
+
+                if (examProvider == null)
+                {
+                    return null;
+                }
+
+                var dto = new GetExamProviderByUserIdDto
+                {
+                    ExamProviderId = examProvider.ExamProviderId,
+                    ExamProviderUniqueKey = examProvider.ExamProviderUniqueKey!,
+                    PlanId = examProvider.Plan.PlanId,
+                    UserId = examProvider.UserId??0,
+                    CommercialRecordImg = examProvider.CommercialRecordImg,
+                    Image = examProvider!.Image!,
+                    Plan = new PlanDto
+                    {
+                        PlanId = examProvider.Plan.PlanId,
+                        PlanName = examProvider.Plan.PlanName,
+                        PlanDescription = examProvider.Plan.PlanDescription,
+                        PlanPrice = examProvider.Plan.PlanPrice??0,
+                        PlanFeatures = examProvider.Plan.PlanFeatures
+                                                    .Select(pf => new PlanFeatureDto
+                                                    {
+                                                        PlanFeatureId = pf.PlanFeatureId,
+                                                        FeaturesName = pf.FeaturesName
+                                                    }).ToList()
+                    }
+                };
+
+                return dto;
             }
             catch (Exception ex)
             {
+                // Log or handle the exception as needed
                 throw;
             }
         }
@@ -125,7 +155,7 @@ namespace Exam_Guardian.infra.Repository
             {
                 var examProvider = new ExamProvider
                 {
-                    ExamProviderUniqueKey = examProviderDto.ExamProviderUniqueKey,
+                    ExamProviderUniqueKey = examProviderDto.ExamProviderUniqueKey?.Encrypt(),
                     PlanId = examProviderDto.PlanId,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,

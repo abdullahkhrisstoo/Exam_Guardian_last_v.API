@@ -17,10 +17,9 @@ namespace Exam_Guardian.infra.Service
             _tokenService = tokenService;
         }
 
-        public async Task CreateUser(CreateAccountViewModel createProctorViewModel)
+        public async Task<int> CreateUser(CreateAccountViewModel createProctorViewModel)
         { 
-         await _authRepository.CreateUser(createProctorViewModel);
-        
+             return  await _authRepository.CreateUser(createProctorViewModel);      
         }
 
 

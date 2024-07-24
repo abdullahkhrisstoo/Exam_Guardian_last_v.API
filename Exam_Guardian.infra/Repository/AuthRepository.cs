@@ -18,7 +18,7 @@ namespace Exam_Guardian.infra.Repo
             _dbContext = dbContext;
         }
 
-          public async Task CreateUser(CreateAccountViewModel createProctorViewModel)
+          public async Task<int> CreateUser(CreateAccountViewModel createProctorViewModel)
         {
             DynamicParameters param = new();
             param.Add(name: AuthPackageConstant.V_FIRST_NAME, createProctorViewModel.FirstName, dbType: DbType.String, direction: ParameterDirection.Input);
@@ -27,7 +27,11 @@ namespace Exam_Guardian.infra.Repo
             param.Add(name: AuthPackageConstant.V_ROLE, createProctorViewModel.RoleId, dbType: DbType.Int16, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_PASSWORD, createProctorViewModel.Password, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: AuthPackageConstant.V_PHONENUM, createProctorViewModel.Phonenum, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: AuthPackageConstant.V_PHONENUM, createProctorViewModel.Phonenum, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: AuthPackageConstant.V_CREATE_OUT, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(AuthPackageConstant.AUTH_PACKAGE_CREATE_USER, param, commandType: CommandType.StoredProcedure);
+            int created = param.Get<int>(AuthPackageConstant.V_CREATE_OUT);
+            return created;
         }
 
         public async Task<int> DeleteUser(int id)

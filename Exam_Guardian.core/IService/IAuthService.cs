@@ -11,7 +11,7 @@ namespace Exam_Guardian.core.IService
     public interface IAuthService
     {
 
-        Task CreateUser(CreateAccountViewModel createProctorViewModel);
+        Task<int> CreateUser(CreateAccountViewModel createProctorViewModel);
         Task<int> DeleteUser(int id);
         Task<int> UpdateUserPassword(UpdatePasswordViewModel updateProctorPasswordViewModel);
 

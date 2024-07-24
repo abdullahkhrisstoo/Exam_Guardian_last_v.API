@@ -33,6 +33,9 @@
         public const string V_IS_UPDATED = "v_is_updated";
 
 
+        public const string V_CREATE_OUT = "v_create_out";
+        
+
 
 
         public const int EXAM_PROVIDER_ROLE = 2;
