@@ -21,18 +21,10 @@ namespace Exam_Guardian.API.Controllers
             _complementService = complementService;
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Create([FromBody] CreateComplementViewModel createComplementViewModel)
-        //{
-        //    await _complementService.CreateComplement(createComplementViewModel);
-        //    return Ok(new { message = "Complement created successfully" });
-        //}
+      
 
         [HttpPost]
-        [AllowAnonymous]// note there is no  exam taker in this system
-
-        //[CheckClaimsAttribute("1")]// i handle it, we don't need to set RoleId word, and the admin id is 1,
-        public async Task<IActionResult> Create([FromBody] CreateComplementViewModel createComplementViewModel)
+        public async Task<IActionResult> CreateComplement([FromBody] CreateComplementDTO createComplementViewModel)
         {
             try
             {
@@ -46,15 +38,9 @@ namespace Exam_Guardian.API.Controllers
         }
 
 
-        //[HttpPut]
-        //public async Task<IActionResult> Update([FromBody] UpdateComplementViewModel updateComplementViewModel)
-        //{
-        //    await _complementService.UpdateComplement(updateComplementViewModel);
-        //    return Ok(new { message = "Complement updated successfully" });
-        //}
+   
         [HttpPut]
-        [CheckClaimsAttribute(UserRoleConstant.SProctor)]// note that the taker also can update the complement
-        public async Task<IActionResult> Update([FromBody] UpdateComplementViewModel updateComplementViewModel)
+        public async Task<IActionResult> UpdateComplement([FromBody] UpdateComplementDTO updateComplementViewModel)
         {
             try
             {
@@ -67,15 +53,9 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    await _complementService.DeleteComplement(id);
-        //    return Ok(new { message = "Complement deleted successfully" });
-        //}
+      
         [HttpDelete("{id}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteComplement(int id)
         {
             try
             {
@@ -88,20 +68,10 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetById(int id)
-        //{
-        //    var result = await _complementService.GetComplementById(id);
-        //    if (result == null)
-        //    {
-        //        return NotFound(new { message = "Complement not found" });
-        //    }
-        //    return Ok(result);
-        //}
 
         [HttpGet("{id}")]
-        [CheckClaimsAttribute(UserRoleConstant.SProctor)]//each proctor can see his own complement
-        public async Task<IActionResult> GetById(int id)
+       // [CheckClaimsAttribute(UserRoleConstant.SProctor)]//each proctor can see his own complement
+        public async Task<IActionResult> GetComplementById(int id)
         {
             try
             {
@@ -117,16 +87,11 @@ namespace Exam_Guardian.API.Controllers
                 return this.ApiResponseServerError(ex, new { ComplementId = id });
             }
         }
-        //[HttpGet]
-        //public async Task<IActionResult> GetAll()
-        //{
-        //    var result = await _complementService.GetAllComplements();
-        //    return Ok(result);
-        //}
+      
 
         [HttpGet]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> GetAll()
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        public async Task<IActionResult> GetAllComplements()
         {
             try
             {
@@ -142,22 +107,15 @@ namespace Exam_Guardian.API.Controllers
                 return this.ApiResponseServerError(ex, new {});
             }
         }
-        //[HttpGet("{examreservationId}")]
+      
 
-        //public async Task<IActionResult> GetcomplementByExamreservation(int examreservationId)
-        //{
-        //    var res = await _complementService.GetComplementByExamReservation(examreservationId);
-        //    return Ok(res);
-
-        //}
-
-        [HttpGet("{examreservationId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> GetcomplementByExamreservation(int examreservationId)
+        [HttpGet("{examReservationId}")]
+       // [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        public async Task<IActionResult> GetComplementByExamReservationId(int examReservationId)
         {
             try
             {
-                var res = await _complementService.GetComplementByExamReservation(examreservationId);
+                var res = await _complementService.GetComplementByExamReservationId(examReservationId);
                 if (res is null)
                 {
                     return this.ApiResponseNotFound("Complement not found", new { });
@@ -166,21 +124,14 @@ namespace Exam_Guardian.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.ApiResponseServerError(ex, new { ExamReservationId = examreservationId });
+                return this.ApiResponseServerError(ex, new { ExamReservationId = examReservationId });
             }
         }
 
 
-        //[HttpGet("{GetComplementsByProctorId}")]
-        //public async Task<IActionResult> GetComplementsByProctorId(int id)
-        //{
-        //    var res= await _complementService.GetComplementsByProctorId(id);
-        //    return Ok(res);
-
-        //}
-
+    
         [HttpGet("{proctorId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+     //   [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetComplementsByProctorId(int proctorId)
         {
             try

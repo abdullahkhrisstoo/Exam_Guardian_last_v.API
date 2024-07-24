@@ -1,4 +1,5 @@
 ﻿using Exam_Guardian.core.Data;
+using Exam_Guardian.core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Exam_Guardian.core.IService
       
             Task<UserInfo> GetProctorById(int prcotorId);
             Task<IEnumerable<UserInfo>> GetAllProctor();
-            Task<UserInfo> GetProctorsByExamReservationId(int examReservationId);
+            Task<ProctorDTO> GetProctorsByExamReservationId(int examReservationId);
 
 
     }

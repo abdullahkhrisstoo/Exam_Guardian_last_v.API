@@ -27,7 +27,6 @@ namespace Exam_Guardian.core.Data
 
         public virtual ExamInfo? Exam { get; set; }
         public virtual UserInfo? User { get; set; }
-        public virtual ExamInfo? ExamInfo { get; set; }
         public virtual ICollection<Complement> Complements { get; set; }
     }
 }

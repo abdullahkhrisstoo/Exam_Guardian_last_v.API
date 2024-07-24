@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using Exam_Guardian.infra.Utilities;
 using Exam_Guardian.infra.Utilities.States;
 using Microsoft.EntityFrameworkCore;
+using OracleInternal.Secure.Network;
+
 namespace Exam_Guardian.infra.Repository
 {
     public class TestimonialRepository : ITestimonalRepositary
@@ -23,7 +25,7 @@ namespace Exam_Guardian.infra.Repository
             _logger = logger;
         }
 
-        public async Task CreateTestimonialAsync(TestimonalModel testimonial)
+        public async Task CreateTestimonialAsync(CreateTestimonailDTO testimonial)
         {
             if (testimonial == null)
                 throw new ArgumentNullException(nameof(testimonial));
@@ -32,16 +34,17 @@ namespace Exam_Guardian.infra.Repository
             {
 
 
-                Testimonialtext = testimonial.Testimonialtext,
-                Testimonalstateid = testimonial.Testimonalstateid,
+                TestimonialText = testimonial.TestimonialText,
+                TestimonialStateId = testimonial.TestimonialStateId,
                 ExamProviderId = testimonial.ExamProviderId,
 
-                Userid = testimonial.Userid,
+
 
             };
 
             try
             {
+                creatTestimonial.CreatedAt = DateTime.Now;
                 await _modelContext.Testimonials.AddAsync(creatTestimonial);
                 await _modelContext.SaveChangesAsync();
             }
@@ -70,65 +73,107 @@ namespace Exam_Guardian.infra.Repository
             }
         }
 
-        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllApprovedTestimonialsAsync()
+     
+       
+
+        public async Task<Int32> UpdateTestimonialState(decimal testimonialId, decimal stateId) {
+
+            var testimonial = await _modelContext.Testimonials.Where(e => e.TestimonialId == testimonialId)
+                .FirstOrDefaultAsync();
+            if (testimonial is not null) {
+
+                testimonial.TestimonialStateId = stateId;
+                testimonial.UpdatedAt = DateTime.Now;
+                return await _modelContext.SaveChangesAsync();
+            }
+            return 0;
+        
+        }
+    
+        public async Task<IEnumerable<TestimonialDTO>> GetTestimonialsByExamProviderId(decimal examProviderId) {
+        
+            var testimonials = await _modelContext.Testimonials
+                .Include(e=>e.TestimonialState).Where(e=>e.ExamProviderId==examProviderId)
+                .Select(t => new TestimonialDTO
+                {
+                    TestimonialId = t.TestimonialId,
+                    TestimonalStateId = t.TestimonialStateId,
+                    TestimonialText = t.TestimonialText,
+                    CreatedAt = t.CreatedAt,
+                    UpdatedAt = t.UpdatedAt,
+                    ExamProviderId = t.ExamProviderId,
+                    TestimonialState = t.TestimonialState.TestimonialStateText
+                 
+                }).ToListAsync();
+
+            return testimonials;
+
+        }
+        public async Task<IEnumerable<TestimonialDTO>> GetAllTestimonials()
         {
 
-            return await GetTestimonialsByStateAsync(TestimaonalState.Accepted);
-        }
+            var testimonials = await _modelContext.Testimonials
+                .Include(e => e.TestimonialState)
+                .Select(t => new TestimonialDTO
+                {
+                    TestimonialId = t.TestimonialId,
+                    TestimonalStateId = t.TestimonialStateId,
+                    TestimonialText = t.TestimonialText,
+                    CreatedAt = t.CreatedAt,
+                    UpdatedAt = t.UpdatedAt,
+                    ExamProviderId = t.ExamProviderId,
+                    TestimonialState = t.TestimonialState.TestimonialStateText
 
-        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllRejectedTestimonialsAsync()
+                }).ToListAsync();
+
+            return testimonials;
+
+        }
+        public async Task<TestimonialDTO> GetTestimonialById(decimal testimonialId)
         {
-            return await GetTestimonialsByStateAsync(TestimaonalState.Rejected);
-        }
 
-        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllTestimonialsAsync()
-        {
-            return await GetTestimonialsByStateAsync(null);
-        }
+            var testimonials = await _modelContext.Testimonials
+                .Include(e => e.TestimonialState).Where(e=>e.TestimonialId== testimonialId)
+                .Select(t => new TestimonialDTO
+                {
+                    TestimonialId = t.TestimonialId,
+                    TestimonalStateId = t.TestimonialStateId,
+                    TestimonialText = t.TestimonialText,
+                    CreatedAt = t.CreatedAt,
+                    UpdatedAt = t.UpdatedAt,
+                    ExamProviderId = t.ExamProviderId,
+                    TestimonialState = t.TestimonialState.TestimonialStateText
 
-        public async Task<GetTestimonialViewModel> GetTestimonialByIdAsync(int id)
-        {
-            return (await GetTestimonialsByStateAsync(null, id)).FirstOrDefault() ?? new GetTestimonialViewModel();
-        }
+                }).FirstOrDefaultAsync();
 
-        public async Task<IEnumerable<GetTestimonialViewModel>> GetPendingTestimonialsAsync()
-        {
-            return await GetTestimonialsByStateAsync(TestimaonalState.Pending);
-        }
+            return testimonials;
 
-        private async Task<IEnumerable<GetTestimonialViewModel>> GetTestimonialsByStateAsync(int? stateId = null, int? testimonialId = null)
+        }
+        public async Task<IEnumerable<TestimonialWithExamProviderDTO>> GetTestimonialsByStateId(decimal stateId)
         {
             try
             {
                 var query = _modelContext.Testimonials.AsQueryable();
 
-                if (testimonialId.HasValue)
-                {
-                    query = query.Where(t => t.Testimonialid == testimonialId.Value);
-                }
-                else if (stateId.HasValue)
-                {
-                    query = query.Where(t => t.Testimonalstateid == stateId.Value);
-                }
-
                 var testimonials = await query
-                    .Include(t => t.ExamProvider)
-                    .Include(t => t.User)
-                    .Select(t => new GetTestimonialViewModel
-                    {
-                        Testimonialid = t.Testimonialid,
-                        Testimonalstateid = t.Testimonalstateid,
-                        Userid = t.Userid,
-                        Testimonialtext = t.Testimonialtext,
-                        Createdat = t.Createdat,
-                        Updatedat = t.Updatedat,
-                        ExamProviderId = t.ExamProvider.ExamProviderId,
-                        Image = t.ExamProvider.Image,
-                        FirstName = t.User.FirstName,
-                        LastName = t.User.LastName,
-                    }).ToListAsync();
+
+                .Select(t => new TestimonialWithExamProviderDTO
+                {
+                    Testimonialid = t.TestimonialId,
+                    Testimonalstateid = t.TestimonialStateId,
+                    Testimonialtext = t.TestimonialText,
+                    CreatedAt = t.CreatedAt,
+                    UpdatedAt = t.UpdatedAt,
+                    ExamProviderId = t.ExamProviderId,
+                    TestimonailState=t.TestimonialState.TestimonialStateText,
+                    ExamProviderImage=t.ExamProvider !=null ? t.ExamProvider.Image : "",
+                    ExamProviderOwnerName = t.ExamProvider.User != null ? t.ExamProvider.User.FirstName : "",
+                    ExamProviderName = t.ExamProvider != null ? t.ExamProvider.User.LastName : ""
+
+                }).ToListAsync();
 
                 return testimonials;
+
             }
             catch (Exception ex)
             {

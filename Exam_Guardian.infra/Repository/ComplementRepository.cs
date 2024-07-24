@@ -29,10 +29,10 @@ namespace Exam_Guardian.infra.Repository
         }
         private void SetupMappings()
         {
-            PascalCaseMapper<ComplementViewModel>.SetTypeMap();
+            PascalCaseMapper<ComplementDTO>.SetTypeMap();
         }
 
-        public async Task<int> CreateComplement(CreateComplementViewModel createComplementViewModel)
+        public async Task<int> CreateComplement(CreateComplementDTO createComplementViewModel)
         {
             DynamicParameters param = new();
             param.Add(name: ComplementPackageConstant.PROCTOR_DESC, createComplementViewModel.ProctorDesc, dbType: DbType.String, direction: ParameterDirection.Input);
@@ -56,36 +56,52 @@ namespace Exam_Guardian.infra.Repository
             return complementid;
         }
 
-        public async Task<int> UpdateComplement(UpdateComplementViewModel updateComplementViewModel)
+        public async Task<int> UpdateComplement(UpdateComplementDTO updateComplementViewModel)
         {
             DynamicParameters param = new();
+            var existingComplement = await _modelContext.Complements.FindAsync(updateComplementViewModel.ComplementId);
+
+            var proctorDesc = updateComplementViewModel.ProctorDesc ?? existingComplement.ProctorDesc;
+            var studentDesc = updateComplementViewModel.StudentDesc ?? existingComplement.StudentDesc;
+            var examReservationId = updateComplementViewModel.ExamReservationId ?? existingComplement.ExamReservationId;
+
             param.Add(name: ComplementPackageConstant.COMPLEMENT_ID, updateComplementViewModel.ComplementId, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add(name: ComplementPackageConstant.PROCTOR_DESC, updateComplementViewModel.ProctorDesc, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(name: ComplementPackageConstant.STUDENT_DESC, updateComplementViewModel.StudentDesc, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(name: ComplementPackageConstant.EXAM_RESERVATION_ID, updateComplementViewModel.ExamReservationId, dbType: DbType.Int32, direction: ParameterDirection.Input);
+            param.Add(name: ComplementPackageConstant.PROCTOR_DESC, proctorDesc, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: ComplementPackageConstant.STUDENT_DESC, studentDesc, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: ComplementPackageConstant.EXAM_RESERVATION_ID, examReservationId, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: ComplementPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
             var res = await _dbContext.Connection.ExecuteAsync(ComplementPackageConstant.COMPLEMENT_PACKAGE_UPDATE_COMPLEMENT, param, commandType: CommandType.StoredProcedure);
             int complementid = param.Get<int>(name: ComplementPackageConstant.C_id);
             return complementid;
         }
 
-        public async Task<ComplementViewModel> GetComplementById(int id)
+        public async Task<ComplementDTO> GetComplementById(int id)
         {
             DynamicParameters param = new();
             param.Add(name: ComplementPackageConstant.COMPLEMENT_ID, id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            var res = await _dbContext.Connection.QueryAsync<ComplementViewModel>(ComplementPackageConstant.COMPLEMENT_PACKAGE_GET_COMPLEMENT_BY_ID, param, commandType: CommandType.StoredProcedure);
+            var res = await _dbContext.Connection.QueryAsync<ComplementDTO>(ComplementPackageConstant.COMPLEMENT_PACKAGE_GET_COMPLEMENT_BY_ID, param, commandType: CommandType.StoredProcedure);
             return res.FirstOrDefault()!;
         }
 
-        public async Task<IEnumerable<ComplementViewModel>> GetAllComplements()
+        public async Task<IEnumerable<ComplementDTO>> GetAllComplements()
         {
-            var res = await _dbContext.Connection.QueryAsync<ComplementViewModel>(ComplementPackageConstant.COMPLEMENT_PACKAGE_GET_ALL_COMPLEMENTS, commandType: CommandType.StoredProcedure);
+            var res = await _dbContext.Connection.QueryAsync<ComplementDTO>(ComplementPackageConstant.COMPLEMENT_PACKAGE_GET_ALL_COMPLEMENTS, commandType: CommandType.StoredProcedure);
             return res;
         }
 
-        public async Task<Complement> GetComplementByExamReservation(int examreservationId)
+        public async Task<ComplementDTO> GetComplementByExamReservationId(int examReservationId)
         {
-            var res = await _modelContext.Complements.Where(x => x.ExamReservationId == examreservationId).FirstOrDefaultAsync();
+            var res = await _modelContext.Complements.Where(x => x.ExamReservationId == examReservationId)
+                .Select(e=>new ComplementDTO() { 
+                ComplementId=e.ComplementId,
+                CreatedAt=e.CreatedAt,
+                ExamReservationId=e.ExamReservationId,
+                ProctorDesc=e.ProctorDesc,
+                StudentDesc=e.StudentDesc,
+                
+                
+                })
+                .FirstOrDefaultAsync();
             return res;
 
         }

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Exam_Guardian.core.DTO
 {
-    public class CreatePlanFeatureViewModel
+    public class CreatePlanFeatureDTO
     {
-        public string FeaturesName { get; set; }
-        public int PlanId { get; set; }
+        public string? FeaturesName { get; set; }
+        public decimal? PlanId { get; set; }
     }
 
 }

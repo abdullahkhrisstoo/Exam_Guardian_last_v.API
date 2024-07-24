@@ -117,7 +117,7 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IContactUsServices, ContactUsServices>();
             builder.Services.AddScoped<IStatisticsService, StatisticsService>();
             builder.Services.AddScoped<IAboutService, AboutService>();
-
+            builder.Services.AddScoped<IExamInfoService, ExamInfoService>();
 
 
 
@@ -132,6 +132,7 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IProctorRepository, ProctorRepository>();
             builder.Services.AddScoped<IContactUsRepository, ContactUsRepository>();
             builder.Services.AddScoped<IAboutRepository, AboutRepository>();
+            builder.Services.AddScoped<IExamInfoRepository, ExamInfoRepository>();
 
             builder.Services.AddControllers()
                           .AddJsonOptions(options =>
@@ -149,10 +150,10 @@ namespace Exam_Guardian.API
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+              
             }
-
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseRouting(); // Add this line to enable routing
 
 

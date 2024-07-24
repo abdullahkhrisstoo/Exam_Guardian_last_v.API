@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Policy;
 using TheLearningHub.API.Controllers;
 //todo: AuthController retived
@@ -24,13 +25,86 @@ namespace Exam_Guardian.API.Controllers
         private readonly IEmailService _emailService;
         private readonly IPlanService _planService;
         private readonly IGoogleAuthService _googleAuthService;
-
-        public AuthController(IAuthService authService, IEmailService emailService, IPlanService planService, IGoogleAuthService googleAuthService)
+        private readonly ModelContext modelContext;
+        public AuthController(IAuthService authService,
+            IEmailService emailService, 
+            IPlanService planService, 
+            IGoogleAuthService googleAuthService,
+            ModelContext modelContext)
         {
+            this.modelContext = modelContext;
             _authService = authService;
             _emailService = emailService;
             _planService = planService;
             _googleAuthService = googleAuthService;
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var users= await modelContext.UserInfos.ToListAsync();
+                return this.ApiResponseOk("User created successfully", users);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
+            }
+        }
+        [HttpPost]
+  
+
+        public async Task<IActionResult> AddTestimonailState([FromBody] string testimonalstate)
+        {
+            try
+            {
+                 modelContext.TestimonialStates.Add(new TestimonialState
+                 { 
+                
+                    TestimonialStateText = testimonalstate
+
+                });
+                await modelContext.SaveChangesAsync();
+
+                return this.ApiResponseOk("User created successfully", "");
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
+            }
+        }
+        [HttpGet]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> GetAllUserTestimonialsState()
+        {
+            try
+            {
+                var users = await modelContext.TestimonialStates.ToListAsync();
+                return this.ApiResponseOk("User created successfully", users);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
+            }
+        }
+        [HttpGet]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> GetRoles()
+        {
+            try
+            {
+                var users = await modelContext.UserRoles.ToListAsync();
+                return this.ApiResponseOk("User created successfully", users);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
+            }
         }
 
 

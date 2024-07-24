@@ -20,7 +20,7 @@ namespace Exam_Guardian.infra.Service
             _examReservationRepository = examReservationRepository;
         }
 
-        public async Task<int> CreateExamReservation(CreateExamReservationViewModel createExamReservationViewModel)
+        public async Task<int> CreateExamReservation(CreateExamReservationDTO createExamReservationViewModel)
         {
             return await _examReservationRepository.CreateExamReservation(createExamReservationViewModel);
         }
@@ -30,17 +30,17 @@ namespace Exam_Guardian.infra.Service
             return await _examReservationRepository.DeleteExamReservation(id);
         }
 
-        public async Task<int> UpdateExamReservation(UpdateExamReservationViewModel updateExamReservationViewModel)
+        public async Task<int> UpdateExamReservation(UpdateExamReservationDTO updateExamReservationViewModel)
         {
             return await _examReservationRepository.UpdateExamReservation(updateExamReservationViewModel);
         }
 
-        public async Task<ExamReservationViewModel> GetExamReservationById(int id)
+        public async Task<ExamReservationDTO> GetExamReservationById(int id)
         {
             return await _examReservationRepository.GetExamReservationById(id);
         }
 
-        public async Task<IEnumerable<ExamReservationViewModel>> GetAllExamReservations()
+        public async Task<IEnumerable<ExamReservationDTO>> GetAllExamReservations()
         {
             return await _examReservationRepository.GetAllExamReservations();
         }
@@ -151,6 +151,11 @@ namespace Exam_Guardian.infra.Service
         async Task<IEnumerable<TimeSlotsViewModel>> IExamReservationService.GetTimeSlots()
         {
             return await _examReservationRepository.GetTimeSlots();
+        }
+
+        public async Task<IEnumerable<ExamReservationDTO>> GetAllExamReservationsByExamId(decimal examId)
+        {
+            return await _examReservationRepository.GetAllExamReservationsByExamId(examId); 
         }
     }
 

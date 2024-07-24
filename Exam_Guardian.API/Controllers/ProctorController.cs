@@ -72,9 +72,9 @@ namespace Exam_Guardian.API.Controllers
         //    var result = await _proctorService.GetProctorsByExamReservationId( examReservationId);
         //    return Ok(result);
         //}
-        [HttpGet("examReservation/{examReservationId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
-        public async Task<IActionResult> GetAllProctor(int examReservationId)
+        [HttpGet("{examReservationId}")]
+       // [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
+        public async Task<IActionResult> GetProctorByExamReservationId(int examReservationId)
         {
             try
             {
