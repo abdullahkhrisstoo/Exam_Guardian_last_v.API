@@ -30,7 +30,7 @@ namespace Exam_Guardian.infra.Service
             return _proctorRepo.GetProctorById(prcotorId);
         }
 
-        public Task<UserInfo> GetProctorsByExamReservationId(int examReservationId)
+        public Task<ProctorDTO> GetProctorsByExamReservationId(int examReservationId)
         {
             return _proctorRepo.GetProctorsByExamReservationId(examReservationId);
         }

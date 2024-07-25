@@ -20,15 +20,9 @@ namespace Exam_Guardian.API.Controllers
             _examReservationService = examReservationService;
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Create([FromBody] CreateExamReservationViewModel createExamReservationViewModel)
-        //{
-        //    await _examReservationService.CreateExamReservation(createExamReservationViewModel);
-        //    return Ok(new { message = "Exam reservation created successfully" });
-        //}
+
         [HttpPost]
-        [CheckClaimsAttribute(UserRoleConstant.SExamProvider)]
-        public async Task<IActionResult> Create([FromBody] CreateExamReservationViewModel createExamReservationViewModel)
+        public async Task<IActionResult> CreateExamReservation([FromBody] CreateExamReservationDTO createExamReservationViewModel)
         {
             try
             {
@@ -41,15 +35,9 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> Update([FromBody] UpdateExamReservationViewModel updateExamReservationViewModel)
-        //{
-        //    await _examReservationService.UpdateExamReservation(updateExamReservationViewModel);
-        //    return Ok(new { message = "Exam reservation updated successfully"});
-        //}
+
         [HttpPut]
-        [CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
-        public async Task<IActionResult> Update([FromBody] UpdateExamReservationViewModel updateExamReservationViewModel)
+        public async Task<IActionResult> UpdateExamReservation([FromBody] UpdateExamReservationDTO updateExamReservationViewModel)
         {
             try
             {
@@ -63,15 +51,9 @@ namespace Exam_Guardian.API.Controllers
         }
 
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    await _examReservationService.DeleteExamReservation(id);
-        //    return Ok(new { message = "Exam reservation deleted successfully" });
-        //}
         [HttpDelete("{id}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> Delete(int id)
+        //  [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        public async Task<IActionResult> DeleteExamReservation(int id)
         {
             try
             {
@@ -85,24 +67,14 @@ namespace Exam_Guardian.API.Controllers
         }
 
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetById(int id)
-        //{
-        //    var result = await _examReservationService.GetExamReservationById(id);
-        //    if (result == null)
-        //    {
-        //        return NotFound(new { message = "Exam reservation not found" });
-        //    }
-        //    return Ok(result);
-        //}
         [HttpGet("{id}")]
         //[CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetExamReservationById(int id)
         {
             try
             {
                 var result = await _examReservationService.GetExamReservationById(id);
-                if (result == null )
+                if (result == null)
                 {
                     return this.ApiResponseNotFound("Exam reservation not found", new { ExamReservationId = id });
                 }
@@ -114,16 +86,10 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAll()
-        //{
-        //    var result = await _examReservationService.GetAllExamReservations();
-        //    return Ok(result);
-        //}
 
         [HttpGet]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllExamReservations()
         {
             try
             {
@@ -132,23 +98,19 @@ namespace Exam_Guardian.API.Controllers
                 {
                     return this.ApiResponseNotFound("Exam reservation not found", result);
                 }
-                else { 
-                return this.ApiResponseOk("All exam reservations retrieved successfully", result);
-            }
+                else
+                {
+                    return this.ApiResponseOk("All exam reservations retrieved successfully", result);
+                }
             }
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { });
             }
         }
-        //[HttpGet]
-        //public async Task<IActionResult> GetTimeSlots()
-        //{
-        //    var result = await _examReservationService.GetTimeSlots();
-        //    return Ok(result);
-        //}
+
         [HttpGet("timeslots")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
+        //  [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetTimeSlots()
         {
             try
@@ -158,8 +120,10 @@ namespace Exam_Guardian.API.Controllers
                 {
                     return this.ApiResponseNotFound("Time Slots not found", result);
                 }
-                else { 
-                return this.ApiResponseOk("Time slots retrieved successfully", result);}
+                else
+                {
+                    return this.ApiResponseOk("Time slots retrieved successfully", result);
+                }
             }
             catch (Exception ex)
             {
@@ -167,15 +131,9 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpGet("{proctorid}")]
-        //public async Task<IActionResult>GetAllExamReservationsByProctorId(int id)
-        //{
-        //    var result = await _examReservationService.GetAllExamReservationsByProctorId(id);
-        //    return Ok(result);
-        //}
 
-        [HttpGet("proctor/{proctorId}")]
-        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        [HttpGet("{proctorId}")]
+        //  [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAllExamReservationsByProctorId(int proctorId)
         {
             try
@@ -185,14 +143,42 @@ namespace Exam_Guardian.API.Controllers
                 {
                     return this.ApiResponseNotFound("Exam Reservation not found", result);
                 }
-                else { return this.ApiResponseOk("All exam reservations by proctor ID retrieved successfully", result);}
-                
+                else { return this.ApiResponseOk("All exam reservations by proctor ID retrieved successfully", result); }
+
             }
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { ProctorId = proctorId });
             }
         }
+
+
+        [HttpGet("{examId}")]
+        public async Task<ActionResult<ApiResponseModel<IEnumerable<ExamReservationDTO>>>> GetAllExamReservationsByExamId(decimal examId)
+        {
+            var reservations = await _examReservationService.GetAllExamReservationsByExamId(examId);
+
+            if (reservations == null || !reservations.Any())
+            {
+                return NotFound(new ApiResponseModel<IEnumerable<ExamReservationDTO>>
+                {
+                    Message = "No reservations found for the provided exam ID",
+                    Status = 404,
+                    Data = null
+                });
+            }
+
+            var response = new ApiResponseModel<IEnumerable<ExamReservationDTO>>
+            {
+                Message = "Reservations retrieved successfully",
+                Status = 200,
+                Data = reservations
+            };
+
+            return Ok(response);
+        }
+
+
 
     }
 }

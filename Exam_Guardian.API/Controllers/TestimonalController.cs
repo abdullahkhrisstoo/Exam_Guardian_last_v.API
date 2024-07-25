@@ -1,5 +1,6 @@
 ﻿using Exam_Guardian.core.Data;
 using Exam_Guardian.core.DTO;
+using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.infra.Service;
@@ -11,16 +12,16 @@ namespace Exam_Guardian.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class TestimonalController : ControllerBase
+    public class TestimonialController : ControllerBase
     {
         private readonly ITestimonalService _testimonalService;
 
-        public TestimonalController(ITestimonalService testimonalService)
+        public TestimonialController(ITestimonalService testimonalService)
         {
             _testimonalService = testimonalService;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateTestimonial([FromBody] TestimonalModel testimonial)
+        public async Task<IActionResult> CreateTestimonial([FromBody] CreateTestimonailDTO testimonial)
         {
             try
             {
@@ -42,52 +43,18 @@ namespace Exam_Guardian.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.ApiResponseServerError(ex, new {  });
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllApprovedTestimonial()
-        {
-            try
-            {
-                var test = await _testimonalService.GetAllApprovedTestimonialsAsync();
-                if (test == null)
-                {
-                    return this.ApiResponseNotFound("testimonal not found", new {  });
-                }
-                return this.ApiResponseOk("Testimonal found", test);
-            }
-            catch (Exception ex)
-            {
                 return this.ApiResponseServerError(ex, new { });
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllRejectedTestimonial()
-        {
-            try
-            {
-                var test = await _testimonalService.GetAllRejectedTestimonialsAsync();
-                if (test == null)
-                {
-                    return this.ApiResponseNotFound("testimonal not found", new { });
-                }
-                return this.ApiResponseOk("Testimonal found", test);
-            }
-            catch (Exception ex)
-            {
-                return this.ApiResponseServerError(ex, new { });
-            }
-        }
+
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTestimonial()
+        public async Task<IActionResult> GetAllTestimonials()
         {
             try
             {
-                var test = await _testimonalService.GetAllTestimonialsAsync();
+                var test = await _testimonalService.GetAllTestimonials();
                 return this.ApiResponseOk("Complements retrieved successfully", test);
             }
             catch (Exception ex)
@@ -101,55 +68,70 @@ namespace Exam_Guardian.API.Controllers
         {
             try
             {
-                var test = await _testimonalService.GetTestimonialByIdAsync(id);
-                if (test == null) { 
+                var test = await _testimonalService.GetTestimonialById(id);
+                if (test == null)
+                {
                     return this.ApiResponseNotFound("testimonal not found", new { });
                 }
-                     return this.ApiResponseOk("Testimonal found", test);
+                return this.ApiResponseOk("Testimonal found", test);
             }
-               
-            
-               catch (Exception ex)
+
+
+            catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { });
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllPendingTestimonals()
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTestimonialsByExamProviderId(decimal id)
         {
             try
             {
-                var testimonials = await _testimonalService.GetPendingTestimonialsAsync();
-                if (testimonials == null || !testimonials.Any())
+                var test = await _testimonalService.GetTestimonialsByExamProviderId(id);
+                if (test == null)
                 {
-                    return this.ApiResponseNotFound("No testimonials found", new { });
+                    return this.ApiResponseNotFound("testimonal not found", new { });
                 }
-
-                return this.ApiResponseOk("Testimonials found", testimonials);
+                return this.ApiResponseOk("Testimonal found", test);
             }
+
+
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { });
             }
         }
 
-
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTestimonial(int id,[FromBody] int testimonalstateid)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTestimonialsByStateId(decimal id)
         {
             try
             {
-                await _testimonalService.UpdateTestimonial(id, testimonalstateid);
-                
-                return this.ApiResponseOk("Testimonials Updated", new{ });
+                var test = await _testimonalService.GetTestimonialsByStateId(id);
+                if (test == null)
+                {
+                    return this.ApiResponseNotFound("testimonal not found", new { });
+                }
+                return this.ApiResponseOk("Testimonal found", test);
             }
+
+
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { });
             }
         }
+
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateTestimonialState(decimal testimonialId, decimal stateId)
+        {
+            return this.ApiResponseOk("Tetimonial is Updated", await _testimonalService.UpdateTestimonialState(testimonialId, stateId));
+
+        }
+
 
 
 

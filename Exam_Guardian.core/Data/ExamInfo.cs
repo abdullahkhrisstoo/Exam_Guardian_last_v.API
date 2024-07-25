@@ -17,7 +17,6 @@ namespace Exam_Guardian.core.Data
         public DateTime? UpdatedAt { get; set; }
         public decimal? ExamProviderId { get; set; }
 
-        public virtual ExamReservation Exam { get; set; } = null!;
         public virtual ExamProvider? ExamProvider { get; set; }
         public virtual ICollection<ExamReservation> ExamReservations { get; set; }
     }

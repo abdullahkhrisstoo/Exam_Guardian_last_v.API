@@ -95,11 +95,11 @@ namespace Exam_Guardian.API
             });
 
 
-         
+
 
 
             //todo: databse connection
-            builder.Services.AddScoped<IDbContext,infra.Common.DbContext>();
+            builder.Services.AddScoped<IDbContext, infra.Common.DbContext>();
 
             //todo: services
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -112,12 +112,12 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IExamService, ExamService>();
             builder.Services.AddScoped<IProctorService, ProctorService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.AddScoped<ITestimonalRepositary,TestimonialRepository>();
+            builder.Services.AddScoped<ITestimonalRepositary, TestimonialRepository>();
             builder.Services.AddScoped<ITestimonalService, TestimonalService>();
             builder.Services.AddScoped<IContactUsServices, ContactUsServices>();
             builder.Services.AddScoped<IStatisticsService, StatisticsService>();
             builder.Services.AddScoped<IAboutService, AboutService>();
-
+            builder.Services.AddScoped<IExamInfoService, ExamInfoService>();
 
 
 
@@ -132,12 +132,13 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IProctorRepository, ProctorRepository>();
             builder.Services.AddScoped<IContactUsRepository, ContactUsRepository>();
             builder.Services.AddScoped<IAboutRepository, AboutRepository>();
+            builder.Services.AddScoped<IExamInfoRepository, ExamInfoRepository>();
 
             builder.Services.AddControllers()
                           .AddJsonOptions(options =>
-                                       {
-                                         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-                                        });
+                          {
+                              options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                          });
 
             builder.Services.AddControllers()
             .AddNewtonsoftJson(options =>
@@ -149,10 +150,10 @@ namespace Exam_Guardian.API
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
 
+            }
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseRouting(); // Add this line to enable routing
 
 

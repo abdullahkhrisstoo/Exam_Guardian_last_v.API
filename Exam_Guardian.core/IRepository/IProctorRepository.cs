@@ -13,7 +13,7 @@ namespace Exam_Guardian.core.IRepository
         Task<UserInfo> GetProctorById(int prcotorId);
         Task<IEnumerable<UserInfo>> GetAllProctor();
 
-        Task<UserInfo> GetProctorsByExamReservationId(int examReservationId);
+        Task<ProctorDTO> GetProctorsByExamReservationId(int examReservationId);
 
 
         Task UpdateProctor(decimal id, CreateAccountViewModel createAccountViewModel);

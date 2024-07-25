@@ -5,16 +5,14 @@ namespace Exam_Guardian.core.Data
 {
     public partial class Testimonial
     {
-        public decimal Testimonialid { get; set; }
-        public decimal? Testimonalstateid { get; set; }
-        public decimal? Userid { get; set; }
-        public string? Testimonialtext { get; set; }
-        public DateTime? Createdat { get; set; }
-        public DateTime? Updatedat { get; set; }
+        public decimal TestimonialId { get; set; }
+        public decimal? TestimonialStateId { get; set; }
         public decimal? ExamProviderId { get; set; }
+        public string? TestimonialText { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         public virtual ExamProvider? ExamProvider { get; set; }
-        public virtual Testimonalstate? Testimonalstate { get; set; }
-        public virtual UserInfo? User { get; set; }
+        public virtual TestimonialState? TestimonialState { get; set; }
     }
 }

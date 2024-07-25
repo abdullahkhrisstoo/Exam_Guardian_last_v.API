@@ -19,15 +19,10 @@ namespace Exam_Guardian.API.Controllers
             _planFeatureService = planFeatureService;
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Create([FromBody] CreatePlanFeatureViewModel createPlanFeatureViewModel)
-        //{
-        //    await _planFeatureService.CreatePlanFeature(createPlanFeatureViewModel);
-        //    return Ok(new { message = "Plan feature created successfully" });
-        //}
+
         [HttpPost]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> Create([FromBody] CreatePlanFeatureViewModel createPlanFeatureViewModel)
+        public async Task<IActionResult> CreatePlanFeature([FromBody] CreatePlanFeatureDTO createPlanFeatureViewModel)
         {
             try
             {
@@ -40,15 +35,9 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> Update([FromBody] UpdatePlanFeatureViewModel updatePlanFeatureViewModel)
-        //{
-        //    await _planFeatureService.UpdatePlanFeature(updatePlanFeatureViewModel);
-        //    return Ok(new { message = "Plan feature updated successfully" });
-        //}
         [HttpPut]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> Update([FromBody] UpdatePlanFeatureViewModel updatePlanFeatureViewModel)
+        public async Task<IActionResult> UpdatePlanFeature([FromBody] UpdatePlanFeatureDTO updatePlanFeatureViewModel)
         {
             try
             {
@@ -61,21 +50,16 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    await _planFeatureService.DeletePlanFeature(id);
-        //    return Ok(new { message = "Plan feature deleted successfully" });
-        //}
+
 
         [HttpDelete("{id}")]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeletePlanFeature(int id)
         {
             try
             {
                 await _planFeatureService.DeletePlanFeature(id);
-                return this.ApiResponseOk("Plan feature deleted successfully",id);
+                return this.ApiResponseOk("Plan feature deleted successfully", id);
             }
             catch (Exception ex)
             {
@@ -83,19 +67,10 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetById(int id)
-        //{
-        //    var result = await _planFeatureService.GetPlanFeatureById(id);
-        //    if (result == null)
-        //    {
-        //        return NotFound(new { message = "Plan feature not found" });
-        //    }
-        //    return Ok(result);
-        //}
+
         [HttpGet("{id}")]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetPlanFeatureById(int id)
         {
             try
             {
@@ -112,34 +87,61 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAll()
-        //{
-        //    var result = await _planFeatureService.GetAllPlanFeatures();
-        //    return Ok(result);
-        //}
         [HttpGet]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllPlanFeatures()
         {
             try
             {
                 var result = await _planFeatureService.GetAllPlanFeatures();
-                if(result == null || !result.Any())
+                if (result == null || !result.Any())
                 {
                     return this.ApiResponseNotFound("Plan feature not found", new { });
                 }
                 else
                 {
 
-                
-                return this.ApiResponseOk("All plan features retrieved successfully", result);
-            }}
+
+                    return this.ApiResponseOk("All plan features retrieved successfully", result);
+                }
+            }
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { });
             }
         }
+
+
+
+
+
+
+        [HttpGet("{planId}")]
+        public async Task<IActionResult> GetPlanFeaturesByPlanId(decimal planId)
+        {
+            try
+            {
+                var result = await _planFeatureService.GetPlanFeaturesByPlanId(planId);
+                if (result == null || !result.Any())
+                {
+                    return this.ApiResponseNotFound("Plan feature not found", new { });
+                }
+                else
+                {
+
+
+                    return this.ApiResponseOk("All plan features retrieved successfully", result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
+            }
+        }
+
+
+
+
     }
 
 }

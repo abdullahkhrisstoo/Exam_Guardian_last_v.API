@@ -18,9 +18,9 @@ namespace Exam_Guardian.infra.Service
             _planFeatureRepository = planFeatureRepository;
         }
 
-        public async Task<int> CreatePlanFeature(CreatePlanFeatureViewModel createPlanFeatureViewModel)
+        public async Task<int> CreatePlanFeature(CreatePlanFeatureDTO createPlanFeatureViewModel)
         {
-           return await _planFeatureRepository.CreatePlanFeature(createPlanFeatureViewModel);
+            return await _planFeatureRepository.CreatePlanFeature(createPlanFeatureViewModel);
         }
 
         public async Task<int> DeletePlanFeature(int id)
@@ -28,19 +28,24 @@ namespace Exam_Guardian.infra.Service
             return await _planFeatureRepository.DeletePlanFeature(id);
         }
 
-        public async Task<int> UpdatePlanFeature(UpdatePlanFeatureViewModel updatePlanFeatureViewModel)
+        public async Task<int> UpdatePlanFeature(UpdatePlanFeatureDTO updatePlanFeatureViewModel)
         {
-           return await _planFeatureRepository.UpdatePlanFeature(updatePlanFeatureViewModel);
+            return await _planFeatureRepository.UpdatePlanFeature(updatePlanFeatureViewModel);
         }
 
-        public async Task<PlanFeatureViewModel> GetPlanFeatureById(int id)
+        public async Task<PlanFeatureDTO> GetPlanFeatureById(int id)
         {
             return await _planFeatureRepository.GetPlanFeatureById(id);
         }
 
-        public async Task<IEnumerable<PlanFeatureViewModel>> GetAllPlanFeatures()
+        public async Task<IEnumerable<PlanFeatureDTO>> GetAllPlanFeatures()
         {
             return await _planFeatureRepository.GetAllPlanFeatures();
+        }
+
+        public async Task<IEnumerable<PlanFeatureDTO>> GetPlanFeaturesByPlanId(decimal planId)
+        {
+            return await _planFeatureRepository.GetPlanFeaturesByPlanId(planId);
         }
     }
 

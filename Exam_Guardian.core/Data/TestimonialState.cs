@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace Exam_Guardian.core.Data
 {
-    public partial class Testimonalstate
+    public partial class TestimonialState
     {
-        public Testimonalstate()
+        public TestimonialState()
         {
             Testimonials = new HashSet<Testimonial>();
         }
 
-        public decimal Testimonalstateid { get; set; }
-        public string? Testimonalstate1 { get; set; }
+        public decimal TestimonialStateId { get; set; }
+        public string? TestimonialStateText { get; set; }
 
         public virtual ICollection<Testimonial> Testimonials { get; set; }
     }

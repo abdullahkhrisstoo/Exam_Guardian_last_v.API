@@ -19,42 +19,43 @@ namespace Exam_Guardian.infra.Service
             _complementRepository = complementRepository;
         }
 
-        public async Task<int> CreateComplement(CreateComplementViewModel createComplementViewModel)
+        public async Task<int> CreateComplement(CreateComplementDTO createComplementViewModel)
         {
-           return await _complementRepository.CreateComplement(createComplementViewModel);
+            return await _complementRepository.CreateComplement(createComplementViewModel);
         }
 
         public async Task<int> DeleteComplement(int id)
         {
-           return await _complementRepository.DeleteComplement(id);
+            return await _complementRepository.DeleteComplement(id);
         }
 
-        public async Task<int> UpdateComplement(UpdateComplementViewModel updateComplementViewModel)
+        public async Task<int> UpdateComplement(UpdateComplementDTO updateComplementViewModel)
         {
             return await _complementRepository.UpdateComplement(updateComplementViewModel);
         }
 
-        public async Task<ComplementViewModel> GetComplementById(int id)
+        public async Task<ComplementDTO> GetComplementById(int id)
         {
             return await _complementRepository.GetComplementById(id);
         }
 
-        public async Task<IEnumerable<ComplementViewModel>> GetAllComplements()
+        public async Task<IEnumerable<ComplementDTO>> GetAllComplements()
         {
             return await _complementRepository.GetAllComplements();
         }
-     
-      
+
+
 
         public async Task<IEnumerable<Complement>> GetComplementsByProctorId(int id)
         {
             return await _complementRepository.GetComplementsByProctorId(id);
         }
 
-        public async Task<Complement> GetComplementByExamReservation(int examreservationId)
-        {
-            return await _complementRepository.GetComplementByExamReservation(examreservationId);
 
+
+        public async Task<ComplementDTO> GetComplementByExamReservationId(int examReservationId)
+        {
+            return await _complementRepository.GetComplementByExamReservationId(examReservationId);
         }
     }
 

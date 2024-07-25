@@ -18,38 +18,42 @@ namespace Exam_Guardian.API.Controllers
             _hubContext = hubContext;
         }
 
-        [HttpPost("exchange-sdp/{sdpMid}")]
-        public async Task<IActionResult> ExchangeSDP(string sdpMid, [FromBody] SDPExchangeModel sdpExchange)
-        {
-            try
-            {
-                // Validate sdpExchange if necessary
+        ////[HttpPost("exchange-sdp/{sdpMid}")]
+        ////public async Task<IActionResult> ExchangeSDP(string sdpMid, [FromBody] SDPExchangeModel sdpExchange)
+        ////{
+        ////    try
+        ////    {
+        ////        // Validate sdpExchange if necessary
 
-                await _hubContext.Clients.Group(sdpMid).SendAsync("ReceiveSDP", sdpMid, sdpExchange.SDP);
+        ////        await _hubContext.Clients.Group(sdpMid).SendAsync("ReceiveSDP", sdpMid, sdpExchange.SDP);
 
-                return Ok(new { message = "SDP received and broadcasted successfully" });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
-        }
+        ////        return Ok(new { message = "SDP received and broadcasted successfully" });
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        return StatusCode(500, "Internal server error");
+        ////    }
+        ////}
 
-        [HttpPost("exchange-ice/{sdpMid}")]
-        public async Task<IActionResult> ExchangeICE(string sdpMid, [FromBody] ICECandidateModel iceCandidate)
-        {
-            try
-            {
-                // Validate iceCandidate if necessary
 
-                await _hubContext.Clients.Group(sdpMid).SendAsync("ReceiveICE", sdpMid, iceCandidate.Candidate, iceCandidate.SdpMLineIndex);
 
-                return Ok(new { message = "ICE candidate received and broadcasted successfully" });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
-        }
+
+
+        //[HttpPost("exchange-ice/{sdpMid}")]
+        //public async Task<IActionResult> ExchangeICE(string sdpMid, [FromBody] ICECandidateModel iceCandidate)
+        //{
+        //    try
+        //    {
+        //        // Validate iceCandidate if necessary
+
+        //        await _hubContext.Clients.Group(sdpMid).SendAsync("ReceiveICE", sdpMid, iceCandidate.Candidate, iceCandidate.SdpMLineIndex);
+
+        //        return Ok(new { message = "ICE candidate received and broadcasted successfully" });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "Internal server error");
+        //    }
+        //}
     }
 }

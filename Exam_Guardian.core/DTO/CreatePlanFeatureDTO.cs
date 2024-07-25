@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Exam_Guardian.core.DTO
 {
-    public class SendWhatsAppViewModel
+    public class CreatePlanFeatureDTO
     {
-
+        public string? FeaturesName { get; set; }
+        public decimal? PlanId { get; set; }
     }
+
 }

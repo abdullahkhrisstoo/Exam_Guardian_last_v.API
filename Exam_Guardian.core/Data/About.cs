@@ -11,7 +11,7 @@ namespace Exam_Guardian.core.Data
         }
 
         public decimal AboutId { get; set; }
-        public string Title { get; set; } = null!;
+        public string? Title { get; set; }
 
         public virtual ICollection<Aboutpoint> Aboutpoints { get; set; }
     }

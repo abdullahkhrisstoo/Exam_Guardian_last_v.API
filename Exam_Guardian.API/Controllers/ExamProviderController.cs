@@ -19,14 +19,9 @@ namespace Exam_Guardian.API.Controllers
         {
             _examService = examService;
         }
-        //edit
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllExamProviders()
-        //{
-        //    var result = await _examService.GetAllExamProviders();
-        //    return Ok(result);
-        //}
-        [HttpGet("")]
+       
+
+        [HttpGet]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetAllExamProviders()
         {
@@ -41,22 +36,15 @@ namespace Exam_Guardian.API.Controllers
                 {
                     return this.ApiResponseOk("All exam providers retrieved successfully", result);
                 }
-                
+
             }
             catch (Exception ex)
             {
-                return this.ApiResponseServerError(ex, new {});
+                return this.ApiResponseServerError(ex, new { });
             }
         }
 
-
-        //[HttpGet("stateId")]
-        //public async Task<IActionResult> GetExamProvidersByStateId(int stateId)
-        //{
-        //    var result = await _examService.GetExamProvidersByStateId(stateId);
-        //    return Ok(result);
-        //}
-        [HttpGet("state/{stateId}")]
+        [HttpGet("{stateId}")]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)] //note 
         public async Task<IActionResult> GetExamProvidersByStateId(int stateId)
         {
@@ -74,14 +62,8 @@ namespace Exam_Guardian.API.Controllers
                 return this.ApiResponseServerError(ex, new { StateId = stateId });
             }
         }
-        //[HttpGet("planId")]
-        //public async Task<IActionResult> GetExamProvidersByPlanId(int planId)
-        //{
-        //    var result = await _examService.GetExamProvidersByPlanId(planId);
-        //    return Ok(result);
-        //}
-
-        [HttpGet("plan/{planId}")]
+      
+        [HttpGet("{planId}")]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetExamProvidersByPlanId(int planId)
         {
@@ -99,12 +81,7 @@ namespace Exam_Guardian.API.Controllers
                 return this.ApiResponseServerError(ex, new { PlanId = planId });
             }
         }
-        //[HttpGet("id")]
-        //public async Task<IActionResult> GetExamProvidersById(int id)
-        //{
-        //    var result = await _examService.GetExamProvidersById(id);
-        //    return Ok(result);
-        //}
+      
         [HttpGet("{id}")]
         //[CheckClaimsAttribute(UserRoleConstant.SExamProvider)]//exam provider can get his info
         public async Task<IActionResult> GetExamProvidersById(int id)
@@ -160,7 +137,7 @@ namespace Exam_Guardian.API.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> CreateExamProvider([FromBody] ExamProviderDto examProviderDto)
+        public async Task<IActionResult> CreateExamProvider([FromBody] CreateExamProviderDTO examProviderDto)
         {
             try
             {

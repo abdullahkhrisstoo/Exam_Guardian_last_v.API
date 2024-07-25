@@ -18,7 +18,7 @@ namespace Exam_Guardian.infra.Service
             _examProviderRepository = examProviderRepository;
         }
 
-        public Task<List<ExamProvider>> GetAllExamProviders()
+        public Task<List<ExamProviderDTO>> GetAllExamProviders()
         {
             return _examProviderRepository.GetAllExamProviders();
         }
@@ -49,7 +49,7 @@ namespace Exam_Guardian.infra.Service
             return _examProviderRepository.GetTopExamProvider(count);
         }
 
-        public async Task<ExamProvider> CreateExamProvider(ExamProviderDto examProviderDto)
+        public async Task<ExamProvider> CreateExamProvider(CreateExamProviderDTO examProviderDto)
         {
             return await _examProviderRepository.CreateExamProvider(examProviderDto);
         }

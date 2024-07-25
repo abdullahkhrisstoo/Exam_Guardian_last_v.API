@@ -13,9 +13,8 @@ namespace Exam_Guardian.core.IService
       
             Task<UserInfo> GetProctorById(int prcotorId);
             Task<IEnumerable<UserInfo>> GetAllProctor();
-            Task<UserInfo> GetProctorsByExamReservationId(int examReservationId);
-
-        Task UpdateProctor(decimal id, CreateAccountViewModel createAccountViewModel);
+            Task<ProctorDTO> GetProctorsByExamReservationId(int examReservationId);
+            Task UpdateProctor(decimal id, CreateAccountViewModel createAccountViewModel);
 
 
     }

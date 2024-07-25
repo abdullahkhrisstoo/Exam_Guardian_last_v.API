@@ -2,6 +2,7 @@
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,9 @@ namespace Exam_Guardian.infra.Service
             _testimonalRepositary = testimonalRepositary;
         }
 
-        public async Task CreateTestimonialAsync(TestimonalModel testimonial)
+        public async Task CreateTestimonialAsync(CreateTestimonailDTO testimonial)
         {
-           await _testimonalRepositary.CreateTestimonialAsync(testimonial);
+            await _testimonalRepositary.CreateTestimonialAsync(testimonial);
         }
 
         public async Task DeleteTestimonialAsync(decimal id)
@@ -29,34 +30,29 @@ namespace Exam_Guardian.infra.Service
             await _testimonalRepositary.DeleteTestimonialAsync(id);
         }
 
-        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllApprovedTestimonialsAsync()
+        public async Task<IEnumerable<TestimonialDTO>> GetAllTestimonials()
         {
-            return await _testimonalRepositary.GetAllApprovedTestimonialsAsync();
+            return await _testimonalRepositary.GetAllTestimonials();
         }
 
-        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllRejectedTestimonialsAsync()
+        public async Task<TestimonialDTO> GetTestimonialById(decimal testimonialId)
         {
-            return await _testimonalRepositary.GetAllRejectedTestimonialsAsync();
+            return await _testimonalRepositary.GetTestimonialById(testimonialId);
         }
 
-        public async Task<IEnumerable<GetTestimonialViewModel>> GetAllTestimonialsAsync()
+        public async Task<IEnumerable<TestimonialDTO>> GetTestimonialsByExamProviderId(decimal examProviderId)
         {
-            return await _testimonalRepositary.GetAllTestimonialsAsync();
+            return await _testimonalRepositary.GetTestimonialsByExamProviderId(examProviderId);
         }
 
-        public async Task<IEnumerable<GetTestimonialViewModel>> GetPendingTestimonialsAsync()
+        public async Task<IEnumerable<TestimonialWithExamProviderDTO>> GetTestimonialsByStateId(decimal stateId)
         {
-            return await _testimonalRepositary.GetPendingTestimonialsAsync();
+            return await _testimonalRepositary.GetTestimonialsByStateId(stateId);
         }
 
-        public async Task<GetTestimonialViewModel> GetTestimonialByIdAsync(int id)
+        public async Task<Int32> UpdateTestimonialState(decimal testimonialId, decimal stateId)
         {
-            return await _testimonalRepositary.GetTestimonialByIdAsync(id);
-        }
-
-        public async Task UpdateTestimonial(int id, int testimonalstateid)
-        {
-             await _testimonalRepositary.UpdateTestimonial(id, testimonalstateid);
+            return await _testimonalRepositary.UpdateTestimonialState(testimonialId, stateId);
         }
     }
 }

@@ -30,16 +30,23 @@ namespace Exam_Guardian.infra.Repository
             return res;
         }
 
-        public async Task<UserInfo> GetProctorsByExamReservationId(int examReservationId)
+        public async Task<ProctorDTO> GetProctorsByExamReservationId(int examReservationId)
         {
             var res = await _modelContext.UserInfos
                 .Include(er => er.ExamReservations)
                 .Where(checkRole => checkRole.RoleId == UserRoleConstant.Proctor)
                 .Where(checkExamId => checkExamId.ExamReservations.Any(er => er.ExamReservationId == examReservationId))
+                .Select(e => new ProctorDTO()
+                {
+                    LastName = e.LastName,
+                    FirstName = e.LastName,
+                    Email = e.Credential.Email,
+                    Phone = e.Credential.Phonenum
+
+                })
                 .SingleOrDefaultAsync();
             return res;
         }
-
         public async Task<UserInfo> GetProctorById(int prcotorId)
         {
             var res = await _modelContext.UserInfos

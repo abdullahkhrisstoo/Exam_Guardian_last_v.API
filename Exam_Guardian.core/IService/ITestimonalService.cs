@@ -10,13 +10,12 @@ namespace Exam_Guardian.core.IService
 {
     public interface ITestimonalService
     {
-        Task CreateTestimonialAsync(TestimonalModel testimonial);
+        Task CreateTestimonialAsync(CreateTestimonailDTO testimonial);
         Task DeleteTestimonialAsync(decimal id);
-        Task<IEnumerable<GetTestimonialViewModel>> GetAllApprovedTestimonialsAsync();
-        Task<IEnumerable<GetTestimonialViewModel>> GetAllRejectedTestimonialsAsync();
-        Task<IEnumerable<GetTestimonialViewModel>> GetAllTestimonialsAsync();
-        Task<GetTestimonialViewModel> GetTestimonialByIdAsync(int id);
-        Task<IEnumerable<GetTestimonialViewModel>> GetPendingTestimonialsAsync();
-        Task UpdateTestimonial(int id, int testimonalstateid);
+        Task<IEnumerable<TestimonialWithExamProviderDTO>> GetTestimonialsByStateId(decimal stateId);
+        Task<IEnumerable<TestimonialDTO>> GetAllTestimonials();
+        Task<TestimonialDTO> GetTestimonialById(decimal testimonialId);
+        Task<IEnumerable<TestimonialDTO>> GetTestimonialsByExamProviderId(decimal examProviderId);
+        Task<Int32> UpdateTestimonialState(decimal testimonialId, decimal stateId);
     }
 }

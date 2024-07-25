@@ -10,14 +10,14 @@ namespace Exam_Guardian.core.IRepository
 {
     public interface IExamProviderRepository
     {
-        Task<List<ExamProvider>> GetAllExamProviders();
+        Task<List<ExamProviderDTO>> GetAllExamProviders();
         Task<List<ExamProvider>> GetExamProvidersByStateId(int StateId);
         Task<List<ExamProvider>> GetExamProvidersByPlanId(int planId);
         Task<ExamProvider> GetExamProvidersById(int id);
         Task<GetExamProviderByUserIdDto> GetExamProvidersByUserId(int id);
 
         Task<List<ExamProvider>> GetTopExamProvider(int count);
-        Task<ExamProvider> CreateExamProvider(ExamProviderDto examProviderDto); 
+        Task<ExamProvider> CreateExamProvider(CreateExamProviderDTO examProviderDto); 
 
 
 

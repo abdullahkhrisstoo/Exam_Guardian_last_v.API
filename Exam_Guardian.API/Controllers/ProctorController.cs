@@ -107,6 +107,27 @@ namespace Exam_Guardian.API.Controllers
                 return this.ApiResponseServerError(ex, new {  });
             }
         }
-    } 
-}
+     
+        
+        [HttpGet("{examReservationId}")]
+        // [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor)]
+        public async Task<IActionResult> GetProctorByExamReservationId(int examReservationId)
+        {
+            try
+            {
+                var result = await _proctorService.GetProctorsByExamReservationId(examReservationId);
+                if (result == null)
+                {
+                    return this.ApiResponseNotFound("Proctor not found by Exam Reservation ID", new { ExamReservationId = examReservationId });
+                }
+                return this.ApiResponseOk("Proctors by exam reservation ID retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { ExamReservationId = examReservationId });
+            }
+        }
+    }
+} 
+
 

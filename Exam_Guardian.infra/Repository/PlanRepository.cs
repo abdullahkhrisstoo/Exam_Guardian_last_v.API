@@ -9,6 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Exam_Guardian.infra.Repo
 {
@@ -18,7 +22,7 @@ namespace Exam_Guardian.infra.Repo
         private readonly ModelContext _modelContext;
 
 
-        public PlanRepository(IDbContext dbContext , ModelContext modelContext)
+        public PlanRepository(IDbContext dbContext, ModelContext modelContext)
         {
             _dbContext = dbContext;
             _modelContext = modelContext;
@@ -26,20 +30,20 @@ namespace Exam_Guardian.infra.Repo
         }
         private void SetupMappings()
         {
-            PascalCaseMapper<PlanViewModel>.SetTypeMap();
+            PascalCaseMapper<PlanDTO>.SetTypeMap();
         }
-        public async Task<int> CreatePlan(CreatePlanViewModel createPlanViewModel)
+        public async Task<int> CreatePlan(CreatePlanDTO createPlanViewModel)
         {
             DynamicParameters param = new();
             param.Add(name: PlanPackageConstant.PLAN_NAME, createPlanViewModel.PlanName, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.PLAN_DESCRIPTION, createPlanViewModel.PlanDescription, dbType: DbType.String, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.PLAN_PRICE, createPlanViewModel.PlanPrice, dbType: DbType.Decimal, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
-            
-            
+
+
             var res = await _dbContext.Connection.ExecuteAsync(PlanPackageConstant.PLAN_PACKAGE_CREATE_PLAN, param, commandType: CommandType.StoredProcedure);
-       int cid = param.Get<int>(name: PlanPackageConstant.C_id);
-            return cid; 
+            int cid = param.Get<int>(name: PlanPackageConstant.C_id);
+            return cid;
         }
 
         public async Task<int> DeletePlan(int id)
@@ -47,39 +51,49 @@ namespace Exam_Guardian.infra.Repo
             DynamicParameters param = new();
             param.Add(name: PlanPackageConstant.PLAN_ID, id, dbType: DbType.Int32, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
-           
-            
+
+
             var res = await _dbContext.Connection.ExecuteAsync(PlanPackageConstant.PLAN_PACKAGE_DELETE_PLAN, param, commandType: CommandType.StoredProcedure);
-        int cid = param.Get<int>(name: PlanPackageConstant.C_id);
+            int cid = param.Get<int>(name: PlanPackageConstant.C_id);
             return cid;
         }
 
-        public async Task<int> UpdatePlan(UpdatePlanViewModel updatePlanViewModel)
+        public async Task<int> UpdatePlan(UpdatePlanDTO updatePlanViewModel)
         {
+            var existingPlan = await _modelContext.Plans.FindAsync(updatePlanViewModel.PlanId);
+            if (existingPlan == null)
+            {
+                throw new KeyNotFoundException("Plan not found.");
+            }
+
+
+            var planName = updatePlanViewModel.PlanName ?? existingPlan.PlanName;
+            var planDescription = updatePlanViewModel.PlanDescription ?? existingPlan.PlanDescription;
+            var planPrice = updatePlanViewModel.PlanPrice ?? existingPlan.PlanPrice;
+
             DynamicParameters param = new();
             param.Add(name: PlanPackageConstant.PLAN_ID, updatePlanViewModel.PlanId, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            param.Add(name: PlanPackageConstant.PLAN_NAME, updatePlanViewModel.PlanName, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(name: PlanPackageConstant.PLAN_DESCRIPTION, updatePlanViewModel.PlanDescription, dbType: DbType.String, direction: ParameterDirection.Input);
-            param.Add(name: PlanPackageConstant.PLAN_PRICE, updatePlanViewModel.PlanPrice, dbType: DbType.Decimal, direction: ParameterDirection.Input);
+            param.Add(name: PlanPackageConstant.PLAN_NAME, planName, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: PlanPackageConstant.PLAN_DESCRIPTION, planDescription, dbType: DbType.String, direction: ParameterDirection.Input);
+            param.Add(name: PlanPackageConstant.PLAN_PRICE, planPrice, dbType: DbType.Decimal, direction: ParameterDirection.Input);
             param.Add(name: PlanPackageConstant.C_id, dbType: DbType.Int32, direction: ParameterDirection.Output);
-            
-            
+
             var res = await _dbContext.Connection.ExecuteAsync(PlanPackageConstant.PLAN_PACKAGE_UPDATE_PLAN, param, commandType: CommandType.StoredProcedure);
-        int cid = param.Get<int>(name: PlanPackageConstant.C_id);
+            int cid = param.Get<int>(name: PlanPackageConstant.C_id);
             return cid;
         }
 
-        public async Task<PlanViewModel> GetPlanById(int id)
+        public async Task<PlanDTO> GetPlanById(int id)
         {
             DynamicParameters param = new();
             param.Add(name: PlanPackageConstant.PLAN_ID, id, dbType: DbType.Int32, direction: ParameterDirection.Input);
-            var res = await _dbContext.Connection.QueryFirstOrDefaultAsync<PlanViewModel>(PlanPackageConstant.PLAN_PACKAGE_GET_PLAN_BY_ID, param, commandType: CommandType.StoredProcedure);
+            var res = await _dbContext.Connection.QueryFirstOrDefaultAsync<PlanDTO>(PlanPackageConstant.PLAN_PACKAGE_GET_PLAN_BY_ID, param, commandType: CommandType.StoredProcedure);
             return res;
         }
 
-        public async Task<IEnumerable<PlanViewModel>> GetAllPlans()
+        public async Task<IEnumerable<PlanDTO>> GetAllPlans()
         {
-            var res = await _dbContext.Connection.QueryAsync<PlanViewModel>(PlanPackageConstant.PLAN_PACKAGE_GET_ALL_PLANS, commandType: CommandType.StoredProcedure);         
+            var res = await _dbContext.Connection.QueryAsync<PlanDTO>(PlanPackageConstant.PLAN_PACKAGE_GET_ALL_PLANS, commandType: CommandType.StoredProcedure);
             return res;
         }
         public async Task<IEnumerable<PlanFeature>> GetPlanFeaturesByPlanId(int planId)
@@ -88,10 +102,10 @@ namespace Exam_Guardian.infra.Repo
             return res;
         }
 
-        public async Task<Plan> GetPlanByExamBroviderId(int examproviderId)
+        public async Task<PlanDTO?> GetPlanByExamProviderId(decimal examproviderId)
         {
             var examProvider = await _modelContext.ExamProviders.Where(x => x.ExamProviderId == examproviderId).FirstOrDefaultAsync();
-                                            
+
 
             if (examProvider == null)
             {
@@ -99,17 +113,25 @@ namespace Exam_Guardian.infra.Repo
             }
 
             var plan = await _modelContext.Plans
-                .Include(p=>p.PlanFeatures)
                 .Where(x => x.PlanId == examProvider.PlanId)
+                .Select(e => new PlanDTO()
+                {
+                    PlanName = e.PlanName,
+                    PlanDescription = e.PlanDescription,
+                    PlanPrice = e.PlanPrice,
+                    CreatedAt = e.CreatedAt,
+                    PlanId = e.PlanId,
+
+                })
                 .FirstOrDefaultAsync();
-                                          
+
 
             return plan;
         }
 
         public async Task<List<Plan>> GetAllPlansWithFeatures()
         {
-            return await _modelContext.Plans.Include(p => p.PlanFeatures).OrderBy(p=>p.PlanPrice).ToListAsync();
+            return await _modelContext.Plans.Include(p => p.PlanFeatures).OrderBy(p => p.PlanPrice).ToListAsync();
         }
 
         public async Task<Plan> GetPlanWithFeatures(decimal id)
@@ -119,4 +141,5 @@ namespace Exam_Guardian.infra.Repo
         }
 
     }
+
 }

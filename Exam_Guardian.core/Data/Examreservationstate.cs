@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Exam_Guardian.core.Data
 {
-    public partial class Examreservationstate
+    public partial class ExamReservationState
     {
-        public decimal Examreservationstateid { get; set; }
-        public string? Examreservationstate1 { get; set; }
+        public decimal ExamReservationStateId { get; set; }
+        public string? ExamReservationStateText { get; set; }
     }
 }

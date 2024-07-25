@@ -29,10 +29,7 @@ namespace Exam_Guardian.infra.Service
         {
             var statistics = new StatisticsViewModel
             {
-                TestimonialApprovedCount = (await _testimonalRepositary.GetAllApprovedTestimonialsAsync()).Count(),
-                TestimonialRejectedCount = (await _testimonalRepositary.GetAllRejectedTestimonialsAsync()).Count(),
-                TestimonialPendingCount = (await _testimonalRepositary.GetPendingTestimonialsAsync()).Count(),
-                AllTestimonialCount = (await _testimonalRepositary.GetAllTestimonialsAsync()).Count(),
+               
 
 
 

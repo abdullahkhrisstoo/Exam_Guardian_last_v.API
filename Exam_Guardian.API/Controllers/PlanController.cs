@@ -20,15 +20,9 @@ namespace Exam_Guardian.API.Controllers
             _planService = planService;
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Create([FromBody] CreatePlanViewModel createPlanViewModel)
-        //{
-        //    await _planService.CreatePlan(createPlanViewModel);
-        //    return Ok(new { message = "Plan created successfully" });
-        //}
         [HttpPost]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> Create([FromBody] CreatePlanViewModel createPlanViewModel)
+        public async Task<IActionResult> CreatePlan([FromBody] CreatePlanDTO createPlanViewModel)
         {
             try
             {
@@ -41,15 +35,10 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> Update([FromBody] UpdatePlanViewModel updatePlanViewModel)
-        //{
-        //    await _planService.UpdatePlan(updatePlanViewModel);
-        //    return Ok(new { message = "Plan updated successfully" });
-        //}
+
         [HttpPut]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> Update([FromBody] UpdatePlanViewModel updatePlanViewModel)
+        public async Task<IActionResult> UpdatePlan([FromBody] UpdatePlanDTO updatePlanViewModel)
         {
             try
             {
@@ -62,15 +51,10 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    await _planService.DeletePlan(id);
-        //    return Ok(new { message = "Plan deleted successfully" });
-        //}
+
         [HttpDelete("{id}")]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeletePlan(int id)
         {
             try
             {
@@ -83,20 +67,10 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetById(int id)
-        //{
-        //    var result = await _planService.GetPlanById(id);
-        //    if (result == null)
-        //    {
-        //        return NotFound(new { message = "Plan not found" });
-        //    }
-        //    return Ok(result);
-        //}
 
         [HttpGet("{id}")]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetPlanById(int id)
         {
             try
             {
@@ -113,16 +87,9 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAll()
-        //{
-        //    var result = await _planService.GetAllPlans();
-        //    return Ok(result);
-        //}
-
         [HttpGet]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllPlans()
         {
             try
             {
@@ -131,54 +98,27 @@ namespace Exam_Guardian.API.Controllers
                 {
                     return this.ApiResponseNotFound("Plans not found", new { });
                 }
-                else {
+                else
+                {
                     return this.ApiResponseOk("All plans retrieved successfully", result);
-                } }
+                }
+            }
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { });
             }
         }
 
-        //[HttpGet("{planId}")]
-        //public async Task<IActionResult> GetPlanFeaturesByPlanId(int planId)
-        //{
-        //    var result = await _planService.GetPlanFeaturesByPlanId(planId);
-        //    return Ok(result);
-        //}
-        [HttpGet("{planId}")]
-        //[CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
-        public async Task<IActionResult> GetPlanFeaturesByPlanId(int planId)
-        {
-            try
-            {
-                var result = await _planService.GetPlanFeaturesByPlanId(planId);
-                if (result == null || !result.Any())
-                {
-                    return this.ApiResponseNotFound("Plan not found", new { });
-                }
-                else {
-                    return this.ApiResponseOk("Plan features retrieved successfully", result);
-                } }
-            catch (Exception ex)
-            {
-                return this.ApiResponseServerError(ex, new { PlanId = planId });
-            }
-        }
-        //[HttpGet("{examproviderid}")]
-        //public async Task<IActionResult> GetPlanByExamBroviderId(int examproviderId)
-        //{
-        //    var result = await _planService.GetPlanFeaturesByPlanId(examproviderId);
-        //    return Ok(result);
 
-        //}
+
+
         [HttpGet("{examProviderId}")]
         //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetPlanByExamProviderId(int examProviderId)
         {
             try
             {
-                var result = await _planService.GetPlanByExamBroviderId(examProviderId);
+                var result = await _planService.GetPlanByExamProviderId(examProviderId);
                 if (result == null)
                 {
                     return this.ApiResponseNotFound("Plan not found", new { });
@@ -191,7 +131,8 @@ namespace Exam_Guardian.API.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllPlansWithFeatures() {
+        public async Task<IActionResult> GetAllPlansWithFeatures()
+        {
             try
             {
                 var result = await _planService.GetAllPlansWithFeatures();
@@ -207,7 +148,8 @@ namespace Exam_Guardian.API.Controllers
             }
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPlanWithFeatures(decimal id) {
+        public async Task<IActionResult> GetPlanWithFeatures(decimal id)
+        {
             try
             {
                 var result = await _planService.GetPlanWithFeatures(id);

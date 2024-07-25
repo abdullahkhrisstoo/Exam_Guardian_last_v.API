@@ -20,9 +20,9 @@ namespace Exam_Guardian.infra.Service
             _planRepository = planRepository;
         }
 
-        public async Task<int> CreatePlan(CreatePlanViewModel createPlanViewModel)
+        public async Task<int> CreatePlan(CreatePlanDTO createPlanViewModel)
         {
-           return await _planRepository.CreatePlan(createPlanViewModel);
+            return await _planRepository.CreatePlan(createPlanViewModel);
         }
 
         public async Task<int> DeletePlan(int id)
@@ -30,17 +30,17 @@ namespace Exam_Guardian.infra.Service
             return await _planRepository.DeletePlan(id);
         }
 
-        public async Task<int> UpdatePlan(UpdatePlanViewModel updatePlanViewModel)
+        public async Task<int> UpdatePlan(UpdatePlanDTO updatePlanViewModel)
         {
             return await _planRepository.UpdatePlan(updatePlanViewModel);
         }
 
-        public async Task<PlanViewModel> GetPlanById(int id)
+        public async Task<PlanDTO> GetPlanById(int id)
         {
             return await _planRepository.GetPlanById(id);
         }
 
-        public async Task<IEnumerable<PlanViewModel>> GetAllPlans()
+        public async Task<IEnumerable<PlanDTO>> GetAllPlans()
         {
             return await _planRepository.GetAllPlans();
         }
@@ -50,9 +50,9 @@ namespace Exam_Guardian.infra.Service
             return await _planRepository.GetPlanFeaturesByPlanId(planId);
         }
 
-        public async Task<Plan> GetPlanByExamBroviderId(int examproviderId)
+        public async Task<PlanDTO?> GetPlanByExamProviderId(decimal examproviderId)
         {
-            return await _planRepository.GetPlanByExamBroviderId(examproviderId);
+            return await _planRepository.GetPlanByExamProviderId(examproviderId);
         }
 
         public async Task<List<Plan>> GetAllPlansWithFeatures()

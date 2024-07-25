@@ -25,18 +25,21 @@ namespace Exam_Guardian.infra.Repository
                         .Include(p => p.Plan).ThenInclude(p => p.PlanFeatures)
                         .Include(exam => exam.ExamInfos);
         }
-
-        public async Task<List<ExamProvider>> GetAllExamProviders()
+        public async Task<List<ExamProviderDTO>> GetAllExamProviders()
         {
-            try
+
+            return await _modelContext.ExamProviders.Include(info => info.User).Select(e => new ExamProviderDTO
             {
-                return await IncludeDependencies(_modelContext.ExamProviders).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+                ExamProviderId = e.ExamProviderId,
+                PlanId = e.PlanId,
+                CreatedAt = e.CreatedAt,
+                Image = e.Image,
+                ExamProviderName = e.User.FirstName,
+                State = e.User.State != null ? e.User.State.StatusName : "Waiting"
+            }).ToListAsync();
+
         }
+     
 
         public async Task<ExamProvider> GetExamProvidersById(int id)
         {
@@ -149,13 +152,36 @@ namespace Exam_Guardian.infra.Repository
                 throw;
             }
         }
-        public async Task<ExamProvider> CreateExamProvider(ExamProviderDto examProviderDto)
+        public async Task<ExamProvider> UpdateExamProvider(UpdateExamProviderDTO examProviderDto)
+        {
+
+
+            var examProvider = new ExamProvider
+            {
+                ExamProviderId = examProviderDto.ExamProviderId,
+                ExamProviderUniqueKey = examProviderDto.ExamProviderUniqueKey,
+                PlanId = examProviderDto.PlanId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                UserId = examProviderDto.UserId,
+                CommercialRecordImg = examProviderDto.CommercialRecordImg,
+                Image = examProviderDto.Image
+            };
+
+            _modelContext.ExamProviders.Update(examProvider);
+            await _modelContext.SaveChangesAsync();
+            return examProvider;
+
+
+        }
+
+        public async Task<ExamProvider> CreateExamProvider(CreateExamProviderDTO examProviderDto)
         {
             try
             {
                 var examProvider = new ExamProvider
                 {
-                    ExamProviderUniqueKey = examProviderDto.ExamProviderUniqueKey?.Encrypt(),
+                    ExamProviderUniqueKey = examProviderDto.ExamProviderUniqueKey/*?.Encrypt()*/,
                     PlanId = examProviderDto.PlanId,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
