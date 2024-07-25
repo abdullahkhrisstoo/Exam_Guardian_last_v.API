@@ -469,7 +469,7 @@ namespace Exam_Guardian.core.Data
                 entity.Property(e => e.TestimonialId)
                     .HasColumnType("NUMBER")
                     .ValueGeneratedOnAdd()
-                    .HasColumnName("TESTIMONIALID");
+                    .HasColumnName("TESTIMONIAL_ID");
 
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("DATE")
