@@ -158,7 +158,7 @@ namespace Exam_Guardian.infra.Repository
             {
                 var query = _modelContext.Testimonials.AsQueryable();
 
-                var testimonials = await query
+                var testimonials = await query.Where(e=>e.TestimonialStateId==stateId)
 
                 .Select(t => new TestimonialWithExamProviderDTO
                 {
