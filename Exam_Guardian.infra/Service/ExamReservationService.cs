@@ -143,10 +143,7 @@ namespace Exam_Guardian.infra.Service
             return _examReservationRepository.GetExamReservationDependsProctor();
         }
 
-        public async Task<IEnumerable<ExamReservation>> GetAllExamReservationsByProctorId(int id)
-        {
-            return await _examReservationRepository.GetAllExamReservationsByProctorId(id);
-        }
+        
 
         async Task<IEnumerable<TimeSlotsViewModel>> IExamReservationService.GetTimeSlots()
         {
@@ -156,6 +153,11 @@ namespace Exam_Guardian.infra.Service
         public async Task<IEnumerable<ExamReservationDTO>> GetAllExamReservationsByExamId(decimal examId)
         {
             return await _examReservationRepository.GetAllExamReservationsByExamId(examId);
+        }
+
+        public async Task<IEnumerable<ExamReservationProctorDTO>> GetAllExamReservationsByProctorId(decimal userId)
+        {
+            return await _examReservationRepository.GetAllExamReservationsByProctorId(userId);
         }
     }
 

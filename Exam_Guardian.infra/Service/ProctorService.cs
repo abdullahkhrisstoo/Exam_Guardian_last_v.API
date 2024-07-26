@@ -35,9 +35,9 @@ namespace Exam_Guardian.infra.Service
             return _proctorRepo.GetProctorsByExamReservationId(examReservationId);
         }
 
-        public Task UpdateProctor(decimal id, CreateAccountViewModel createAccountViewModel)
+        public Task UpdateProctor(UpdateAccountDTO createAccountViewModel)
         {
-            return _proctorRepo.UpdateProctor(id, createAccountViewModel);
+            return _proctorRepo.UpdateProctor(createAccountViewModel);
         }
     }
 }

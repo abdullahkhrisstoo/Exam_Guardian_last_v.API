@@ -132,26 +132,7 @@ namespace Exam_Guardian.API.Controllers
         }
 
 
-        [HttpGet("{proctorId}")]
-        //  [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
-        public async Task<IActionResult> GetAllExamReservationsByProctorId(int proctorId)
-        {
-            try
-            {
-                var result = await _examReservationService.GetAllExamReservationsByProctorId(proctorId);
-                if (result == null || !result.Any())
-                {
-                    return this.ApiResponseNotFound("Exam Reservation not found", result);
-                }
-                else { return this.ApiResponseOk("All exam reservations by proctor ID retrieved successfully", result); }
-
-            }
-            catch (Exception ex)
-            {
-                return this.ApiResponseServerError(ex, new { ProctorId = proctorId });
-            }
-        }
-
+   
 
         [HttpGet("{examId}")]
         public async Task<ActionResult<ApiResponseModel<IEnumerable<ExamReservationDTO>>>> GetAllExamReservationsByExamId(decimal examId)
@@ -169,6 +150,33 @@ namespace Exam_Guardian.API.Controllers
             }
 
             var response = new ApiResponseModel<IEnumerable<ExamReservationDTO>>
+            {
+                Message = "Reservations retrieved successfully",
+                Status = 200,
+                Data = reservations
+            };
+
+            return Ok(response);
+        }
+
+
+
+        [HttpGet("{proctorId}")]
+        public async Task<ActionResult<ApiResponseModel<IEnumerable<ExamReservationProctorDTO>>>> GetAllExamReservationsByProctorId(decimal proctorId)
+        {
+            var reservations = await _examReservationService.GetAllExamReservationsByProctorId(proctorId);
+
+            if (reservations == null || !reservations.Any())
+            {
+                return NotFound(new ApiResponseModel<IEnumerable<ExamReservationProctorDTO>>
+                {
+                    Message = "No reservations found for the provided exam ID",
+                    Status = 404,
+                    Data = null
+                });
+            }
+
+            var response = new ApiResponseModel<IEnumerable<ExamReservationProctorDTO>>
             {
                 Message = "Reservations retrieved successfully",
                 Status = 200,

@@ -93,12 +93,12 @@ namespace Exam_Guardian.API.Controllers
         }
 
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProctor(decimal id,[FromBody] CreateAccountViewModel createAccountViewModel)
+        [HttpPut]
+        public async Task<IActionResult> UpdateProctor([FromBody] UpdateAccountDTO createAccountViewModel)
         {
             try
             {
-               await  _proctorService.UpdateProctor(id,createAccountViewModel);
+               await  _proctorService.UpdateProctor(createAccountViewModel);
                
                 return this.ApiResponseOk("Proctors Updated successfully",new { });
             }

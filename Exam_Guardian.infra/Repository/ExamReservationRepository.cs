@@ -132,8 +132,25 @@ namespace Exam_Guardian.infra.Repository
             var res = await _modelContext.ExamReservations.Where(x => x.UserId == id).ToListAsync();
             return res;
         }
+        public async Task<IEnumerable<ExamReservationProctorDTO>> GetAllExamReservationsByProctorId(decimal userId)
+        {
+            var reservations = await _modelContext.ExamReservations
+                .Where(x => x.UserId == userId)
+                .Include(e=>e.Exam)
+                .Select(e => new ExamReservationProctorDTO
+                {
+                    ExamReservationId = e.ExamReservationId,
+                    StartDate = e.StartDate,
+                    EndDate = e.EndDate,
+                    ProctorTokenEmail = e.ProctorTokenEmail,
+                    CreatedAt = e.CreatedAt,
+                    UpdatedAt = e.UpdatedAt,
+                    StudentName = e.StudentName,
+                })
+                .ToListAsync();
 
-
+            return reservations;
+        }
         public async Task<IEnumerable<ExamReservationDTO>> GetAllExamReservationsByExamId(decimal examId)
         {
             var reservations = await _modelContext.ExamReservations
