@@ -5,7 +5,6 @@ using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.core.Utilities.UserRole;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TheLearningHub.API.Controllers;
 
 namespace Exam_Guardian.API.Controllers
 {

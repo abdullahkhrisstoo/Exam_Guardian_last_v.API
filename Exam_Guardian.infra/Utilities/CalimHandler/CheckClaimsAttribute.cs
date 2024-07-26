@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TheLearningHub.API.Controllers
+namespace Exam_Guardian.core.Utilities.CalimHandler
 {
+
     public class CheckClaimsAttribute : Attribute, IAuthorizationFilter
     {
         private readonly string _claimType= "RoleId";

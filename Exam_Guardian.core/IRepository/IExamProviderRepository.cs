@@ -17,9 +17,9 @@ namespace Exam_Guardian.core.IRepository
         Task<GetExamProviderByUserIdDto> GetExamProvidersByUserId(int id);
 
         Task<List<ExamProvider>> GetTopExamProvider(int count);
-        Task<ExamProvider> CreateExamProvider(CreateExamProviderDTO examProviderDto); 
+        Task<ExamProvider> CreateExamProvider(CreateExamProviderDTO examProviderDto);
 
 
-
+        Task<ExamProviderDTO> GetAllExamProviderByExamProviderName(string name);
     }
 }

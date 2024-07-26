@@ -2,7 +2,7 @@
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepo;
 using Exam_Guardian.core.IService;
-
+using Exam_Guardian.core.Utilities.UserRole;
 
 namespace Exam_Guardian.infra.Service
 {
@@ -43,7 +43,7 @@ namespace Exam_Guardian.infra.Service
                 {
                     var tokenService = new TokenService();
 
-                    var tokenGenerated = _tokenService.GenerateToken(roleId, userId, 120);
+                    var tokenGenerated = _tokenService.GenerateToken(roleId, userId.ToString(), 120);
                     userData.Token = tokenGenerated;
                     return userData;
                 }
@@ -62,6 +62,14 @@ namespace Exam_Guardian.infra.Service
 
        
         public async Task<UserDataViewModel> GetUserById(int id) => await _authRepository.GetUserById(id);
+
+
+        public  string GenerateStudentToken(string userId) {
+
+
+           return  _tokenService.GenerateToken(UserRoleConstant.Student, userId, 1000);
+        
+        }
 
 
         public async Task<int> UpdateName(UpdateNameViewModel update)

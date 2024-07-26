@@ -1,19 +1,20 @@
 ﻿using Exam_Guardian.core.Data;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.CalimHandler;
 using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.core.Utilities.UserRole;
 using Exam_Guardian.infra.Repo;
 using Exam_Guardian.infra.Service;
 using Microsoft.AspNetCore.Authentication;
-//using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Policy;
-using TheLearningHub.API.Controllers;
-//todo: AuthController retived
+
 namespace Exam_Guardian.API.Controllers
 {
     [Route("api/[controller]/[action]")]
@@ -24,8 +25,10 @@ namespace Exam_Guardian.API.Controllers
         private readonly IEmailService _emailService;
         private readonly IPlanService _planService;
         private readonly IGoogleAuthService _googleAuthService;
-
-        public AuthController(IAuthService authService, IEmailService emailService, IPlanService planService, IGoogleAuthService googleAuthService)
+    
+        public AuthController(IAuthService authService,
+            IEmailService emailService, 
+            IPlanService planService, IGoogleAuthService googleAuthService)
         {
             _authService = authService;
             _emailService = emailService;
@@ -233,7 +236,39 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
+        private string ExtractCompanyClaimFromToken(string token,string claim)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+            return jwtToken?.Claims.FirstOrDefault(c => c.Type == claim)?.Value;
+        }
 
+        [HttpGet]
+        [ValidateJwtTokenExamProvider]
+        public IActionResult GetTestData2()
+        {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+            var userId = ExtractCompanyClaimFromToken(token, "userId");
+            var company = ExtractCompanyClaimFromToken(token, "company");
+            var newToken=_authService.GenerateStudentToken(company+userId);
+            
+            //Response.Cookies.Append("examGuardianToken", "aaa", new CookieOptions
+            //{
+            //    HttpOnly = true,
+            //    Secure = false, // Set to true if using HTTPS
+            //    SameSite = SameSiteMode.None, // Allow cross-site cookies
+            //    Domain = "google.com", // Set the domain to your IP address
+            //    Path = "/", // Cookie valid for the entire site
+
+            //    Expires = DateTimeOffset.UtcNow.AddMinutes(10) // Set expiration as needed
+            //});
+
+            // Construct the redirect URL
+            var redirectUrl = $"https://google.com?{newToken}";
+
+            // Return a Redirect response to the Angular page
+            return Ok(newToken);
+        }
 
 
 

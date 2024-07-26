@@ -15,6 +15,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Exam_Guardian.API.Attributes;
+
 namespace Exam_Guardian.API
 {
     public class Program
@@ -134,6 +136,7 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IAboutRepository, AboutRepository>();
             builder.Services.AddScoped<IExamInfoRepository, ExamInfoRepository>();
 
+            ServiceLocator.ServiceProvider = builder.Services.BuildServiceProvider();
             builder.Services.AddControllers()
                           .AddJsonOptions(options =>
                           {

@@ -18,7 +18,7 @@ namespace Exam_Guardian.core.IService
 
         Task<List<ExamProvider>> GetTopExamProvider(int count);
         Task<ExamProvider> CreateExamProvider(CreateExamProviderDTO examProviderDto);
-
+        Task<ExamProviderDTO> GetAllExamProviderByExamProviderName(string name);
 
     }
 }

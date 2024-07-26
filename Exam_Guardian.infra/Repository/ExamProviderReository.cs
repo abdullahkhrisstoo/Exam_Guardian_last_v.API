@@ -39,7 +39,24 @@ namespace Exam_Guardian.infra.Repository
             }).ToListAsync();
 
         }
-     
+
+
+        public async Task<ExamProviderDTO> GetAllExamProviderByExamProviderName(string name)
+        {
+
+            return await _modelContext.ExamProviders.Include(info => info.User).Select(e => new ExamProviderDTO
+            {
+                ExamProviderId = e.ExamProviderId,
+                PlanId = e.PlanId,
+                CreatedAt = e.CreatedAt,
+                Image = e.Image,
+                ExamProviderUniqueKey = e.ExamProviderUniqueKey,
+                ExamProviderName = e.User.FirstName,
+                State = e.User.State != null ? e.User.State.StatusName : "Waiting"
+            }).Where(e => e.ExamProviderName == name).FirstOrDefaultAsync();
+
+        }
+
 
         public async Task<ExamProvider> GetExamProvidersById(int id)
         {
@@ -179,6 +196,7 @@ namespace Exam_Guardian.infra.Repository
         {
             try
             {
+                examProviderDto.ExamProviderUniqueKey= Guid.NewGuid().ToString();
                 var examProvider = new ExamProvider
                 {
                     ExamProviderUniqueKey = examProviderDto.ExamProviderUniqueKey/*?.Encrypt()*/,

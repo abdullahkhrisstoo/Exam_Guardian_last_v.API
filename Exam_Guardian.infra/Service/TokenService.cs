@@ -13,7 +13,7 @@ namespace Exam_Guardian.infra.Service
 {
     public class TokenService : ITokenService
     {
-        public string GenerateToken(int roleId, int userId, int expirationMinutes)
+        public string GenerateToken(int roleId, string userId, int expirationMinutes)
         {
 
             var key = TokenConstant.symmetricSecurityKey;
