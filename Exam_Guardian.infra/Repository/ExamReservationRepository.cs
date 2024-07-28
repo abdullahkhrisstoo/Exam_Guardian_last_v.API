@@ -5,6 +5,7 @@ using Exam_Guardian.core.ICommon;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.Mapper;
 using Exam_Guardian.core.Utilities.PackagesConstants;
+using Exam_Guardian.core.Utilities.UserRole;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -136,7 +137,7 @@ namespace Exam_Guardian.infra.Repository
         {
             var reservations = await _modelContext.ExamReservations
                 .Where(x => x.UserId == userId)
-                .Include(e=>e.Exam)
+                .Include(e => e.Exam)
                 .Select(e => new ExamReservationProctorDTO
                 {
                     ExamReservationId = e.ExamReservationId,
@@ -181,6 +182,115 @@ namespace Exam_Guardian.infra.Repository
         {
             throw new NotImplementedException();
         }
+
+        public async Task<IEnumerable<AvailableTimeDTO>> GetAvailableTimesByDate(DateTime dateTime, int duration, bool is24HourFormat)
+        {
+            List<Tuple<TimeSpan, TimeSpan>> reservations = await FetchReservations(dateTime);
+            int numberOfProctors = await _modelContext.UserInfos.CountAsync(r => r.RoleId == UserRoleConstant.Proctor);
+            List<string> availableSlots = GetAvailableSlots("00:00", "23:59", duration, reservations, numberOfProctors);
+
+            var availableTimeDTOs = availableSlots.Select(slot =>
+            {
+                var times = slot.Split(' ');
+                var start = TimeSpan.Parse(times[0]);
+                var end = TimeSpan.Parse(times[2]);
+
+                var startTimeString = FormatTime(start, is24HourFormat);
+                var endTimeString = FormatTime(end, is24HourFormat);
+
+                return new AvailableTimeDTO
+                {
+                    StartTime = dateTime.Date + start,
+                    EndTime = dateTime.Date + end,
+                    StartTimeFormatted = startTimeString,
+                    EndTimeFormatted = endTimeString,
+                    Format = is24HourFormat ? "24-hour" : "12-hour"
+                };
+            }).ToList();
+
+            return availableTimeDTOs;
+        }
+
+        private async Task<List<Tuple<TimeSpan, TimeSpan>>> FetchReservations(DateTime dateOfDay)
+        {
+            return await _modelContext.ExamReservations
+                .Where(r => r.StartDate.HasValue && r.EndDate.HasValue && r.StartDate.Value.Date == dateOfDay.Date)
+                .Select(r => new Tuple<TimeSpan, TimeSpan>(r.StartDate.Value.TimeOfDay, r.EndDate.Value.TimeOfDay))
+                .ToListAsync();
+        }
+
+        private List<string> GetAvailableSlots(string startTimeStr, string endTimeStr, int durationMinutes, List<Tuple<TimeSpan, TimeSpan>> reservations, int numberOfProctors)
+        {
+            reservations.Sort((x, y) => x.Item1.CompareTo(y.Item1));
+
+            TimeSpan startTime = TimeSpan.Parse(startTimeStr);
+            TimeSpan endTime = TimeSpan.Parse(endTimeStr);
+
+            List<string> timeSlots = new List<string>();
+            TimeSpan examDuration = TimeSpan.FromMinutes(durationMinutes);
+
+            TimeSpan currentTime = startTime;
+            while (currentTime + examDuration <= endTime)
+            {
+                TimeSpan endOfSlot = currentTime + examDuration;
+
+                if (HasAvailableProctors(currentTime, endOfSlot, reservations, numberOfProctors))
+                {
+                    timeSlots.Add($"{currentTime} to {endOfSlot}");
+                }
+
+                currentTime = currentTime.Add(TimeSpan.FromMinutes(1));
+            }
+
+            return timeSlots;
+        }
+
+        private bool HasAvailableProctors(TimeSpan start, TimeSpan end, List<Tuple<TimeSpan, TimeSpan>> reservations, int numberOfProctors)
+        {
+            int left = 0;
+            int right = reservations.Count - 1;
+
+            while (left <= right)
+            {
+                int mid = left + (right - left) / 2;
+                var reservation = reservations[mid];
+
+                if (reservation.Item2 <= start)
+                {
+                    left = mid + 1;
+                }
+                else if (reservation.Item1 >= end)
+                {
+                    right = mid - 1;
+                }
+                else
+                {
+                    int concurrentExams = 0;
+                    for (int i = left; i <= right; i++)
+                    {
+                        if (reservations[i].Item1 < end && reservations[i].Item2 > start)
+                        {
+                            concurrentExams++;
+                            if (concurrentExams >= numberOfProctors)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
+
+            return true;
+        }
+
+        private string FormatTime(TimeSpan time, bool is24HourFormat)
+        {
+            DateTime dateTime = DateTime.Today.Add(time);
+            return is24HourFormat ? dateTime.ToString("HH:mm") : dateTime.ToString("hh:mm tt");
+        }
+
     }
+
 
 }

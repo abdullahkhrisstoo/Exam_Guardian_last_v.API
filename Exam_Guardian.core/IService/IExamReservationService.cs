@@ -15,10 +15,13 @@ namespace Exam_Guardian.core.IService
         Task<int> UpdateExamReservation(UpdateExamReservationDTO updateExamReservationViewModel);
         Task<ExamReservationDTO> GetExamReservationById(int id);
         Task<IEnumerable<ExamReservationDTO>> GetAllExamReservations();
-        Task<IEnumerable<TimeSlotsViewModel>> GetTimeSlots();
+        Task<IEnumerable<UnavailableTimeViewModel>> GetTimeSlot();
         Task<IEnumerable<ExamReservation>> GetExamReservationDependsProctor();
         Task<IEnumerable<ExamReservationDTO>> GetAllExamReservationsByExamId(decimal examId);
-       
+
         Task<IEnumerable<ExamReservationProctorDTO>> GetAllExamReservationsByProctorId(decimal userId);
+        Task<IEnumerable<AvailableTimeDTO>> GetAvailableTimesByDate(DateTime dateTime, int duration, bool is24HourFormat);
+
+
     }
 }

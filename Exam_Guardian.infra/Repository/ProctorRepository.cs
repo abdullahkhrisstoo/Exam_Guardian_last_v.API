@@ -70,9 +70,9 @@ namespace Exam_Guardian.infra.Repository
                 userCredential.Phonenum = updateAccountDTO.Phonenum;
                 userCredential.UpdatedAt = DateTime.Now;
 
-                _modelContext.UserInfos.Update(userInfo);
-            await _modelContext.SaveChangesAsync();
-            _modelContext.UserCredentials.Update(userCredential);
+                ////_modelContext.UserInfos.Update(userInfo);
+            //await _modelContext.SaveChangesAsync();
+            //_modelContext.UserCredentials.Update(userCredential);
             await _modelContext.SaveChangesAsync();
 
         }

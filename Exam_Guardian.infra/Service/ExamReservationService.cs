@@ -45,7 +45,7 @@ namespace Exam_Guardian.infra.Service
             return await _examReservationRepository.GetAllExamReservations();
         }
         //todo:
-        public async Task<IEnumerable<UnavailableTimeViewModel>> GetTimeSlots()
+        public async Task<IEnumerable<UnavailableTimeViewModel>> GetTimeSlot()
         {
             var timeSlots = await _examReservationRepository.GetTimeSlots();
 
@@ -57,7 +57,7 @@ namespace Exam_Guardian.infra.Service
 
                 allTimeSlots.AddRange(splitTimeSlots);
             }
-            var aggregatedTimeSlots = AggregateTimeSlots(allTimeSlots);
+            var aggregatedTimeSlots = AggregateTimeSlot(allTimeSlots);
 
 
             List<UnavailableTimeViewModel> unavailableTimeList = new List<UnavailableTimeViewModel>();
@@ -75,7 +75,6 @@ namespace Exam_Guardian.infra.Service
 
             return unavailableTimeList;
         }
-
 
         private IEnumerable<TimeSlotsViewModel> SplitTimeSlot(TimeSlotsViewModel slot)
         {
@@ -110,8 +109,7 @@ namespace Exam_Guardian.infra.Service
             }
         }
 
-
-        private IEnumerable<TimeSlotsViewModel> AggregateTimeSlots(IEnumerable<TimeSlotsViewModel> timeSlots)
+        private IEnumerable<TimeSlotsViewModel> AggregateTimeSlot(IEnumerable<TimeSlotsViewModel> timeSlots)
         {
             var parsedTimeSlots = timeSlots.Select(ts => new
             {
@@ -138,6 +136,7 @@ namespace Exam_Guardian.infra.Service
             return groupedSlots;
         }
 
+
         public Task<IEnumerable<ExamReservation>> GetExamReservationDependsProctor()
         {
             return _examReservationRepository.GetExamReservationDependsProctor();
@@ -145,10 +144,6 @@ namespace Exam_Guardian.infra.Service
 
         
 
-        async Task<IEnumerable<TimeSlotsViewModel>> IExamReservationService.GetTimeSlots()
-        {
-            return await _examReservationRepository.GetTimeSlots();
-        }
 
         public async Task<IEnumerable<ExamReservationDTO>> GetAllExamReservationsByExamId(decimal examId)
         {
@@ -159,7 +154,16 @@ namespace Exam_Guardian.infra.Service
         {
             return await _examReservationRepository.GetAllExamReservationsByProctorId(userId);
         }
+
+        public async Task<IEnumerable<AvailableTimeDTO>> GetAvailableTimesByDate(DateTime dateTime, int duration, bool is24HourFormat)
+        {
+            return await _examReservationRepository.GetAvailableTimesByDate(dateTime , duration, is24HourFormat);
+
+        }
+
+      
     }
+
 
 }
 

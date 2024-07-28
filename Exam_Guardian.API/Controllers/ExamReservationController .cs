@@ -107,13 +107,14 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-        [HttpGet("timeslots")]
+        [HttpGet()]
         //  [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetTimeSlots()
         {
             try
+
             {
-                var result = await _examReservationService.GetTimeSlots();
+                var result = await _examReservationService.GetTimeSlot();
                 if (result == null || !result.Any())
                 {
                     return this.ApiResponseNotFound("Time Slots not found", result);
@@ -185,6 +186,16 @@ namespace Exam_Guardian.API.Controllers
         }
 
 
+        [HttpGet()]
+        public async Task<ActionResult> GetAvailableTimesByDate(DateTime dateTime, int duration, bool is24HourFormat)
+        {
+            var reservations = await _examReservationService.GetAvailableTimesByDate( dateTime,  duration, is24HourFormat);
+
+            return Ok(reservations);
+        }
+
+
+       
 
     }
 }
