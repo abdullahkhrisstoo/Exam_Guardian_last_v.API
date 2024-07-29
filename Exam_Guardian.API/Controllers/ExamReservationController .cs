@@ -12,10 +12,13 @@ namespace Exam_Guardian.API.Controllers
     public class ExamReservationController : ControllerBase
     {
         private readonly IExamReservationService _examReservationService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public ExamReservationController(IExamReservationService examReservationService)
+ 
+        public ExamReservationController(IExamReservationService examReservationService, IHttpClientFactory httpClientFactory)
         {
             _examReservationService = examReservationService;
+            _httpClientFactory = httpClientFactory;
         }
 
 

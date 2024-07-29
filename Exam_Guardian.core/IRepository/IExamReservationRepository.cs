@@ -23,7 +23,7 @@ namespace Exam_Guardian.core.IRepository
 
         Task<IEnumerable<AvailableTimeDTO>> GetAvailableTimesByDate(DateTime dateTime, int duration, bool is24HourFormat);
 
-
+         Task<List<ProctorReservationDTO>> GetAvailableProctors(DateTime StartTime, DateTime EndTime, DateTime ReservationDate);
     }
 
 }

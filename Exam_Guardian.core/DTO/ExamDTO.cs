@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 
 namespace Exam_Guardian.core.DTO
 {
-    public class UpdateExamInfoDTO
+    public class ExamDTO
     {
         public decimal ExamId { get; set; }
-        public string? ExamTitle { get; set; }
-        public string? ExamImage { get; set; }
+        public string? ExamName { get; set; }
+        public decimal? ExamDuration { get; set; }
+        public string? ExamDescription { get; set; }
+        public decimal? Price { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public decimal? ExamProviderId { get; set; }
-        public decimal? Price { get; set; }
+        public DateTime? DeletedAt { get; set; }
     }
+
 }

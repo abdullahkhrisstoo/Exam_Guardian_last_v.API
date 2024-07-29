@@ -18,10 +18,13 @@ namespace Exam_Guardian.core.Data
 
         public virtual DbSet<About> Abouts { get; set; } = null!;
         public virtual DbSet<Aboutpoint> Aboutpoints { get; set; } = null!;
+        public virtual DbSet<Card> Cards { get; set; } = null!;
         public virtual DbSet<Complement> Complements { get; set; } = null!;
         public virtual DbSet<ContactU> ContactUs { get; set; } = null!;
         public virtual DbSet<ExamInfo> ExamInfos { get; set; } = null!;
         public virtual DbSet<ExamProvider> ExamProviders { get; set; } = null!;
+        public virtual DbSet<ExamProviderAction> ExamProviderActions { get; set; } = null!;
+        public virtual DbSet<ExamProviderLink> ExamProviderLinks { get; set; } = null!;
         public virtual DbSet<ExamReservation> ExamReservations { get; set; } = null!;
         public virtual DbSet<ExamReservationState> ExamReservationStates { get; set; } = null!;
         public virtual DbSet<Plan> Plans { get; set; } = null!;
@@ -39,7 +42,7 @@ namespace Exam_Guardian.core.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseOracle("User Id=C##SYS_Guardian;Password=0000;Data Source=localhost:1521/xe");
+                optionsBuilder.UseOracle("User Id=C##SYS_Guardian;Password=0000;Data Source=localhost:1521/xe;");
             }
         }
 
@@ -87,6 +90,40 @@ namespace Exam_Guardian.core.Data
                     .HasForeignKey(d => d.AboutId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("ABOUTPOINTS_FK1");
+            });
+
+            modelBuilder.Entity<Card>(entity =>
+            {
+                entity.ToTable("CARDS");
+
+                entity.Property(e => e.CardId)
+                    .HasColumnType("NUMBER")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("CARD_ID");
+
+                entity.Property(e => e.CardCvv)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .HasColumnName("CARD_CVV");
+
+                entity.Property(e => e.CardExpireDate)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("CARD_EXPIRE_DATE");
+
+                entity.Property(e => e.CardHolderName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("CARD_HOLDER_NAME");
+
+                entity.Property(e => e.CardNumber)
+                    .HasMaxLength(16)
+                    .IsUnicode(false)
+                    .HasColumnName("CARD_NUMBER");
+
+                entity.Property(e => e.CardValue)
+                    .HasColumnType("NUMBER(10,2)")
+                    .HasColumnName("CARD_VALUE");
             });
 
             modelBuilder.Entity<Complement>(entity =>
@@ -200,6 +237,10 @@ namespace Exam_Guardian.core.Data
                     .IsUnicode(false)
                     .HasColumnName("EXAM_TITLE");
 
+                entity.Property(e => e.Price)
+                    .HasColumnType("NUMBER(5,2)")
+                    .HasColumnName("PRICE");
+
                 entity.Property(e => e.UpdatedAt)
                     .HasPrecision(6)
                     .HasColumnName("UPDATED_AT");
@@ -263,6 +304,54 @@ namespace Exam_Guardian.core.Data
                     .WithMany(p => p.ExamProviders)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("EXAM_PROVIDER_FK1");
+            });
+
+            modelBuilder.Entity<ExamProviderAction>(entity =>
+            {
+                entity.ToTable("EXAM_PROVIDER_ACTION");
+
+                entity.Property(e => e.ExamProviderActionId)
+                    .HasColumnType("NUMBER")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("EXAM_PROVIDER_ACTION_ID");
+
+                entity.Property(e => e.ActionName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("ACTION_NAME");
+            });
+
+            modelBuilder.Entity<ExamProviderLink>(entity =>
+            {
+                entity.ToTable("EXAM_PROVIDER_LINK");
+
+                entity.Property(e => e.ExamProviderLinkId)
+                    .HasColumnType("NUMBER")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("EXAM_PROVIDER_LINK_ID");
+
+                entity.Property(e => e.ActionId)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("ACTION_ID");
+
+                entity.Property(e => e.ExamProviderId)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("EXAM_PROVIDER_ID");
+
+                entity.Property(e => e.LinkPath)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("LINK_PATH");
+
+                entity.HasOne(d => d.Action)
+                    .WithMany(p => p.ExamProviderLinks)
+                    .HasForeignKey(d => d.ActionId)
+                    .HasConstraintName("EXAM_PROVIDER_LINK_FK1");
+
+                entity.HasOne(d => d.ExamProvider)
+                    .WithMany(p => p.ExamProviderLinks)
+                    .HasForeignKey(d => d.ExamProviderId)
+                    .HasConstraintName("EXAM_PROVIDER_LINK_FK2");
             });
 
             modelBuilder.Entity<ExamReservation>(entity =>

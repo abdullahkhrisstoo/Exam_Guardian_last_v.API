@@ -60,6 +60,7 @@ namespace Exam_Guardian.infra.Repository
                 ExamImage = exam.ExamImage,
                 CreatedAt = exam.CreatedAt,
                 UpdatedAt = exam.UpdatedAt,
+                Price = exam.Price,
                 ExamProviderId = exam.ExamProviderId
             };
         }
@@ -76,6 +77,7 @@ namespace Exam_Guardian.infra.Repository
             exam.ExamImage = updateExamDto.ExamImage ?? exam.ExamImage;
             exam.CreatedAt = updateExamDto.CreatedAt ?? exam.CreatedAt;
             exam.UpdatedAt = updateExamDto.UpdatedAt ?? DateTime.UtcNow;
+            exam.Price = updateExamDto.Price ?? exam.Price;
             exam.ExamProviderId = updateExamDto.ExamProviderId ?? exam.ExamProviderId;
 
             _context.ExamInfos.Update(exam);
@@ -110,6 +112,7 @@ namespace Exam_Guardian.infra.Repository
                     ExamImage = e.ExamImage,
                     CreatedAt = e.CreatedAt,
                     UpdatedAt = e.UpdatedAt,
+                    Price = e.Price,
                     ExamProviderId = e.ExamProviderId
                 })
                 .ToListAsync();
@@ -125,9 +128,36 @@ namespace Exam_Guardian.infra.Repository
                     ExamImage = e.ExamImage,
                     CreatedAt = e.CreatedAt,
                     UpdatedAt = e.UpdatedAt,
+                    Price= e.Price,
                     ExamProviderId = e.ExamProviderId
                 })
                 .ToListAsync();
+        }
+
+        public async Task<ExamInfoDTO> GetExamByExamName(string examName)
+        {
+            var examInfo = await _context.ExamInfos
+                .Where(e => e.ExamTitle == examName)
+                .Select(e => new ExamInfoDTO
+                {
+                    ExamId = e.ExamId,
+                    ExamTitle = e.ExamTitle,
+                    ExamImage = e.ExamImage,
+                    CreatedAt = e.CreatedAt,
+                    UpdatedAt = e.UpdatedAt,
+                    Price=e.Price,
+                    ExamProviderId = e.ExamProviderId
+                })
+                .FirstOrDefaultAsync();
+
+            if (examInfo == null)
+            {
+              
+                throw new KeyNotFoundException($"Exam with title '{examName}' not found.");
+              
+            }
+
+            return examInfo;
         }
     }
 }

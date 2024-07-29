@@ -89,7 +89,7 @@ namespace Exam_Guardian.API
                 options.AddPolicy("AllowAngularDev",
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200", "http://192.168.1.17:4200")
+                        builder.WithOrigins("http://localhost:4200", "http://192.168.1.17:4200", "https://localhost:7236")
                                .AllowAnyHeader()
                                .AllowAnyMethod()
                                .AllowCredentials(); // Allow credentials (cookies, authorization headers)
@@ -120,9 +120,8 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IStatisticsService, StatisticsService>();
             builder.Services.AddScoped<IAboutService, AboutService>();
             builder.Services.AddScoped<IExamInfoService, ExamInfoService>();
-
-
-
+            builder.Services.AddScoped<IExamProviderActionService, ExamProviderActionService>();
+            builder.Services.AddScoped<IExamProviderLinkService, ExamProviderLinkService>();
 
             //todo: repo
             builder.Services.AddScoped<IExamProviderRepository, ExamProviderRepository>();
@@ -135,6 +134,9 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IContactUsRepository, ContactUsRepository>();
             builder.Services.AddScoped<IAboutRepository, AboutRepository>();
             builder.Services.AddScoped<IExamInfoRepository, ExamInfoRepository>();
+            builder.Services.AddScoped<IExamInfoService, ExamInfoService>();
+            builder.Services.AddScoped<IExamProviderActionRepository, ExamProviderActionRepository>();
+            builder.Services.AddScoped<IExamProviderLinkRepository, ExamProviderLinkRepository>();
 
             ServiceLocator.ServiceProvider = builder.Services.BuildServiceProvider();
             builder.Services.AddControllers()
@@ -148,6 +150,8 @@ namespace Exam_Guardian.API
             {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
+
+            builder.Services.AddHttpClient();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

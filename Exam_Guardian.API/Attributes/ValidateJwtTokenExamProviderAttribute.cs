@@ -16,8 +16,9 @@ namespace Exam_Guardian.API.Controllers
        
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-
-            var  _examService = ServiceLocator.ServiceProvider.GetService<IExamService>();
+            try
+            {
+                var  _examService = ServiceLocator.ServiceProvider.GetService<IExamService>();
             var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
             if (string.IsNullOrEmpty(token))
             {
@@ -55,8 +56,7 @@ namespace Exam_Guardian.API.Controllers
                 ClockSkew = TimeSpan.Zero
             };
 
-            try
-            {
+            
                 tokenHandler.ValidateToken(token, validationParameters, out _);
             }
             catch

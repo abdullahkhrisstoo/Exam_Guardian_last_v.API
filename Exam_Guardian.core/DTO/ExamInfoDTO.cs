@@ -13,6 +13,7 @@ namespace Exam_Guardian.core.DTO
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public decimal? ExamProviderId { get; set; }
+        public decimal? Price { get; set; }
 
     }
 }

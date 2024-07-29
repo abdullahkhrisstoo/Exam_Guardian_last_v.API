@@ -58,21 +58,19 @@ namespace Exam_Guardian.infra.Repository
 
         public async Task UpdateProctor(UpdateAccountDTO updateAccountDTO)
         {
-            var userInfo = await _modelContext.UserInfos.FirstOrDefaultAsync(e=>e.UserId==updateAccountDTO.UserId);
+
+            var userInfo = await _modelContext.UserInfos.FirstOrDefaultAsync(e => e.UserId == updateAccountDTO.UserId);
             var userCredential = await _modelContext.UserCredentials.FirstOrDefaultAsync(e => e.CredentialId == userInfo.CredentialId);
 
-            
-                userInfo.FirstName = updateAccountDTO.FirstName;
-                userInfo.LastName = updateAccountDTO.LastName;
-                userInfo.UpdatedAt = DateTime.Now;
 
-                userCredential.Email = updateAccountDTO.Email;
-                userCredential.Phonenum = updateAccountDTO.Phonenum;
-                userCredential.UpdatedAt = DateTime.Now;
+            userInfo.FirstName = updateAccountDTO.FirstName;
+            userInfo.LastName = updateAccountDTO.LastName;
+            userInfo.UpdatedAt = DateTime.Now;
 
-                ////_modelContext.UserInfos.Update(userInfo);
-            //await _modelContext.SaveChangesAsync();
-            //_modelContext.UserCredentials.Update(userCredential);
+            userCredential.Email = updateAccountDTO.Email;
+            userCredential.Phonenum = updateAccountDTO.Phonenum;
+            userCredential.UpdatedAt = DateTime.Now;
+           
             await _modelContext.SaveChangesAsync();
 
         }

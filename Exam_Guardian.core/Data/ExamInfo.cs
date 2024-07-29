@@ -16,6 +16,7 @@ namespace Exam_Guardian.core.Data
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public decimal? ExamProviderId { get; set; }
+        public decimal? Price { get; set; }
 
         public virtual ExamProvider? ExamProvider { get; set; }
         public virtual ICollection<ExamReservation> ExamReservations { get; set; }
