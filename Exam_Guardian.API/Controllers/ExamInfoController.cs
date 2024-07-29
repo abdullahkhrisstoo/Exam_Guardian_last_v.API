@@ -1,9 +1,17 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.api.ResponseHandler;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.CalimHandler;
 using Exam_Guardian.core.Utilities.ResponseHandler;
+using Exam_Guardian.core.Utilities.UserRole;
 using Exam_Guardian.infra.Service;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Net.Http;
+using System.Reflection;
+using System.Text.Json;
 
 namespace Exam_Guardian.API.Controllers
 {
@@ -13,10 +21,15 @@ namespace Exam_Guardian.API.Controllers
     {
 
         private readonly IExamInfoService _examInfoService;
-
-        public ExamInfoController(IExamInfoService examInfoService)
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IExamService _examService;
+        private readonly IExamProviderLinkService _examProviderLinkService;
+        public ExamInfoController(IExamInfoService examInfoService, IHttpClientFactory httpClientFactory, IExamService examService, IExamProviderLinkService examProviderLinkService)
         {
             _examInfoService = examInfoService;
+            _httpClientFactory = httpClientFactory;
+               _examService= examService;
+            _examProviderLinkService = examProviderLinkService;
         }
 
         [HttpPost]
@@ -32,7 +45,7 @@ namespace Exam_Guardian.API.Controllers
             return CreatedAtAction(nameof(GetExamById), new { id = exam.ExamId }, response);
         }
 
- 
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponseModel<ExamInfoDTO>>> GetExamById(decimal id)
         {
@@ -56,9 +69,9 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpPut]
-        public async Task<ActionResult<ApiResponseModel<bool>>> UpdateExam( [FromBody] UpdateExamInfoDTO updateExamDto)
+        public async Task<ActionResult<ApiResponseModel<bool>>> UpdateExam([FromBody] UpdateExamInfoDTO updateExamDto)
         {
-        
+
 
             var result = await _examInfoService.UpdateExamAsync(updateExamDto);
             if (!result)
@@ -79,7 +92,7 @@ namespace Exam_Guardian.API.Controllers
             });
         }
 
-    
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponseModel<bool>>> DeleteExam(decimal id)
         {
@@ -125,9 +138,222 @@ namespace Exam_Guardian.API.Controllers
                 Data = exams
             });
         }
+        /*
+            [HttpPost]
+        public async Task<IActionResult>  Login(LoginViewModel loginViewModel)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.PostAsJsonAsync($"{ApiConstants.ApiBaseUrl}:{ApiConstants.ApiPort}/api/auth/login", loginViewModel);
+            using (JsonDocument doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync()))
+            {
+                var root = doc.RootElement;
+                var resp = root.ValueKind;
+                bool success = root.GetProperty("success").GetBoolean();
+                if (success)
+                {
+                    var data = root.GetProperty("data");
+                    HttpContext.Session.SetString("userRole", data.GetProperty("roleId").GetInt32().ToString()??"");
+                    HttpContext.Session.SetString("userName", data.GetProperty("userName").GetString());
+                    HttpContext.Session.SetString("userEmail", data.GetProperty("userEmail").GetString());
+
+                    return Ok(Content(root.GetRawText(), "application/json").Content);
+                  // return RedirectHelper.RedirectByRoleName("Profile", "Admin");
+                }
+                else {
+                    return BadRequest(Content(root.GetRawText(), "application/json").Content);
+                    
+                }
+            }
+
+           
+        }*/
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetExamByName(string key, string examName)
+        {
+            var decodedExamName = WebUtility.UrlEncode(examName);
+            var client = _httpClientFactory.CreateClient();
+
+            var url = $"https://localhost:7185/api/Exam/GetExamByName/{key}?examName={decodedExamName}";
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<ApiResponse<ExamDTO>>(responseBody);
+
+            return Content(responseBody, "application/json");
+        }
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetExamDetailsByName(string key, string examName)
+        {
+            var decodedExamName = WebUtility.UrlEncode(examName);
+            var client = _httpClientFactory.CreateClient();
+            var url = $"https://localhost:7185/api/Exam/GetExamDetailsByName/{key}?examName={decodedExamName}";
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<ApiResponse<List<Exam>>>(responseBody);
+
+            return Content(responseBody, "application/json");
+        }
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetExamDetailsWithoutAnswersByName(string key, string examName)
+        {
+            var decodedExamName = WebUtility.UrlEncode(examName);
+            var client = _httpClientFactory.CreateClient();
+            var url = $"https://localhost:7185/api/Exam/GetExamDetailsWithoutAnwersByName/{key}?examName={decodedExamName}";
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<ApiResponse<List<Exam>>>(responseBody);
+
+            return Content(responseBody, "application/json");
+        }
+      
+        [HttpGet]
+        [CheckClaims(UserRoleConstant.StudentAuth)]
+        public async Task<IActionResult> GetExamByName(string examName)
+        {
+            var companyClaim = User.Claims.FirstOrDefault(c => c.Type == "Company")?.Value;
+
+            if (companyClaim == null)
+            {
+                return BadRequest("Company claim is missing.");
+            }
+
+            var examProvider = await _examService.GetAllExamProviderByExamProviderName(companyClaim);
+
+            if (examProvider == null)
+            {
+                return NotFound("Exam provider not found.");
+            }
+
+            var key = examProvider.ExamProviderUniqueKey;
+
+            var link=(await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, MethodBase.GetCurrentMethod().Name)).FirstOrDefault();
+  
+            var decodedExamName = WebUtility.UrlEncode(examName);
+            var client = _httpClientFactory.CreateClient();
+            var url = $"{link.LinkPath}{key}?examName={decodedExamName}";
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<ApiResponse<ExamDTO>>(responseBody);
+
+            return Content(responseBody, "application/json");
+        }
+
+        [HttpGet]
+        [CheckClaims(UserRoleConstant.StudentAuth)]
+        public async Task<IActionResult> GetExamDetailsWithoutAnswersByName(string examName)
+        {
+            try
+            {
+                var companyClaim = User.Claims.FirstOrDefault(c => c.Type == "Company")?.Value;
+
+                if (companyClaim == null)
+                {
+                    return BadRequest("Company claim is missing.");
+                }
+
+                var examProvider = await _examService.GetAllExamProviderByExamProviderName(companyClaim);
+
+                if (examProvider == null)
+                {
+                    return NotFound("Exam provider not found.");
+                }
+
+                var key = examProvider.ExamProviderUniqueKey;
+                var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, "GetExamDetailsWithoutAnwersByName")).FirstOrDefault();
+
+                var decodedExamName = WebUtility.UrlEncode(examName);
+                var client = _httpClientFactory.CreateClient();
+                var url = $"{link.LinkPath}{key}?examName={decodedExamName}";
+                var response = await client.GetAsync(url);
+
+                response.EnsureSuccessStatusCode();
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                var result = JsonSerializer.Deserialize<ApiResponse<List<Exam>>>(responseBody);
+
+                if (result == null)
+                {
+                    return StatusCode(500, "Failed to deserialize the response.");
+                }
+
+                return Content(responseBody, "application/json");
+            }
+            catch (HttpRequestException httpRequestException)
+            {
+                return StatusCode(500, $"HTTP request error: {httpRequestException.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+            }
+        }
 
 
+        [HttpGet]
+        [CheckClaims(UserRoleConstant.SAdmin)]
+        public async Task<IActionResult> GetExamDetailsByName(string examName)
+        {
+            try
+            {
+                var companyClaim = User.Claims.FirstOrDefault(c => c.Type == "Company")?.Value;
 
-        
+                if (companyClaim == null)
+                {
+                    return BadRequest("Company claim is missing.");
+                }
+
+                var examProvider = await _examService.GetAllExamProviderByExamProviderName(companyClaim);
+
+                if (examProvider == null)
+                {
+                    return NotFound("Exam provider not found.");
+                }
+
+                var key = examProvider.ExamProviderUniqueKey;
+                var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, "GetExamDetailsByName")).FirstOrDefault();
+
+                var decodedExamName = WebUtility.UrlEncode(examName);
+                var client = _httpClientFactory.CreateClient();
+                var url = $"{link.LinkPath}{key}?examName={decodedExamName}";
+                var response = await client.GetAsync(url);
+
+                response.EnsureSuccessStatusCode();
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                var result = JsonSerializer.Deserialize<ApiResponse<List<Exam>>>(responseBody);
+
+                if (result == null)
+                {
+                    return StatusCode(500, "Failed to deserialize the response.");
+                }
+
+                return Content(responseBody, "application/json");
+            }
+            catch (HttpRequestException httpRequestException)
+            {
+                return StatusCode(500, $"HTTP request error: {httpRequestException.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet]
+        [CheckClaims(UserRoleConstant.StudentAuth)]
+        public async Task<IActionResult> GetClaims()
+        {
+            return Ok(User.Claims);
+
+        }
+   
     }
 }

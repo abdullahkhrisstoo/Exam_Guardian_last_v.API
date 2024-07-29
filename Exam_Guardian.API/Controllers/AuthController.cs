@@ -69,7 +69,7 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
-
+        
         //[HttpPut]
         //public async Task UpdateUserPassword([FromBody] UpdatePasswordViewModel updateProctorPasswordViewModel) => await _authService.UpdateUserPassword(updateProctorPasswordViewModel);
         [HttpPut]
@@ -245,12 +245,12 @@ namespace Exam_Guardian.API.Controllers
 
         [HttpGet]
         [ValidateJwtTokenExamProvider]
-        public IActionResult GetTestData2()
+        public IActionResult GetStudentDash()
         {
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
             var userId = ExtractCompanyClaimFromToken(token, "userId");
             var company = ExtractCompanyClaimFromToken(token, "company");
-            var newToken=_authService.GenerateStudentToken(company+userId);
+            var newToken=_authService.GenerateStudentToken(company.Substring(0,1)+userId, company);
             
             //Response.Cookies.Append("examGuardianToken", "aaa", new CookieOptions
             //{
@@ -264,10 +264,10 @@ namespace Exam_Guardian.API.Controllers
             //});
 
             // Construct the redirect URL
-            var redirectUrl = $"https://google.com?{newToken}";
+            var pagePath = $"http://localhost:4200/student/dash?token={newToken}";
 
             // Return a Redirect response to the Angular page
-            return Ok(newToken);
+            return Ok(pagePath);
         }
 
 

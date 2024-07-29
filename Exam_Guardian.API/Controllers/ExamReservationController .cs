@@ -12,10 +12,13 @@ namespace Exam_Guardian.API.Controllers
     public class ExamReservationController : ControllerBase
     {
         private readonly IExamReservationService _examReservationService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public ExamReservationController(IExamReservationService examReservationService)
+ 
+        public ExamReservationController(IExamReservationService examReservationService, IHttpClientFactory httpClientFactory)
         {
             _examReservationService = examReservationService;
+            _httpClientFactory = httpClientFactory;
         }
 
 
@@ -191,7 +194,15 @@ namespace Exam_Guardian.API.Controllers
         {
             var reservations = await _examReservationService.GetAvailableTimesByDate( dateTime,  duration, is24HourFormat);
 
-            return Ok(reservations);
+        
+
+            var response = new ApiResponseModel<IEnumerable<AvailableTimeDTO>>
+            {
+                Message = "response retrieved successfully",
+                Status = 200,
+                Data = reservations
+            };
+            return Ok(response);
         }
 
 

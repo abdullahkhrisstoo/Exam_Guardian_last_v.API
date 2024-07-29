@@ -8,6 +8,7 @@ namespace Exam_Guardian.core.Data
         public ExamProvider()
         {
             ExamInfos = new HashSet<ExamInfo>();
+            ExamProviderLinks = new HashSet<ExamProviderLink>();
             Testimonials = new HashSet<Testimonial>();
         }
 
@@ -23,6 +24,7 @@ namespace Exam_Guardian.core.Data
         public virtual Plan? Plan { get; set; }
         public virtual UserInfo? User { get; set; }
         public virtual ICollection<ExamInfo> ExamInfos { get; set; }
+        public virtual ICollection<ExamProviderLink> ExamProviderLinks { get; set; }
         public virtual ICollection<Testimonial> Testimonials { get; set; }
     }
 }

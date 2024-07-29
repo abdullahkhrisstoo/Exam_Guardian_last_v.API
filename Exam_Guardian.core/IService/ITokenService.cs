@@ -9,6 +9,7 @@ namespace Exam_Guardian.core.IService
     public interface ITokenService
     {
         public string GenerateToken(int roleId, string userId, int expirationMinutes);
+        public string GenerateToken(int roleId, string company, string userId, int expirationMinutes);
     }
 }
 

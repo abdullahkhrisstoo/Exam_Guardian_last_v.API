@@ -64,10 +64,10 @@ namespace Exam_Guardian.infra.Service
         public async Task<UserDataViewModel> GetUserById(int id) => await _authRepository.GetUserById(id);
 
 
-        public  string GenerateStudentToken(string userId) {
+        public  string GenerateStudentToken(string userId,string company) {
 
 
-           return  _tokenService.GenerateToken(UserRoleConstant.Student, userId, 1000);
+           return  _tokenService.GenerateToken(UserRoleConstant.Student, company, userId, 1000);
         
         }
 

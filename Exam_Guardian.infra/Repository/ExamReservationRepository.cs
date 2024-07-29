@@ -6,6 +6,7 @@ using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.Mapper;
 using Exam_Guardian.core.Utilities.PackagesConstants;
 using Exam_Guardian.core.Utilities.UserRole;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -181,6 +182,36 @@ namespace Exam_Guardian.infra.Repository
         public Task<IEnumerable<ExamReservation>> GetExamReservationDependsProctor()
         {
             throw new NotImplementedException();
+        }
+
+
+
+
+        public async Task<List<ProctorReservationDTO>> GetAvailableProctors(DateTime StartTime,DateTime EndTime,DateTime ReservationDate)
+        {
+
+            var notAvailableProctors = await _modelContext.ExamReservations.Where(e => e.StartDate != null && e.EndDate != null
+            && ((e.StartDate >= StartTime && e.StartDate <= EndTime) || (e.EndDate >= StartTime && e.EndDate <= EndTime)
+            || (StartTime >= e.StartDate && StartTime <= e.EndDate) || (EndTime >= e.StartDate && EndTime <= e.EndDate)))
+                .Distinct().Select(e=>e.UserId).ToListAsync();
+
+            var availableProctors =await _modelContext.UserInfos.Where(u => !notAvailableProctors.Contains(u.UserId))
+                .Select(e => new ProctorReservationDTO()
+                {
+
+                    Email = e.Credential!=null ? e.Credential.Email:"",
+                    FirstName = e.FirstName,
+                    LastName = e.LastName,
+                    UserId = e.UserId
+                }).ToListAsync();
+
+             if (availableProctors is null) {
+
+                throw new Exception("");
+             }
+
+            return  availableProctors;
+
         }
 
         public async Task<IEnumerable<AvailableTimeDTO>> GetAvailableTimesByDate(DateTime dateTime, int duration, bool is24HourFormat)

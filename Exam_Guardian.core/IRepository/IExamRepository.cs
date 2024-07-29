@@ -14,6 +14,7 @@ namespace Exam_Guardian.core.IRepository
         Task<bool> UpdateExamAsync(UpdateExamInfoDTO updateExamDto);
         Task<bool> DeleteExamAsync(decimal examId);
         Task<IEnumerable<ExamInfoDTO>> GetExamsByExamProviderIdAsync(decimal examProviderId);
+        Task<ExamInfoDTO> GetExamByExamName(string examName);
         Task<IEnumerable<ExamInfoDTO>> GetAllExams();
     }
   
