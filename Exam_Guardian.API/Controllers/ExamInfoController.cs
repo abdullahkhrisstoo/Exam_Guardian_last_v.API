@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Exam_Guardian.api.ResponseHandler;
+using Exam_Guardian.API.ResponseHandler;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.CalimHandler;
@@ -397,6 +398,100 @@ namespace Exam_Guardian.API.Controllers
             return BadRequest("exam is found, we can't add it");
 
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ExamCorrection(string examName, [FromBody] QuestionCorrectionAnswerListDTO examCorrectionDTO)
+        {
+            try
+            {
+                var companyClaim = User.Claims.FirstOrDefault(c => c.Type == "Company")?.Value;
+                if (companyClaim == null)
+                {
+                    return BadRequest("Company claim is missing.");
+                }
+
+                var examProvider = await _examService.GetAllExamProviderByExamProviderName(companyClaim);
+                if (examProvider == null)
+                {
+                    return NotFound("Exam provider not found.");
+                }
+
+                var key = examProvider.ExamProviderUniqueKey;
+                var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, "GetExamDetailsByName")).FirstOrDefault();
+                if (link == null)
+                {
+                    return BadRequest("Link to external service not found.");
+                }
+
+                var decodedExamName = WebUtility.UrlEncode(examName);
+                var client = _httpClientFactory.CreateClient();
+                var url = $"{link.LinkPath}{key}?examName={decodedExamName}";
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var examResponse = JsonSerializer.Deserialize<ExamResponse>(responseBody, options);
+                if (examResponse == null || !examResponse.Success || examResponse.Data == null || !examResponse.Data.Any())
+                {
+                    return this.ApiResponseOk("Failed to parse exam details or no data available.", new { });
+
+                }
+
+                var exam = examResponse.Data.FirstOrDefault();
+                if (exam == null)
+                {
+                    return this.ApiResponseOk("Exam details are missing in the data.", new { });
+
+                }
+
+                var studentMark = CalculateStudentMark(exam, examCorrectionDTO);
+                return this.ApiResponseOk("Submited", new { Mark = studentMark });
+
+
+            }
+            catch (HttpRequestException httpRequestException)
+            {
+                return this.ApiResponseBadRequest("error,", new { httpRequestException.Message });
+
+
+            }
+            catch (JsonException jsonException)
+            {
+                return this.ApiResponseBadRequest("error,", new { jsonException.Message });
+
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseBadRequest("error,", new { ex.Message });
+
+            }
+        }
+
+
+
+        private int CalculateStudentMark(Exam exam, QuestionCorrectionAnswerListDTO examCorrectionDTO)
+        {
+            int totalMarks = 0;
+            foreach (var answer in examCorrectionDTO.QuestionAnswers)
+            {
+                var question = exam.Questions.FirstOrDefault(q => q.QuestionId == answer.QuestionId);
+                if (question != null)
+                {
+                    var correctOption = question.QuestionOptions.FirstOrDefault(o => o.OptionId == answer.SelectedAnswer && o.IsCorrect == "true");
+                    if (correctOption != null)
+                    {
+                        totalMarks++;
+                    }
+                }
+            }
+            return totalMarks;
+        }
+
+
+
+
 
     }
 }
