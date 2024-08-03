@@ -11,7 +11,6 @@ namespace Exam_Guardian.core.DTO
         public decimal ExamId { get; set; }
         public string? ExamTitle { get; set; }
         public string? ExamImage { get; set; }
-        public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public decimal? ExamProviderId { get; set; }
         public decimal? Price { get; set; }

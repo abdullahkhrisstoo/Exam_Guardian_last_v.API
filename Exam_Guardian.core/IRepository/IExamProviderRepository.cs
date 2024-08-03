@@ -19,7 +19,7 @@ namespace Exam_Guardian.core.IRepository
         Task<List<ExamProvider>> GetTopExamProvider(int count);
         Task<ExamProvider> CreateExamProvider(CreateExamProviderDTO examProviderDto);
 
-
+        Task<int> UpdateExamProviderState(UpdateExamProviderStateDTO updateExamProviderStateDTO);
         Task<ExamProviderDTO> GetAllExamProviderByExamProviderName(string name);
     }
 }

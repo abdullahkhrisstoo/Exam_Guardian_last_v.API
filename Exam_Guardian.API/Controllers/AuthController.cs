@@ -1,9 +1,11 @@
 ﻿using Exam_Guardian.core.Data;
 using Exam_Guardian.core.DTO;
+using Exam_Guardian.core.ICommon;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.CalimHandler;
 using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.core.Utilities.UserRole;
+using Exam_Guardian.infra.Common;
 using Exam_Guardian.infra.Repo;
 using Exam_Guardian.infra.Service;
 using Microsoft.AspNetCore.Authentication;
@@ -11,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Policy;
@@ -23,17 +27,42 @@ namespace Exam_Guardian.API.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IEmailService _emailService;
+        private readonly ICardService _cardService;
         private readonly IPlanService _planService;
+        private readonly IExamProviderActionService _actionService;
+        private readonly IExamProviderLinkService _examProviderLink;
+        private readonly IExamService _examService;
         private readonly IGoogleAuthService _googleAuthService;
-    
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IFileService _fileService;
+        private readonly IPlanInvoiceService _planInvoiceService;
+        private ModelContext modelContext;
         public AuthController(IAuthService authService,
             IEmailService emailService, 
-            IPlanService planService, IGoogleAuthService googleAuthService)
+            IPlanService planService, 
+            IGoogleAuthService googleAuthService,
+            ICardService cardService,
+            IExamProviderLinkService examProviderLink,
+            IExamProviderActionService examProviderActionService,
+            IExamService examService,
+            IUnitOfWork unitOfWork,
+            IPlanInvoiceService planInvoiceService,
+            ModelContext modelContext,
+            IFileService fileService
+            )
         {
             _authService = authService;
             _emailService = emailService;
             _planService = planService;
+            _cardService = cardService;
             _googleAuthService = googleAuthService;
+            _examProviderLink = examProviderLink;
+            _actionService = examProviderActionService;
+            _examService = examService;
+            _unitOfWork = unitOfWork;
+            _planInvoiceService = planInvoiceService;
+            _fileService=fileService;
+            this.modelContext= modelContext;
         }
 
 
@@ -53,6 +82,82 @@ namespace Exam_Guardian.API.Controllers
                 return this.ApiResponseServerError(ex, new { });
             }
         }
+
+        [HttpPost]
+    
+
+        public async Task<IActionResult> RegisterExamProvider([FromForm] RegisterExamProviderDTO registerExamProviderDTO)
+        {
+            try
+            {
+                string commercialRecordPath = null;
+                if (registerExamProviderDTO.CommercialRecord != null)
+                {
+                    commercialRecordPath = await _fileService.UploadPdfFileAsync(registerExamProviderDTO.CommercialRecord);
+                }
+
+
+
+                await _unitOfWork.BeginTransactionAsync();
+
+                var plan=await _planService.GetPlanById(registerExamProviderDTO.PlanId);
+
+                await _cardService.WithdrawFromCard(new WithdrawCardDTO
+                {
+                    CardInfoDTO = registerExamProviderDTO.CardInfoDTO,
+                    AmountWithDraw = plan.PlanPrice ?? 0
+                });
+                registerExamProviderDTO.CreateAccountViewModel.RoleId = UserRoleConstant.ExamProvider;
+                int userId = await _authService.CreateUser(registerExamProviderDTO.CreateAccountViewModel);
+                var examProviderDTO= await _examService.CreateExamProvider(new CreateExamProviderDTO
+                {
+                    PlanId = plan.PlanId,
+                    UserId = userId,
+                    CommercialRecordImg= commercialRecordPath,
+
+                });
+                var actions=await _actionService.GetAllExamProviderActions();
+                foreach (var action in actions) {
+                    await _examProviderLink.CreateExamProviderLink(new CreateExamProviderLinkDTO
+                    {
+                        ActionId = action.ExamProviderActionId,
+                        LinkPath = "",
+                        ExamProviderId = examProviderDTO.ExamProviderId,
+                    });
+                }
+
+                await _planInvoiceService.CreatePlanInvoice(new CreatePlanInvoiceDTO()
+                {
+                    PlanId=plan.PlanId,
+                    ExamProviderId=examProviderDTO.ExamProviderId,
+                    Value=plan.PlanPrice
+                });
+
+                await _unitOfWork.CommitTransactionAsync();
+
+
+                await _emailService.SendEmail(new SendEmailViewModel
+                {
+                    Title = "payment process successfully",
+                    Body = HtmlContentGenerator.GeneratePlanInvoiceHtml(plan.PlanName??"test",plan.PlanPrice??0,
+                    registerExamProviderDTO.CreateAccountViewModel.FirstName??"test",
+                    registerExamProviderDTO.CreateAccountViewModel.Phonenum??"test",
+                    registerExamProviderDTO.CreateAccountViewModel.Email??"test"),
+                    Receiver = registerExamProviderDTO.CreateAccountViewModel.Email,
+                    IsHtml =true
+                });
+
+                return this.ApiResponseOk("register exam provider successfully", userId);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                return this.ApiResponseServerError(ex, new { });
+            }
+        }
+
+     
+
         //[HttpDelete("{id}")]
         //public async Task DeleteUser(int id)=> await _authService.DeleteUser(id);
         [HttpDelete("{id}")]
@@ -68,8 +173,20 @@ namespace Exam_Guardian.API.Controllers
                 return this.ApiResponseServerError(ex, new { UserId = id });
             }
         }
+        [HttpGet()]
+        public async Task<IActionResult> GetUsers()
+        {
+            try
+            {
+               ;
+                return this.ApiResponseOk("User deleted successfully",await modelContext.UserInfos.Include(e=>e.Credential).ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { UserId = 5 });
+            }
+        }
 
-        
         //[HttpPut]
         //public async Task UpdateUserPassword([FromBody] UpdatePasswordViewModel updateProctorPasswordViewModel) => await _authService.UpdateUserPassword(updateProctorPasswordViewModel);
         [HttpPut]
@@ -250,7 +367,7 @@ namespace Exam_Guardian.API.Controllers
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
             var userId = ExtractCompanyClaimFromToken(token, "userId");
             var company = ExtractCompanyClaimFromToken(token, "company");
-            var newToken=_authService.GenerateStudentToken(company.Substring(0,1)+userId, company);
+            var newToken=_authService.GenerateStudentToken(userId, company);
             
             //Response.Cookies.Append("examGuardianToken", "aaa", new CookieOptions
             //{
@@ -264,7 +381,7 @@ namespace Exam_Guardian.API.Controllers
             //});
 
             // Construct the redirect URL
-            var pagePath = $"http://localhost:4200/student/dash?token={newToken}";
+            var pagePath = $"http://localhost:4200/student?token={newToken}";
 
             // Return a Redirect response to the Angular page
             return Ok(pagePath);

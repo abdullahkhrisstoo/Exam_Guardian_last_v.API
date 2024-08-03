@@ -3,6 +3,7 @@ using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepo;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.UserRole;
+using Exam_Guardian.infra.Utilities.States;
 
 namespace Exam_Guardian.infra.Service
 {
@@ -39,7 +40,7 @@ namespace Exam_Guardian.infra.Service
                 int roleId = (int)userData.RoleId;
                 int userId = (int)userData.UserId;
 
-                if (userData.UserId is not null)
+                if (userData.UserId is not null  && (userData.StateId==UserStateConst.Approved || userData.StateId==UserStateConst.Activate))
                 {
                     var tokenService = new TokenService();
 
@@ -67,7 +68,7 @@ namespace Exam_Guardian.infra.Service
         public  string GenerateStudentToken(string userId,string company) {
 
 
-           return  _tokenService.GenerateToken(UserRoleConstant.Student, company, userId, 1000);
+           return  _tokenService.GenerateToken(UserRoleConstant.Student, company, userId, 10000);
         
         }
 

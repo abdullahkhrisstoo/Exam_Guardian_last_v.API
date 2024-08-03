@@ -6,6 +6,7 @@ using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.Mapper;
 using Exam_Guardian.core.Utilities.PackagesConstants;
 using Exam_Guardian.core.Utilities.UserRole;
+using Exam_Guardian.infra.Common;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -195,7 +196,7 @@ namespace Exam_Guardian.infra.Repository
             || (StartTime >= e.StartDate && StartTime <= e.EndDate) || (EndTime >= e.StartDate && EndTime <= e.EndDate)))
                 .Distinct().Select(e=>e.UserId).ToListAsync();
 
-            var availableProctors =await _modelContext.UserInfos.Where(u => !notAvailableProctors.Contains(u.UserId))
+            var availableProctors =await _modelContext.UserInfos.Where(e=>e.RoleId==3).Where(u => !notAvailableProctors.Contains(u.UserId))
                 .Select(e => new ProctorReservationDTO()
                 {
 
@@ -207,7 +208,7 @@ namespace Exam_Guardian.infra.Repository
 
              if (availableProctors is null) {
 
-                throw new Exception("");
+                throw new Exception("availableProctors not found");
              }
 
             return  availableProctors;
@@ -320,6 +321,45 @@ namespace Exam_Guardian.infra.Repository
             DateTime dateTime = DateTime.Today.Add(time);
             return is24HourFormat ? dateTime.ToString("HH:mm") : dateTime.ToString("hh:mm tt");
         }
+
+
+
+
+        public async Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetails()
+        {
+            return await _modelContext.ExamReservations.Include(e=>e.ReservationInvoice).Include(e => e.Exam)
+
+                .Select(e => new ExamReservationDetailsDTO
+                {
+                    ExamName = e.Exam.ExamTitle,
+                    StudentEmail = e.Email,
+                    StudentName = e.StudentName,
+                    Value = e.ReservationInvoice.Value,
+                    Score=e.Score,
+                    EndTime=e.EndDate,
+                    StartTime=e.StartDate,
+                    CreatedAt = e.CreatedAt
+                }).ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetailsBy(string studentEmail)
+        {
+            return await _modelContext.ExamReservations.Include(e => e.ReservationInvoice).Include(e => e.Exam)
+
+                .Select(e => new ExamReservationDetailsDTO
+                {
+                    ExamName = e.Exam.ExamTitle,
+                    StudentEmail = e.Email,
+                    StudentName = e.StudentName,
+                    Value = e.ReservationInvoice.Value,
+                    Score = e.Score,
+                    EndTime = e.EndDate,
+                    StartTime = e.StartDate,
+                    CreatedAt = e.CreatedAt
+                }).Where(e=>e.StudentEmail==studentEmail).ToListAsync();
+        }
+
 
     }
 

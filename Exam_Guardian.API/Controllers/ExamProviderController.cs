@@ -153,5 +153,20 @@ namespace Exam_Guardian.API.Controllers
                 return this.ApiResponseServerError(ex, new { ExamProvider = examProviderDto });
             }
         }
+        [HttpPut]
+        public async Task<IActionResult>UpdateExamProviderState([FromBody] UpdateExamProviderStateDTO updateExamProviderStateDTO)
+        {
+            try
+            {
+                var result = await _examService.UpdateExamProviderState(updateExamProviderStateDTO);
+              
+                return this.ApiResponseOk("ExamProvider updated successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { ExamProvider = updateExamProviderStateDTO });
+            }
+        }
+        
     }
 }

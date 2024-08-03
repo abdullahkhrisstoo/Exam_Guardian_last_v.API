@@ -25,8 +25,9 @@ namespace Exam_Guardian.infra.Service
                     mail.To.Add(sendEmailViewModel.Receiver!);
                     mail.Subject = sendEmailViewModel.Title;
                     mail.Body = sendEmailViewModel.Body;
+                    mail.IsBodyHtml = sendEmailViewModel.IsHtml;
 
-                    if (!string.IsNullOrEmpty(sendEmailViewModel.AttachmentPath))
+                   
                     {
                         //Attachment attachment = new Attachment(sendEmailViewModel.AttachmentPath);
                         mail.To.Add(sendEmailViewModel.Receiver);

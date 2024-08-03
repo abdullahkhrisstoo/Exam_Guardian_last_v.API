@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,11 +20,20 @@ namespace Exam_Guardian.infra.Service
         private readonly IExamInfoRepository _examInfoRepository;
         private readonly ICardRepository _cardRepository;
         private readonly IEmailService _emailService;
+        private readonly IReservationInvoiceService _reservationInvoiceService;
 
-        public ExamReservationService(IExamReservationRepository examReservationRepository, IExamInfoRepository examInfoRepository)
+        public ExamReservationService(IExamReservationRepository examReservationRepository,
+            IExamInfoRepository examInfoRepository, ICardRepository cardRepository,
+            IEmailService emailService,
+            IReservationInvoiceService reservationInvoiceService)
         {
             _examReservationRepository = examReservationRepository;
             _examInfoRepository = examInfoRepository;
+            _cardRepository = cardRepository;
+            _emailService = emailService;
+            _reservationInvoiceService = reservationInvoiceService;
+
+
         }
 
         public async Task<int> CreateExamReservation(CreateExamReservationDTO createExamReservationViewModel)
@@ -32,71 +42,126 @@ namespace Exam_Guardian.infra.Service
         }
 
 
-        //public async Task<int> CreateProcessExamReservation(ExamReservationPaymentDTO examReservationPaymentDTO)
-        //{
+        public async Task<int> CreateProcessExamReservation(ExamReservationPaymentDTO examReservationPaymentDTO)
+        {
 
-        //    // get all availabele date
-        //    var duration=(examReservationPaymentDTO.EndTime-examReservationPaymentDTO.StartTime).TotalMinutes;
-        //    var availableTimes = await GetAvailableTimesByDate(examReservationPaymentDTO.ReservationDate, (int)duration, false);
-        //    var isExamResevartionAvaliable = availableTimes
-        //        .Any(e => e.StartTime == examReservationPaymentDTO.StartTime 
-        //    && e.EndTime == examReservationPaymentDTO.EndTime);
+            var availableTimes = await GetAvailableTimesByDate(examReservationPaymentDTO.ReservationDate, examReservationPaymentDTO.ExamDuration, false);
+            var isExamResevartionAvaliable = availableTimes
+                .Any(e => e.StartTime == examReservationPaymentDTO.StartTime
+            && e.EndTime == examReservationPaymentDTO.EndTime);
 
-        //    if (isExamResevartionAvaliable is false)
-        //    {
-        //        throw new Exception("");
-        //    }
-        //    var exam =await _examInfoRepository.GetExamByExamName(examReservationPaymentDTO.ExamName);
+            if (isExamResevartionAvaliable is false)
+            {
+                throw new Exception("exam reservation is not avaliable");
+            }
+            var exam = await _examInfoRepository.GetExamByExamName(examReservationPaymentDTO.ExamName);
+            if (exam == null)
+            {
 
-        //    if (exam == null) {
-
-        //        throw new Exception("");
-        //    }
+                throw new Exception("exam not found");
+            }
 
 
-        //    var isSuccuss=await _cardRepository.WithdrawFromCard(new WithdrawCardDTO { 
-        //    CardInfoDTO=examReservationPaymentDTO.CardInfoDTO,
-        //    AmountWithDraw=30
-        //    });
+            var isSuccuss = await _cardRepository.WithdrawFromCard(new WithdrawCardDTO
+            {
+                CardInfoDTO = examReservationPaymentDTO.CardInfoDTO,
+                AmountWithDraw = examReservationPaymentDTO.Price
+            });
 
-        //    var porctorToken= Guid.NewGuid().ToString();
-        //    var studentToken = Guid.NewGuid().ToString();
+            var avaliableProctors = await _examReservationRepository
+                .GetAvailableProctors(examReservationPaymentDTO.StartTime,
+                examReservationPaymentDTO.EndTime,
+                examReservationPaymentDTO.ReservationDate);
 
-        //    var avaliableProctors=  await _examReservationRepository.GetAvailableProctors(examReservationPaymentDTO.StartTime, 
-        //        examReservationPaymentDTO.EndTime,
-        //        examReservationPaymentDTO.ReservationDate);
-
-
-        //    await _examReservationRepository.CreateExamReservation(new CreateExamReservationDTO
-        //    {
-        //        EndDate=examReservationPaymentDTO.EndTime,
-        //        StartDate=examReservationPaymentDTO.StartTime,
-        //        StudentName="",
-        //        ProctorTokenEmail=porctorToken,
-        //        StudentTokenEmail=studentToken
-        //    });
+          
+            Random random = new Random();
+            int randomIndex = random.Next(avaliableProctors.Count);
+            var randomProctor = avaliableProctors[randomIndex];
 
 
-        //   await _emailService.SendEmail(new SendEmailViewModel
-        //    {
-        //        Title="exam was reserved successfully",
-        //        Body="",
-        //        Receiver=""
-        //    });
+            var proctorToken = Guid.NewGuid().ToString();
+            var studentToken = Guid.NewGuid().ToString();
+            string proctorActionLink = $"https://localhost:4200/proctor/action?token={proctorToken}";
+            string studentActionLink = $"https://localhost:4200/student/action?token={studentToken}";
 
-        //    await _emailService.SendEmail(new SendEmailViewModel
-        //    {
-        //        Title = "proctor",
-        //        Body = "",
-        //        Receiver = ""
-        //    });
+            string formattedReservationDate = examReservationPaymentDTO.ReservationDate.ToString("MMMM dd, yyyy");
+            string formattedStartTime = examReservationPaymentDTO.StartTime.ToString(@"hh\:mm");
+            string formattedEndTime = examReservationPaymentDTO.EndTime.ToString(@"hh\:mm");
 
-        //    //get exam price 
-        //    // withdraw exam price
-        //    //generate to new exam 
-        //    // send emails
+            var studentReservationHtml = HtmlContentGenerator.GenerateStudentReservationConfirmationEmail(
+            examReservationPaymentDTO.StudentName,
+            examReservationPaymentDTO.ExamName,
+            formattedReservationDate,
+            formattedStartTime,
+            formattedEndTime,
+            studentActionLink);
 
-        //}
+            // Generate reservation invoice email for the student
+            var studentInvoiceHtml = HtmlContentGenerator.GenerateStudentReservationInvoiceEmail(
+                examReservationPaymentDTO.StudentName,
+                examReservationPaymentDTO.ExamName,
+               formattedReservationDate,
+               formattedStartTime,
+               formattedStartTime,
+                examReservationPaymentDTO.Price);
+
+            // Generate proctor notification email
+            var proctorNotificationHtml = HtmlContentGenerator.GenerateProctorNotificationEmail(
+                randomProctor.FirstName,
+                examReservationPaymentDTO.ExamName,
+                formattedReservationDate,
+                formattedStartTime,
+                formattedEndTime,
+                proctorActionLink);
+
+            await _emailService.SendEmail(new SendEmailViewModel
+            {
+                Title = "Proctor Notification",
+                Body = proctorNotificationHtml,
+                Receiver = randomProctor.Email,
+                IsHtml=true
+            });
+            await _emailService.SendEmail(new SendEmailViewModel
+            {
+                Title = "Exam Invoice",
+                Body = studentInvoiceHtml,
+                Receiver = examReservationPaymentDTO.StudentEmail,
+                IsHtml = true
+            });
+            await _emailService.SendEmail(new SendEmailViewModel
+            {
+                Title = "Exam Reservation Successful",
+                Body = studentReservationHtml,
+                Receiver = examReservationPaymentDTO.StudentEmail,
+                IsHtml = true
+
+            }); 
+            int reservationId= await _examReservationRepository.CreateExamReservation(new CreateExamReservationDTO
+            {
+                EndDate = examReservationPaymentDTO.EndTime,
+                StartDate = examReservationPaymentDTO.StartTime,
+                StudentName = examReservationPaymentDTO.StudentName,
+                ProctorTokenEmail = proctorToken,
+                StudentTokenEmail = studentToken,
+                UserId= randomProctor.UserId,
+                ExamId=exam.ExamId,
+                Email=examReservationPaymentDTO.StudentEmail,
+                });
+
+         return await _reservationInvoiceService.CreateReservationInvoice(new CreateReservationInvoiceDTO()
+            {
+                ExamReservationId= reservationId,
+                Value= examReservationPaymentDTO.Price
+            });
+
+
+
+            //get exam price 
+            // withdraw exam price
+            //generate to new exam 
+            // send emails
+
+        }
 
 
         public async Task<int> DeleteExamReservation(int id)
@@ -235,7 +300,15 @@ namespace Exam_Guardian.infra.Service
 
         }
 
-      
+        public async Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetails()
+        {
+            return await _examReservationRepository.GetAllExamReservationsDetails();
+        }
+
+        public async Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetailsBy(string studentName)
+        {
+            return await _examReservationRepository.GetAllExamReservationsDetailsBy(studentName);
+        }
     }
 
 

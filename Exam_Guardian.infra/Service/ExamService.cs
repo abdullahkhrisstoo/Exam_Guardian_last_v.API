@@ -58,5 +58,10 @@ namespace Exam_Guardian.infra.Service
         {
             return await _examProviderRepository.GetAllExamProviderByExamProviderName(name);
         }
+
+        public async Task<int> UpdateExamProviderState(UpdateExamProviderStateDTO updateExamProviderStateDTO)
+        {
+            return await _examProviderRepository.UpdateExamProviderState(updateExamProviderStateDTO);
+        }
     }
 }

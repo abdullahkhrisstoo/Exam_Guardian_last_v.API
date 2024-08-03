@@ -17,6 +17,7 @@ namespace Exam_Guardian.core.DTO
         public string? ExamProviderName { get; set; }
         public decimal? UserId { get; set; }
         public string? CommercialRecordImg { get; set; }
+        public string? ExamProviderEmail { get; set; }
         public string? Image { get; set; }
         public string? State { get; set; }
     }

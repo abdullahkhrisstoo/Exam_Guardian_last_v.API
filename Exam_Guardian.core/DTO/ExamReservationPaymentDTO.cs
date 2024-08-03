@@ -8,8 +8,12 @@ namespace Exam_Guardian.core.DTO
 {
     public class ExamReservationPaymentDTO
     {
-        public int UserId { get; set; }
+        public decimal UserId { get; set; }
+        public string StudentEmail { get; set; }
+        public string StudentName { get; set; }
         public string ExamName { get; set; }
+        public int ExamDuration { get; set; }
+        public decimal Price{ get; set; }
         public CardInfoDTO CardInfoDTO { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }

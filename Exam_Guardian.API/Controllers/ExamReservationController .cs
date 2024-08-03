@@ -1,10 +1,15 @@
-﻿using Exam_Guardian.core.DTO;
+﻿using Exam_Guardian.api.ResponseHandler;
+using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.CalimHandler;
 using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.core.Utilities.UserRole;
 using Exam_Guardian.infra.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Text.Json;
+
 namespace Exam_Guardian.API.Controllers
 {
     [ApiController]
@@ -13,12 +18,17 @@ namespace Exam_Guardian.API.Controllers
     {
         private readonly IExamReservationService _examReservationService;
         private readonly IHttpClientFactory _httpClientFactory;
-
- 
-        public ExamReservationController(IExamReservationService examReservationService, IHttpClientFactory httpClientFactory)
+        private readonly IExamService _examService;
+        private readonly IExamProviderLinkService _examProviderLinkService;
+        public ExamReservationController(IExamReservationService examReservationService,
+            IHttpClientFactory httpClientFactory,
+            IExamService examService,
+            IExamProviderLinkService examProviderLinkService)
         {
             _examReservationService = examReservationService;
             _httpClientFactory = httpClientFactory;
+            _examService = examService;
+            _examProviderLinkService = examProviderLinkService;
         }
 
 
@@ -134,7 +144,7 @@ namespace Exam_Guardian.API.Controllers
         }
 
 
-   
+
 
         [HttpGet("{examId}")]
         public async Task<ActionResult<ApiResponseModel<IEnumerable<ExamReservationDTO>>>> GetAllExamReservationsByExamId(decimal examId)
@@ -192,9 +202,9 @@ namespace Exam_Guardian.API.Controllers
         [HttpGet()]
         public async Task<ActionResult> GetAvailableTimesByDate(DateTime dateTime, int duration, bool is24HourFormat)
         {
-            var reservations = await _examReservationService.GetAvailableTimesByDate( dateTime,  duration, is24HourFormat);
+            var reservations = await _examReservationService.GetAvailableTimesByDate(dateTime, duration, is24HourFormat);
 
-        
+
 
             var response = new ApiResponseModel<IEnumerable<AvailableTimeDTO>>
             {
@@ -206,7 +216,128 @@ namespace Exam_Guardian.API.Controllers
         }
 
 
-       
+        [HttpPost]
+        [CheckClaims(UserRoleConstant.StudentAuth)]
+        public async Task<IActionResult> CreateProcessExamReservation(ExamReservationPaymentDTO examReservationPaymentDTO)
+        {
+            try
+            {
+                var companyClaim = User.Claims.FirstOrDefault(c => c.Type == "Company")?.Value;
+
+                if (companyClaim == null)
+                {
+                    return BadRequest("Company claim is missing.");
+                }
+
+                var examProvider = await _examService.GetAllExamProviderByExamProviderName(companyClaim);
+
+                if (examProvider == null)
+                {
+                    return NotFound("Exam provider not found.");
+                }
+
+                var key = examProvider.ExamProviderUniqueKey;
+                var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, "GetExamByName")).FirstOrDefault();
+
+                var decodedExamName = WebUtility.UrlEncode(examReservationPaymentDTO.ExamName);
+                var client = _httpClientFactory.CreateClient();
+                var url = $"{link.LinkPath}{key}?examName={decodedExamName}";
+                var response = await client.GetAsync(url);
+
+                response.EnsureSuccessStatusCode();
+                // var responseBody = await response.Content.ReadAsStringAsync();
+                decimal price = 0;
+                using (JsonDocument doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync()))
+                {
+                    var root = doc.RootElement;
+                    var resp = root.ValueKind;
+                    bool success = root.GetProperty("success").GetBoolean();
+                    if (success)
+                    {
+                        var data = root.GetProperty("data");
+                        examReservationPaymentDTO.Price = data.GetProperty("price").GetDecimal();
+                        examReservationPaymentDTO.ExamDuration = (int)data.GetProperty("examDuration").GetDecimal();
+                        return this.ApiResponseOk("exam booked successfully", await _examReservationService.CreateProcessExamReservation(examReservationPaymentDTO));
+                        //return Ok(Content(root.GetRawText(), "application/json").Content);
+                        // return RedirectHelper.RedirectByRoleName("Profile", "Admin");
+                    }
+                    else
+                    {
+                        return BadRequest(Content(root.GetRawText(), "application/json").Content);
+
+                    }
+                }
+         
+            }
+            catch (HttpRequestException httpRequestException)
+            {
+
+                return StatusCode(500, $"HTTP request error: {httpRequestException.Message}");
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex,"");
+
+              
+            }
+        }
+
+
+
+    
+
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetAllExamReservationsDetailsByStudentEmail(string key, [FromQuery] string companyName, [FromQuery] string studentEmail)
+        {
+
+            var examProvider = await _examService.GetAllExamProviderByExamProviderName(companyName);
+
+            if (examProvider == null)
+            {
+                return NotFound("Exam provider not found.");
+            }
+
+            if (examProvider.ExamProviderUniqueKey != key)
+            {
+
+                return BadRequest("Key is wrong");
+            }
+            var result = await _examReservationService.GetAllExamReservationsDetailsBy(studentEmail);
+
+
+            return this.ApiResponseOk("All exam reservations retrieved successfully", result);
+
+        }
+
+
+
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetAllExamReservationsDetails(string key, [FromQuery] string companyName)
+        {
+
+            var examProvider = await _examService.GetAllExamProviderByExamProviderName(companyName);
+
+            if (examProvider == null)
+            {
+                return NotFound("Exam provider not found.");
+            }
+
+            if (examProvider.ExamProviderUniqueKey != key)
+            {
+
+                return BadRequest("Key is wrong");
+            }
+            var result = await _examReservationService.GetAllExamReservationsDetails();
+
+
+            return this.ApiResponseOk("All exam reservations retrieved successfully", result);
+
+        }
+
+
+
+
+
 
     }
 }

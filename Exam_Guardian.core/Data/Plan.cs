@@ -9,6 +9,7 @@ namespace Exam_Guardian.core.Data
         {
             ExamProviders = new HashSet<ExamProvider>();
             PlanFeatures = new HashSet<PlanFeature>();
+            PlanInvoices = new HashSet<PlanInvoice>();
         }
 
         public decimal PlanId { get; set; }
@@ -20,5 +21,6 @@ namespace Exam_Guardian.core.Data
 
         public virtual ICollection<ExamProvider> ExamProviders { get; set; }
         public virtual ICollection<PlanFeature> PlanFeatures { get; set; }
+        public virtual ICollection<PlanInvoice> PlanInvoices { get; set; }
     }
 }

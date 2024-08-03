@@ -22,7 +22,8 @@ namespace Exam_Guardian.core.IRepository
         Task<IEnumerable<ExamReservationProctorDTO>> GetAllExamReservationsByProctorId(decimal userId);
 
         Task<IEnumerable<AvailableTimeDTO>> GetAvailableTimesByDate(DateTime dateTime, int duration, bool is24HourFormat);
-
+        Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetails();
+        Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetailsBy(string studentName);
          Task<List<ProctorReservationDTO>> GetAvailableProctors(DateTime StartTime, DateTime EndTime, DateTime ReservationDate);
     }
 

@@ -27,8 +27,12 @@ namespace Exam_Guardian.core.Data
         public virtual DbSet<ExamProviderLink> ExamProviderLinks { get; set; } = null!;
         public virtual DbSet<ExamReservation> ExamReservations { get; set; } = null!;
         public virtual DbSet<ExamReservationState> ExamReservationStates { get; set; } = null!;
+        public virtual DbSet<IdentificationImage> IdentificationImages { get; set; } = null!;
         public virtual DbSet<Plan> Plans { get; set; } = null!;
         public virtual DbSet<PlanFeature> PlanFeatures { get; set; } = null!;
+        public virtual DbSet<PlanInvoice> PlanInvoices { get; set; } = null!;
+        public virtual DbSet<ReservationInvoice> ReservationInvoices { get; set; } = null!;
+        public virtual DbSet<RoomReservationImage> RoomReservationImages { get; set; } = null!;
         public virtual DbSet<TermsAndCondition> TermsAndConditions { get; set; } = null!;
         public virtual DbSet<Testimonial> Testimonials { get; set; } = null!;
         public virtual DbSet<TestimonialState> TestimonialStates { get; set; } = null!;
@@ -451,6 +455,35 @@ namespace Exam_Guardian.core.Data
                     .HasColumnName("EXAM_RESERVATION_STATE_TEXT");
             });
 
+            modelBuilder.Entity<IdentificationImage>(entity =>
+            {
+                entity.ToTable("IDENTIFICATION_IMAGE");
+
+                entity.Property(e => e.IdentificationImageId)
+                    .HasColumnType("NUMBER")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("IDENTIFICATION_IMAGE_ID");
+
+                entity.Property(e => e.ExamReservationId)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("EXAM_RESERVATION_ID");
+
+                entity.Property(e => e.PathImageBack)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("PATH_IMAGE_BACK");
+
+                entity.Property(e => e.PathImageFront)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("PATH_IMAGE_FRONT");
+
+                entity.HasOne(d => d.ExamReservation)
+                    .WithMany(p => p.IdentificationImages)
+                    .HasForeignKey(d => d.ExamReservationId)
+                    .HasConstraintName("IDENTIFICATION_IMAGE_FK1");
+            });
+
             modelBuilder.Entity<Plan>(entity =>
             {
                 entity.ToTable("PLAN");
@@ -517,6 +550,99 @@ namespace Exam_Guardian.core.Data
                     .WithMany(p => p.PlanFeatures)
                     .HasForeignKey(d => d.PlanId)
                     .HasConstraintName("PLAN_FEATURE_FK1");
+            });
+
+            modelBuilder.Entity<PlanInvoice>(entity =>
+            {
+                entity.ToTable("PLAN_INVOICE");
+
+                entity.Property(e => e.PlanInvoiceId)
+                    .HasColumnType("NUMBER")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("PLAN_INVOICE_ID");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasPrecision(6)
+                    .HasColumnName("CREATED_AT")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP ");
+
+                entity.Property(e => e.ExamProviderId)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("EXAM_PROVIDER_ID");
+
+                entity.Property(e => e.PlanId)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("PLAN_ID");
+
+                entity.Property(e => e.Value)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("VALUE");
+
+                entity.HasOne(d => d.ExamProvider)
+                    .WithMany(p => p.PlanInvoices)
+                    .HasForeignKey(d => d.ExamProviderId)
+                    .HasConstraintName("PLAN_INVOICE_FK2");
+
+                entity.HasOne(d => d.Plan)
+                    .WithMany(p => p.PlanInvoices)
+                    .HasForeignKey(d => d.PlanId)
+                    .HasConstraintName("PLAN_INVOICE_FK1");
+            });
+
+            modelBuilder.Entity<ReservationInvoice>(entity =>
+            {
+                entity.ToTable("RESERVATION_INVOICE");
+
+                entity.Property(e => e.ReservationInvoiceId)
+                    .HasColumnType("NUMBER")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("RESERVATION_INVOICE_ID");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasPrecision(6)
+                    .HasColumnName("CREATED_AT")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP ");
+
+                entity.Property(e => e.ExamReservationId)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("EXAM_RESERVATION_ID");
+
+                entity.Property(e => e.Value)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("VALUE");
+
+                entity.HasOne(d => d.ExamReservation)
+                    .WithOne(p => p.ReservationInvoice)
+                    .HasConstraintName("RESERVATION_INVOICE_FK1");
+            });
+
+            modelBuilder.Entity<RoomReservationImage>(entity =>
+            {
+                entity.ToTable("ROOM_RESERVATION_IMAGE");
+
+                entity.Property(e => e.RoomReservationImageId)
+                    .HasColumnType("NUMBER")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("ROOM_RESERVATION_IMAGE_ID");
+
+                entity.Property(e => e.ExamReservationId)
+                    .HasColumnType("NUMBER")
+                    .HasColumnName("EXAM_RESERVATION_ID");
+
+                entity.Property(e => e.Path)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("PATH");
+
+                entity.Property(e => e.Place)
+                    .HasMaxLength(7)
+                    .IsUnicode(false)
+                    .HasColumnName("PLACE");
+
+                entity.HasOne(d => d.ExamReservation)
+                    .WithMany(p => p.RoomReservationImages)
+                    .HasForeignKey(d => d.ExamReservationId)
+                    .HasConstraintName("ROOM_RESERVATION_IMAGE_FK1");
             });
 
             modelBuilder.Entity<TermsAndCondition>(entity =>

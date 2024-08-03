@@ -26,8 +26,7 @@ namespace Exam_Guardian.infra.Repository
             {
                 ExamTitle = createExamDto.ExamTitle,
                 ExamImage = createExamDto.ExamImage,
-                CreatedAt = createExamDto.CreatedAt ?? DateTime.UtcNow,
-                UpdatedAt = createExamDto.UpdatedAt ?? DateTime.UtcNow,
+                CreatedAt =DateTime.UtcNow,
                 ExamProviderId = createExamDto.ExamProviderId
             };
 
@@ -75,7 +74,6 @@ namespace Exam_Guardian.infra.Repository
 
             exam.ExamTitle = updateExamDto.ExamTitle ?? exam.ExamTitle;
             exam.ExamImage = updateExamDto.ExamImage ?? exam.ExamImage;
-            exam.CreatedAt = updateExamDto.CreatedAt ?? exam.CreatedAt;
             exam.UpdatedAt = updateExamDto.UpdatedAt ?? DateTime.UtcNow;
             exam.Price = updateExamDto.Price ?? exam.Price;
             exam.ExamProviderId = updateExamDto.ExamProviderId ?? exam.ExamProviderId;

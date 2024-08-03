@@ -8,6 +8,8 @@ namespace Exam_Guardian.core.Data
         public ExamReservation()
         {
             Complements = new HashSet<Complement>();
+            IdentificationImages = new HashSet<IdentificationImage>();
+            RoomReservationImages = new HashSet<RoomReservationImage>();
         }
 
         public decimal ExamReservationId { get; set; }
@@ -28,5 +30,8 @@ namespace Exam_Guardian.core.Data
         public virtual ExamInfo? Exam { get; set; }
         public virtual UserInfo? User { get; set; }
         public virtual ICollection<Complement> Complements { get; set; }
+        public virtual ICollection<IdentificationImage> IdentificationImages { get; set; }
+        public virtual ReservationInvoice ReservationInvoice { get; set; }
+        public virtual ICollection<RoomReservationImage> RoomReservationImages { get; set; }
     }
 }

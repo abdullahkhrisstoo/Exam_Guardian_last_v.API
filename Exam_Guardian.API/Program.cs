@@ -16,6 +16,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Exam_Guardian.API.Attributes;
+using Rotativa.AspNetCore;
+using DinkToPdf.Contracts;
+using DinkToPdf;
+using Exam_Guardian.infra.Common;
+using signalRtc.hubs;
 
 namespace Exam_Guardian.API
 {
@@ -122,9 +127,16 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IExamInfoService, ExamInfoService>();
             builder.Services.AddScoped<IExamProviderActionService, ExamProviderActionService>();
             builder.Services.AddScoped<IExamProviderLinkService, ExamProviderLinkService>();
-
+            builder.Services.AddScoped<ICardService, CardService>();
+            builder.Services.AddScoped<IPlanInvoiceService, PlanInvoiceService>();
+            builder.Services.AddScoped<IReservationInvoiceService, ReservationInvoiceService>();
+            builder.Services.AddScoped<IIdentificationImageService, IdentificationImageService>();
+            builder.Services.AddScoped<IRoomReservationImageService, RoomReservationImageService>();
+            builder.Services.AddScoped<IFileService, FileService>();
+            builder.Services.AddScoped<PdfService>();
             //todo: repo
             builder.Services.AddScoped<IExamProviderRepository, ExamProviderRepository>();
+            builder.Services.AddScoped<ICardRepository, CardRepository>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IPlanRepository, PlanRepository>();
             builder.Services.AddScoped<IPlanFeatureRepository, PlanFeatureRepository>();
@@ -137,6 +149,11 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IExamInfoService, ExamInfoService>();
             builder.Services.AddScoped<IExamProviderActionRepository, ExamProviderActionRepository>();
             builder.Services.AddScoped<IExamProviderLinkRepository, ExamProviderLinkRepository>();
+            builder.Services.AddScoped<IPlanInvoiceRepository, PlanInvoiceRepository>();
+            builder.Services.AddScoped<IReservationInvoiceRepository, ReservationInvoiceRepository>();
+            builder.Services.AddScoped<IIdentificationImageRepository, IdentificationImageRepository>();
+            builder.Services.AddScoped<IRoomReservationImageRepository, RoomReservationImageRepository>();
+            // Register services
 
             ServiceLocator.ServiceProvider = builder.Services.BuildServiceProvider();
             builder.Services.AddControllers()
@@ -152,8 +169,14 @@ namespace Exam_Guardian.API
             });
 
             builder.Services.AddHttpClient();
-            var app = builder.Build();
+            builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools
+            {
+             
+            }));
 
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            var app = builder.Build();
+           // RotativaConfiguration.Setup(app.Environment.WebRootPath, @"C:\\Program Files\\wkhtmltopdf\\bin");
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -161,6 +184,7 @@ namespace Exam_Guardian.API
             }
             app.UseSwagger();
             app.UseSwaggerUI();
+            app.UseStaticFiles();
             app.UseRouting(); // Add this line to enable routing
 
 
@@ -169,9 +193,9 @@ namespace Exam_Guardian.API
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+         
             app.UseCors("AllowAngularDev");
-
+            app.MapHub<SignalRtcHub>("/signalingHub");
             //app.UseEndpoints(endpoints =>
             //{
             //    endpoints.MapHub<VideoCallHub>("/videoCallHub");

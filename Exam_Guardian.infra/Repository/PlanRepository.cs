@@ -83,7 +83,7 @@ namespace Exam_Guardian.infra.Repo
             return cid;
         }
 
-        public async Task<PlanDTO> GetPlanById(int id)
+        public async Task<PlanDTO> GetPlanById(decimal id)
         {
             DynamicParameters param = new();
             param.Add(name: PlanPackageConstant.PLAN_ID, id, dbType: DbType.Int32, direction: ParameterDirection.Input);

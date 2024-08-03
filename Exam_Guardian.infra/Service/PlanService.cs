@@ -35,7 +35,7 @@ namespace Exam_Guardian.infra.Service
             return await _planRepository.UpdatePlan(updatePlanViewModel);
         }
 
-        public async Task<PlanDTO> GetPlanById(int id)
+        public async Task<PlanDTO> GetPlanById(decimal id)
         {
             return await _planRepository.GetPlanById(id);
         }

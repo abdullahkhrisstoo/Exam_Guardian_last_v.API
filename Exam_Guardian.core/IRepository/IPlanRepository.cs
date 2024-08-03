@@ -13,7 +13,7 @@ namespace Exam_Guardian.core.IRepo
         Task<int> CreatePlan(CreatePlanDTO createPlanViewModel);
         Task<int> DeletePlan(int id);
         Task<int> UpdatePlan(UpdatePlanDTO updatePlanViewModel);
-        Task<PlanDTO> GetPlanById(int id);
+        Task<PlanDTO> GetPlanById(decimal id);
         Task<IEnumerable<PlanDTO>> GetAllPlans();
         Task<IEnumerable<PlanFeature>> GetPlanFeaturesByPlanId(int planId);
         Task<PlanDTO?> GetPlanByExamProviderId(decimal examproviderId);

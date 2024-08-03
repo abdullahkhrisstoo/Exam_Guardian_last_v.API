@@ -71,7 +71,7 @@ namespace Exam_Guardian.API.Controllers
                 return NotFound("Exam provider not found.");
             }
             var key = examProvider.ExamProviderUniqueKey;
-            var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, MethodBase.GetCurrentMethod().Name)).FirstOrDefault();
+            var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, "GetStudentInfoById")).FirstOrDefault();
 
             var client = _httpClientFactory.CreateClient();
             var url = $"{link.LinkPath}{key}?id={id}";
@@ -103,7 +103,7 @@ namespace Exam_Guardian.API.Controllers
             }
 
             var key = examProvider.ExamProviderUniqueKey;
-            var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, MethodBase.GetCurrentMethod().Name)).FirstOrDefault();
+            var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, "GetStudentInfoByEmail")).FirstOrDefault();
 
             var client = _httpClientFactory.CreateClient();
             var url = $"{link.LinkPath}{key}?email={email}";

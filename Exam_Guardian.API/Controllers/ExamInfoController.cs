@@ -1,4 +1,5 @@
-﻿using Exam_Guardian.api.ResponseHandler;
+﻿using Azure;
+using Exam_Guardian.api.ResponseHandler;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.CalimHandler;
@@ -231,7 +232,7 @@ namespace Exam_Guardian.API.Controllers
 
             var key = examProvider.ExamProviderUniqueKey;
 
-            var link=(await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, MethodBase.GetCurrentMethod().Name)).FirstOrDefault();
+            var link=(await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, "GetExamByName")).FirstOrDefault();
   
             var decodedExamName = WebUtility.UrlEncode(examName);
             var client = _httpClientFactory.CreateClient();
@@ -240,7 +241,7 @@ namespace Exam_Guardian.API.Controllers
             response.EnsureSuccessStatusCode();
 
             var responseBody = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<ApiResponse<ExamDTO>>(responseBody);
+           // var result = JsonSerializer.Deserialize<ApiResponse<ExamDTO>>(responseBody);
 
             return Content(responseBody, "application/json");
         }
@@ -354,6 +355,48 @@ namespace Exam_Guardian.API.Controllers
             return Ok(User.Claims);
 
         }
-   
+
+        [HttpPost("{key}")]
+        public async Task<IActionResult> AddExamByName(string key,[FromQuery] string companyName, [FromBody] CreateExamInfoDTO createExamDto)
+        {
+
+            var examProvider = await _examService.GetAllExamProviderByExamProviderName(companyName);
+
+
+            var exams = (await _examInfoService.GetAllExams());
+            if (exams is not null) {
+
+
+               var isExamExist= exams.Any(e => e.ExamProviderId == examProvider.ExamProviderId && e.ExamTitle == createExamDto.ExamTitle);
+                if (isExamExist is false) {
+                    if (examProvider == null)
+                    {
+                        return NotFound("Exam provider not found.");
+                    }
+
+                    if (examProvider.ExamProviderUniqueKey != key)
+                    {
+
+                        return BadRequest("Key is wrong");
+                    }
+                    createExamDto.ExamProviderId = examProvider.ExamProviderId;
+                    var exam = await _examInfoService.CreateExamAsync(createExamDto);
+                 
+                    var response = new ApiResponseModel<ExamInfoDTO>
+                    {
+                        Message = "Exam created successfully",
+                        Status = 201,
+                        Data = exam
+                    };
+
+                    return CreatedAtAction(nameof(GetExamById), new { id = exam.ExamId }, response);
+                }
+            }
+
+
+            return BadRequest("exam is found, we can't add it");
+
+        }
+
     }
 }

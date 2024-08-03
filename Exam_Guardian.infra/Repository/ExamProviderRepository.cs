@@ -35,7 +35,9 @@ namespace Exam_Guardian.infra.Repository
                 CreatedAt = e.CreatedAt,
                 Image = e.Image,
                 ExamProviderName = e.User.FirstName,
-                State = e.User.State != null ? e.User.State.StatusName : "Waiting"
+                State = e.User.State != null ? e.User.State.StatusName : "PENDING",
+                UserId=e.User.UserId,
+                ExamProviderEmail=e.User.Credential.Email
             }).ToListAsync();
 
         }
@@ -191,7 +193,16 @@ namespace Exam_Guardian.infra.Repository
 
 
         }
+        public async Task<int> UpdateExamProviderState(UpdateExamProviderStateDTO updateExamProviderStateDTO) {
 
+          var examProvider= (await _modelContext.ExamProviders.Include(e => e.User).
+                FirstOrDefaultAsync(e => e.ExamProviderId == updateExamProviderStateDTO.ExamProviderId));
+            if (examProvider is null || examProvider.User is null) {
+                throw new Exception("user not found");
+            }
+            examProvider.User.StateId = updateExamProviderStateDTO.StateId;
+            return await _modelContext.SaveChangesAsync();
+        }
         public async Task<ExamProvider> CreateExamProvider(CreateExamProviderDTO examProviderDto)
         {
             try
