@@ -83,7 +83,7 @@ namespace Exam_Guardian.infra.Service
         <!-- Company Details -->
         <div class='address'>
             <div>
-                <strong>Company Name:</strong> ExamCorp
+                <strong>Company Name:</strong> ExamGuardian 
             </div>
             <div>
                 <strong>Company Address:</strong> 123 Exam St, Suite 100, Exam City, EX 12345
@@ -92,7 +92,7 @@ namespace Exam_Guardian.infra.Service
                 <strong>Phone:</strong> (123) 456-7890
             </div>
             <div>
-                <strong>Email:</strong> support@examcorp.com
+                <strong>Email:</strong> system.guardian2000@gmail.com
             </div>
         </div>
 
@@ -140,8 +140,8 @@ namespace Exam_Guardian.infra.Service
 
         <!-- Footer -->
         <div class='footer'>
-            <p>Thank you for choosing ExamCorp!</p>
-            <p>If you have any questions about this invoice, please contact us at (123) 456-7890 or email support@examcorp.com.</p>
+            <p>Thank you for choosing ExamGuardian!</p>
+            <p>If you have any questions about this invoice, please contact us at (123) 456-7890 or email system.guardian2000@gmail.com.</p>
         </div>
     </div>
 </body>
@@ -229,7 +229,7 @@ namespace Exam_Guardian.infra.Service
         <!-- Company Details -->
         <div class='address'>
             <div>
-                <strong>Company Name:</strong> ExamCorp
+                <strong>Company Name:</strong> ExamGuardian
             </div>
             <div>
                 <strong>Company Address:</strong> 123 Exam St, Suite 100, Exam City, EX 12345
@@ -238,7 +238,7 @@ namespace Exam_Guardian.infra.Service
                 <strong>Phone:</strong> (123) 456-7890
             </div>
             <div>
-                <strong>Email:</strong> support@examcorp.com
+                <strong>Email:</strong> system.guardian2000@gmail.com
             </div>
         </div>
 
@@ -287,8 +287,8 @@ namespace Exam_Guardian.infra.Service
 
         <!-- Footer -->
         <div class='footer'>
-            <p>Thank you for registering with ExamCorp!</p>
-            <p>If you have any questions about this invoice, please contact us at (123) 456-7890 or email support@examcorp.com.</p>
+            <p>Thank you for registering with ExamGuardian!</p>
+            <p>If you have any questions about this invoice, please contact us at (123) 456-7890 or email system.guardian2000@gmail.com.</p>
         </div>
     </div>
 </body>
@@ -340,7 +340,7 @@ namespace Exam_Guardian.infra.Service
             margin: 20px auto;
             padding: 10px;
             background-color: #007bff;
-            color: #fff;
+            color: #fff !important;
             text-align: center;
             border-radius: 5px;
             text-decoration: none;
@@ -364,7 +364,7 @@ namespace Exam_Guardian.infra.Service
         <p>To view the proctoring details and complete your tasks, please click the button below:</p>
         <a href='{proctorActionLink}' class='button'>View Proctor Details</a>
         <div class='footer'>
-            <p>If you have any questions, please contact us at support@examcorp.com.</p>
+            <p>If you have any questions, please contact us at system.guardian2000@gmail.com.</p>
         </div>
     </div>
 </body>
@@ -414,7 +414,7 @@ namespace Exam_Guardian.infra.Service
             margin: 20px auto;
             padding: 10px;
             background-color: #007bff;
-            color: #fff;
+            color: #fff !important;
             text-align: center;
             border-radius: 5px;
             text-decoration: none;
@@ -436,9 +436,9 @@ namespace Exam_Guardian.infra.Service
         <p><strong>Start Time:</strong> {startTime}</p>
         <p><strong>End Time:</strong> {endTime}</p>
         <p>To access your exam, please click the button below. Ensure you access it at least 30 minutes before the exam starts:</p>
-        <a href='{studentActionLink}' class='button'>Access Exam</a>
+        <a href='{studentActionLink}'  class='button'>Access Exam</a>
         <div class='footer'>
-            <p>If you have any questions, please contact us at support@examcorp.com.</p>
+            <p>If you have any questions, please contact us at system.guardian2000@gmail.com.</p>
         </div>
     </div>
 </body>
@@ -519,9 +519,9 @@ namespace Exam_Guardian.infra.Service
         <div class='total'>
             <div><strong>Total Price:</strong> ${examPrice:F2}</div>
         </div>
-        <p>If you have any questions or need further assistance, please contact us at support@examcorp.com.</p>
+        <p>If you have any questions or need further assistance, please contact us at system.guardian2000@gmail.com.</p>
         <div class='footer'>
-            <p>Thank you for choosing ExamCorp!</p>
+            <p>Thank you for choosing ExamGuardian!</p>
         </div>
     </div>
 </body>

@@ -11,6 +11,8 @@ namespace Exam_Guardian.core.IService
     public interface IAuthService
     {
         public string GenerateStudentToken(string userId,string company);
+        public string GenerateStudentTokenToExam(ExamReservationDTO examReservationDTO,ExamInfoDTO exam);
+        public string GenerateProctorTokenToExam(ExamReservationDTO examReservationDTO, ExamInfoDTO exam);
         Task<int> CreateUser(CreateAccountViewModel createProctorViewModel);
         Task<int> DeleteUser(int id);
         Task<int> UpdateUserPassword(UpdatePasswordViewModel updateProctorPasswordViewModel);

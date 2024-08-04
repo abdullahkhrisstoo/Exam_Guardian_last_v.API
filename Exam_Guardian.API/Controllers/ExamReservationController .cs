@@ -5,10 +5,12 @@ using Exam_Guardian.core.Utilities.CalimHandler;
 using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.core.Utilities.UserRole;
 using Exam_Guardian.infra.Service;
+using Exam_Guardian.infra.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Exam_Guardian.API.Controllers
 {
@@ -19,16 +21,23 @@ namespace Exam_Guardian.API.Controllers
         private readonly IExamReservationService _examReservationService;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IExamService _examService;
+        private readonly IExamInfoService _examInfoService;
         private readonly IExamProviderLinkService _examProviderLinkService;
+        private readonly IAuthService _authService;
         public ExamReservationController(IExamReservationService examReservationService,
             IHttpClientFactory httpClientFactory,
             IExamService examService,
-            IExamProviderLinkService examProviderLinkService)
+            IExamProviderLinkService examProviderLinkService,
+            IAuthService authService,
+            IExamInfoService examInfoService)
         {
             _examReservationService = examReservationService;
             _httpClientFactory = httpClientFactory;
             _examService = examService;
             _examProviderLinkService = examProviderLinkService;
+            _authService = authService;
+       
+            _examInfoService = examInfoService;
         }
 
 
@@ -94,6 +103,68 @@ namespace Exam_Guardian.API.Controllers
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { ExamReservationId = id });
+            }
+        }
+        [HttpGet]
+        //[CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
+        public async Task<IActionResult> GetExamDashToStudent(string token, decimal reservationId)
+        {
+            try
+            {
+                var examReservation = await _examReservationService.GetExamReservationById((int)reservationId);
+
+                if (examReservation is null || examReservation.ExamId is null) {
+
+                    return NotFound("");
+                }
+                if (examReservation.StudentTokenEmail is null || examReservation.StudentTokenEmail!= token)
+                {
+                    return NotFound("");
+                }
+
+                var exam=await _examInfoService.GetExamByIdAsync(examReservation.ExamId.Value);
+                var newToken = _authService.GenerateStudentTokenToExam(examReservation,exam);
+
+           
+                var pagePath = $"{AppConstant.BASE_URL_ANGULAR}/examination/student-test?token={newToken}";
+
+                return Redirect(pagePath);
+            }
+            catch (Exception ex)
+            {
+                return Redirect("");
+            }
+        }
+        [HttpGet]
+        //[CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
+        public async Task<IActionResult> GetExamDashToProctor(string token, decimal reservationId)
+        {
+            try
+            {
+                var examReservation = await _examReservationService.GetExamReservationById((int)reservationId);
+
+                if (examReservation is null || examReservation.ExamId is null)
+                {
+
+                    return NotFound("");
+                }
+                if (examReservation.ProctorTokenEmail is null || examReservation.ProctorTokenEmail != token)
+                {
+
+                    return NotFound("");
+                }
+
+                var exam = await _examInfoService.GetExamByIdAsync(examReservation.ExamId.Value);
+                var newToken = _authService.GenerateProctorTokenToExam(examReservation, exam);
+
+
+                var pagePath = $"{AppConstant.BASE_URL_ANGULAR}/examination/proctor?token={newToken}";
+
+                return Redirect(pagePath);
+            }
+            catch (Exception ex)
+            {
+                return Redirect("");
             }
         }
 

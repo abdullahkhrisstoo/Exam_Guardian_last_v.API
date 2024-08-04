@@ -214,7 +214,7 @@ namespace Exam_Guardian.API.Controllers
         }
       
         [HttpGet]
-        [CheckClaims(UserRoleConstant.StudentAuth)]
+        [CheckClaims(UserRoleConstant.StudentAuth,UserRoleConstant.SExamer)]
         public async Task<IActionResult> GetExamByName(string examName)
         {
             var companyClaim = User.Claims.FirstOrDefault(c => c.Type == "Company")?.Value;
@@ -248,19 +248,24 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpGet]
-        [CheckClaims(UserRoleConstant.StudentAuth)]
-        public async Task<IActionResult> GetExamDetailsWithoutAnswersByName(string examName)
+        [CheckClaims( UserRoleConstant.SExamer)]
+        public async Task<IActionResult> GetExamDetailsWithoutAnswersByName()
         {
             try
             {
-                var companyClaim = User.Claims.FirstOrDefault(c => c.Type == "Company")?.Value;
+    
 
-                if (companyClaim == null)
+                var examNamePayload =User.Claims.FirstOrDefault(c => c.Type == "ExamName")?.Value;
+                //var companyClaim = User.Claims.FirstOrDefault(c => c.Type == examName)?.Value;
+             
+                if (examNamePayload == null)
                 {
-                    return BadRequest("Company claim is missing.");
+                    return BadRequest("Exam Name is missing.");
                 }
 
-                var examProvider = await _examService.GetAllExamProviderByExamProviderName(companyClaim);
+
+
+                var examProvider =await _examService.GetExamProviderByExamName(examNamePayload);
 
                 if (examProvider == null)
                 {
@@ -268,9 +273,9 @@ namespace Exam_Guardian.API.Controllers
                 }
 
                 var key = examProvider.ExamProviderUniqueKey;
-                var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, "GetExamDetailsWithoutAnwersByName")).FirstOrDefault();
+                var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(examProvider.ExamProviderName, "GetExamDetailsWithoutAnswersByName")).FirstOrDefault();
 
-                var decodedExamName = WebUtility.UrlEncode(examName);
+                var decodedExamName = WebUtility.UrlEncode(examNamePayload);
                 var client = _httpClientFactory.CreateClient();
                 var url = $"{link.LinkPath}{key}?examName={decodedExamName}";
                 var response = await client.GetAsync(url);
@@ -401,30 +406,37 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> ExamCorrection(string examName, [FromBody] QuestionCorrectionAnswerListDTO examCorrectionDTO)
+        [CheckClaims( UserRoleConstant.SExamer)]
+
+        public async Task<IActionResult> ExamCorrection([FromBody] QuestionCorrectionAnswerListDTO examCorrectionDTO)
         {
             try
             {
-                var companyClaim = User.Claims.FirstOrDefault(c => c.Type == "Company")?.Value;
-                if (companyClaim == null)
+                var examNamePayload = User.Claims.FirstOrDefault(c => c.Type == "ExamName")?.Value;
+                //var companyClaim = User.Claims.FirstOrDefault(c => c.Type == examName)?.Value;
+
+                if (examNamePayload == null)
                 {
-                    return BadRequest("Company claim is missing.");
+                    return BadRequest("Exam Name is missing.");
                 }
 
-                var examProvider = await _examService.GetAllExamProviderByExamProviderName(companyClaim);
+
+
+                var examProvider = await _examService.GetExamProviderByExamName(examNamePayload);
+
                 if (examProvider == null)
                 {
                     return NotFound("Exam provider not found.");
                 }
 
                 var key = examProvider.ExamProviderUniqueKey;
-                var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(companyClaim, "GetExamDetailsByName")).FirstOrDefault();
+                var link = (await _examProviderLinkService.GetExamProviderLinkByCompanyAndActionName(examProvider.ExamProviderName, "GetExamDetailsByName")).FirstOrDefault();
                 if (link == null)
                 {
                     return BadRequest("Link to external service not found.");
                 }
 
-                var decodedExamName = WebUtility.UrlEncode(examName);
+                var decodedExamName = WebUtility.UrlEncode(examNamePayload);
                 var client = _httpClientFactory.CreateClient();
                 var url = $"{link.LinkPath}{key}?examName={decodedExamName}";
                 var response = await client.GetAsync(url);

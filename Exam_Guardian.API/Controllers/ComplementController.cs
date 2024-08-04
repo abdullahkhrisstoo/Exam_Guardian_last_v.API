@@ -38,19 +38,19 @@ namespace Exam_Guardian.API.Controllers
 
 
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateComplement([FromBody] UpdateComplementDTO updateComplementViewModel)
-        {
-            try
-            {
-                await _complementService.UpdateComplement(updateComplementViewModel);
-                return this.ApiResponseOk("Complement updated successfully", updateComplementViewModel);
-            }
-            catch (Exception ex)
-            {
-                return this.ApiResponseServerError(ex, new { });
-            }
-        }
+        //[HttpPut]
+        //public async Task<IActionResult> UpdateComplement([FromBody] UpdateComplementDTO updateComplementViewModel)
+        //{
+        //    try
+        //    {
+        //        await _complementService.UpdateComplement(updateComplementViewModel);
+        //        return this.ApiResponseOk("Complement updated successfully", updateComplementViewModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return this.ApiResponseServerError(ex, new { });
+        //    }
+        //}
 
 
         [HttpDelete("{id}")]
@@ -148,6 +148,44 @@ namespace Exam_Guardian.API.Controllers
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { ProctorId = proctorId });
+            }
+
+
+
+
+
+
+
+
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateComplementByStudent([FromBody] UpdateComplementDTO updateComplementViewModel)
+        {
+            try
+            {
+                await _complementService.UpdateComplementByStudent(updateComplementViewModel);
+                return this.ApiResponseOk("Complement updated successfully", updateComplementViewModel);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
+            }
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateComplementByProctor([FromBody] UpdateComplementDTO updateComplementViewModel)
+        {
+            try
+            {
+                await _complementService.UpdateComplementByProctor(updateComplementViewModel);
+                return this.ApiResponseOk("Complement updated successfully", updateComplementViewModel);
+            }
+            catch (Exception ex)
+            {
+                return this.ApiResponseServerError(ex, new { });
             }
         }
     }

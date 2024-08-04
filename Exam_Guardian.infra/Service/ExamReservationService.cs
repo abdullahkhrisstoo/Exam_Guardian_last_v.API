@@ -3,6 +3,7 @@ using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.infra.Repository;
+using Exam_Guardian.infra.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,19 +21,21 @@ namespace Exam_Guardian.infra.Service
         private readonly IExamInfoRepository _examInfoRepository;
         private readonly ICardRepository _cardRepository;
         private readonly IEmailService _emailService;
+        private readonly IComplementService _complementService;
         private readonly IReservationInvoiceService _reservationInvoiceService;
 
         public ExamReservationService(IExamReservationRepository examReservationRepository,
             IExamInfoRepository examInfoRepository, ICardRepository cardRepository,
             IEmailService emailService,
-            IReservationInvoiceService reservationInvoiceService)
+            IReservationInvoiceService reservationInvoiceService,
+            IComplementService complementService)
         {
             _examReservationRepository = examReservationRepository;
             _examInfoRepository = examInfoRepository;
             _cardRepository = cardRepository;
             _emailService = emailService;
             _reservationInvoiceService = reservationInvoiceService;
-
+            _complementService = complementService;
 
         }
 
@@ -81,8 +84,36 @@ namespace Exam_Guardian.infra.Service
 
             var proctorToken = Guid.NewGuid().ToString();
             var studentToken = Guid.NewGuid().ToString();
-            string proctorActionLink = $"https://localhost:4200/proctor/action?token={proctorToken}";
-            string studentActionLink = $"https://localhost:4200/student/action?token={studentToken}";
+          
+            int reservationId= await _examReservationRepository.CreateExamReservation(new CreateExamReservationDTO
+            {
+                EndDate = examReservationPaymentDTO.EndTime,
+                StartDate = examReservationPaymentDTO.StartTime,
+                StudentName = examReservationPaymentDTO.StudentName,
+                ProctorTokenEmail = proctorToken,
+                StudentTokenEmail = studentToken,
+                UserId= randomProctor.UserId,
+                ExamId=exam.ExamId,
+                Email=examReservationPaymentDTO.StudentEmail,
+                });
+
+            await _reservationInvoiceService.CreateReservationInvoice(new CreateReservationInvoiceDTO()
+            {
+                ExamReservationId= reservationId,
+                Value= examReservationPaymentDTO.Price
+            });
+
+            await _complementService.CreateComplement(new CreateComplementDTO() { 
+            
+            ExamReservationId = reservationId,
+            ProctorDesc="",
+            StudentDesc=""
+            
+            });
+
+
+            string proctorActionLink = $"{AppConstant.BASE_URL}/api/examReservation/GetExamDashToProctor?token={proctorToken}&reservationId={reservationId}";
+            string studentActionLink = $"{AppConstant.BASE_URL}/api/examReservation/GetExamDashToStudent?token={studentToken}&reservationId={reservationId}";
 
             string formattedReservationDate = examReservationPaymentDTO.ReservationDate.ToString("MMMM dd, yyyy");
             string formattedStartTime = examReservationPaymentDTO.StartTime.ToString(@"hh\:mm");
@@ -119,7 +150,7 @@ namespace Exam_Guardian.infra.Service
                 Title = "Proctor Notification",
                 Body = proctorNotificationHtml,
                 Receiver = randomProctor.Email,
-                IsHtml=true
+                IsHtml = true
             });
             await _emailService.SendEmail(new SendEmailViewModel
             {
@@ -135,31 +166,9 @@ namespace Exam_Guardian.infra.Service
                 Receiver = examReservationPaymentDTO.StudentEmail,
                 IsHtml = true
 
-            }); 
-            int reservationId= await _examReservationRepository.CreateExamReservation(new CreateExamReservationDTO
-            {
-                EndDate = examReservationPaymentDTO.EndTime,
-                StartDate = examReservationPaymentDTO.StartTime,
-                StudentName = examReservationPaymentDTO.StudentName,
-                ProctorTokenEmail = proctorToken,
-                StudentTokenEmail = studentToken,
-                UserId= randomProctor.UserId,
-                ExamId=exam.ExamId,
-                Email=examReservationPaymentDTO.StudentEmail,
-                });
-
-         return await _reservationInvoiceService.CreateReservationInvoice(new CreateReservationInvoiceDTO()
-            {
-                ExamReservationId= reservationId,
-                Value= examReservationPaymentDTO.Price
             });
 
-
-
-            //get exam price 
-            // withdraw exam price
-            //generate to new exam 
-            // send emails
+            return 1;
 
         }
 

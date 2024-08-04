@@ -37,7 +37,8 @@ namespace Exam_Guardian.infra.Repository
                 ExamProviderName = e.User.FirstName,
                 State = e.User.State != null ? e.User.State.StatusName : "PENDING",
                 UserId=e.User.UserId,
-                ExamProviderEmail=e.User.Credential.Email
+                ExamProviderEmail=e.User.Credential.Email,
+                CommercialRecordImg=e.CommercialRecordImg
             }).ToListAsync();
 
         }
@@ -228,6 +229,21 @@ namespace Exam_Guardian.infra.Repository
                 // Log the exception
                 throw;
             }
+        }
+
+        public async Task<ExamProviderDTO> GetExamProviderByExamName(string examName)
+        {
+
+          var examProvider=await _modelContext.ExamInfos.Where(e => e.ExamTitle == examName).Select(e => new ExamProviderDTO() {
+            ExamProviderUniqueKey= e.ExamProvider!=null ? e.ExamProvider.ExamProviderUniqueKey : "",
+            ExamProviderName=e.ExamProvider.User.FirstName
+            }).FirstOrDefaultAsync();
+
+            if(examProvider == null || examProvider.ExamProviderName ==null)
+            {
+                throw new Exception("exam provider or exam provider name is not found");
+            }
+            return examProvider;
         }
     }
 }

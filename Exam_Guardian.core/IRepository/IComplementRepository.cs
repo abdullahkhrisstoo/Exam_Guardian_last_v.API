@@ -17,6 +17,9 @@ namespace Exam_Guardian.core.IRepository
         Task<IEnumerable<ComplementDTO>> GetAllComplements();
         Task<ComplementDTO> GetComplementByExamReservationId(int examReservationId);
         Task<IEnumerable<Complement>> GetComplementsByProctorId(int id);
+
+        Task<int> UpdateComplementByStudent(UpdateComplementDTO updateComplementViewModel);
+        Task<int> UpdateComplementByProctor(UpdateComplementDTO updateComplementViewModel);
     }
 
 }

@@ -8,6 +8,7 @@ using Exam_Guardian.core.Utilities.UserRole;
 using Exam_Guardian.infra.Common;
 using Exam_Guardian.infra.Repo;
 using Exam_Guardian.infra.Service;
+using Exam_Guardian.infra.Utilities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -133,7 +134,7 @@ namespace Exam_Guardian.API.Controllers
                     Value=plan.PlanPrice
                 });
 
-                await _unitOfWork.CommitTransactionAsync();
+                //await _unitOfWork.CommitTransactionAsync();
 
 
                 await _emailService.SendEmail(new SendEmailViewModel
@@ -368,7 +369,7 @@ namespace Exam_Guardian.API.Controllers
             var userId = ExtractCompanyClaimFromToken(token, "userId");
             var company = ExtractCompanyClaimFromToken(token, "company");
             var newToken=_authService.GenerateStudentToken(userId, company);
-            
+
             //Response.Cookies.Append("examGuardianToken", "aaa", new CookieOptions
             //{
             //    HttpOnly = true,
@@ -379,9 +380,10 @@ namespace Exam_Guardian.API.Controllers
 
             //    Expires = DateTimeOffset.UtcNow.AddMinutes(10) // Set expiration as needed
             //});
+            
 
             // Construct the redirect URL
-            var pagePath = $"http://localhost:4200/student?token={newToken}";
+            var pagePath = $"{AppConstant.BASE_URL_ANGULAR}/student?token={newToken}";
 
             // Return a Redirect response to the Angular page
             return Ok(pagePath);

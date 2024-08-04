@@ -57,6 +57,16 @@ namespace Exam_Guardian.infra.Service
         {
             return await _complementRepository.GetComplementByExamReservationId(examReservationId);
         }
+
+        public async Task<int> UpdateComplementByStudent(UpdateComplementDTO updateComplementViewModel)
+        {
+            return await _complementRepository.UpdateComplementByStudent(updateComplementViewModel);
+        }
+
+        public async Task<int> UpdateComplementByProctor(UpdateComplementDTO updateComplementViewModel)
+        {
+            return await _complementRepository.UpdateComplementByProctor(updateComplementViewModel);
+        }
     }
 
 }

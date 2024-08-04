@@ -116,6 +116,22 @@ namespace Exam_Guardian.infra.Repository
 
             return complements;
         }
+
+        
+        public async Task<int> UpdateComplementByStudent(UpdateComplementDTO updateComplementViewModel)
+        {
+            var complement = await _modelContext.Complements.FindAsync(updateComplementViewModel.ComplementId);
+            complement.StudentDesc = updateComplementViewModel.StudentDesc;
+            return await _modelContext.SaveChangesAsync();
+        }
+
+        public async Task<int> UpdateComplementByProctor(UpdateComplementDTO updateComplementViewModel)
+        {
+            var complement = await _modelContext.Complements.FindAsync(updateComplementViewModel.ComplementId);
+            complement.ProctorDesc = updateComplementViewModel.ProctorDesc;
+            return await _modelContext.SaveChangesAsync();
+        }
+
     }
 
 }

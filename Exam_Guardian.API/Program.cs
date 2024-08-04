@@ -16,11 +16,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Exam_Guardian.API.Attributes;
-using Rotativa.AspNetCore;
-using DinkToPdf.Contracts;
-using DinkToPdf;
+//using Rotativa.AspNetCore;
+//using DinkToPdf.Contracts;
+//using DinkToPdf;
 using Exam_Guardian.infra.Common;
 using signalRtc.hubs;
+using Exam_Guardian.infra.Utilities;
 
 namespace Exam_Guardian.API
 {
@@ -94,7 +95,7 @@ namespace Exam_Guardian.API
                 options.AddPolicy("AllowAngularDev",
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200", "http://192.168.1.17:4200", "https://localhost:7236")
+                        builder.WithOrigins("http://localhost:4200", $"{AppConstant.BASE_URL_ANGULAR}", "https://localhost:7236", "https://localhost:7185", "http://localhost:5236")
                                .AllowAnyHeader()
                                .AllowAnyMethod()
                                .AllowCredentials(); // Allow credentials (cookies, authorization headers)
@@ -133,7 +134,8 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IIdentificationImageService, IdentificationImageService>();
             builder.Services.AddScoped<IRoomReservationImageService, RoomReservationImageService>();
             builder.Services.AddScoped<IFileService, FileService>();
-            builder.Services.AddScoped<PdfService>();
+            //builder.Services.AddScoped<PdfService>();
+            builder.Services.AddScoped<IProctorWorkTimesRepository, ProctorWorkTimesRepository>();
             //todo: repo
             builder.Services.AddScoped<IExamProviderRepository, ExamProviderRepository>();
             builder.Services.AddScoped<ICardRepository, CardRepository>();
@@ -153,6 +155,7 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IReservationInvoiceRepository, ReservationInvoiceRepository>();
             builder.Services.AddScoped<IIdentificationImageRepository, IdentificationImageRepository>();
             builder.Services.AddScoped<IRoomReservationImageRepository, RoomReservationImageRepository>();
+            builder.Services.AddScoped<IProctorWorkTimesService,ProctorWorkTimesService>();
             // Register services
 
             ServiceLocator.ServiceProvider = builder.Services.BuildServiceProvider();
@@ -169,15 +172,23 @@ namespace Exam_Guardian.API
             });
 
             builder.Services.AddHttpClient();
-            builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools
-            {
+            //builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools
+            //{
              
-            }));
+            //}));
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                // Specify the IP address and port here
+                options.Listen(System.Net.IPAddress.Parse("192.168.1.17"), 1111); // Replace with your IP and port
+            });
+
             var app = builder.Build();
-           // RotativaConfiguration.Setup(app.Environment.WebRootPath, @"C:\\Program Files\\wkhtmltopdf\\bin");
+            // RotativaConfiguration.Setup(app.Environment.WebRootPath, @"C:\\Program Files\\wkhtmltopdf\\bin");
             // Configure the HTTP request pipeline.
+
+
             if (app.Environment.IsDevelopment())
             {
 

@@ -21,5 +21,6 @@ namespace Exam_Guardian.core.IRepository
 
         Task<int> UpdateExamProviderState(UpdateExamProviderStateDTO updateExamProviderStateDTO);
         Task<ExamProviderDTO> GetAllExamProviderByExamProviderName(string name);
+        Task<ExamProviderDTO> GetExamProviderByExamName(string examName);
     }
 }

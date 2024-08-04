@@ -4,6 +4,7 @@ using Exam_Guardian.core.IRepo;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.UserRole;
 using Exam_Guardian.infra.Utilities.States;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Exam_Guardian.infra.Service
 {
@@ -91,7 +92,17 @@ namespace Exam_Guardian.infra.Service
         public async Task<int> CheckEmailExist(string email)
         
              => await _authRepository.CheckEmailExist(email);
-        
+
+   
+        public string GenerateProctorTokenToExam(ExamReservationDTO examReservationDTO, ExamInfoDTO exam)
+        {
+            return _tokenService.GenerateToken(examReservationDTO, exam, UserRoleConstant.Proctor, 10000);
+        }
+
+        public string GenerateStudentTokenToExam(ExamReservationDTO examReservationDTO, ExamInfoDTO exam)
+        {
+            return _tokenService.GenerateStudentTokenToExam(examReservationDTO, exam, UserRoleConstant.Examer, 10000);
+        }
     }
 
      
