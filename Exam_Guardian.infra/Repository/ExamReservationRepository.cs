@@ -188,30 +188,31 @@ namespace Exam_Guardian.infra.Repository
 
 
 
-        public async Task<List<ProctorReservationDTO>> GetAvailableProctors(DateTime StartTime,DateTime EndTime,DateTime ReservationDate)
+        public async Task<List<ProctorReservationDTO>> GetAvailableProctors(DateTime StartTime, DateTime EndTime, DateTime ReservationDate)
         {
 
             var notAvailableProctors = await _modelContext.ExamReservations.Where(e => e.StartDate != null && e.EndDate != null
             && ((e.StartDate >= StartTime && e.StartDate <= EndTime) || (e.EndDate >= StartTime && e.EndDate <= EndTime)
             || (StartTime >= e.StartDate && StartTime <= e.EndDate) || (EndTime >= e.StartDate && EndTime <= e.EndDate)))
-                .Distinct().Select(e=>e.UserId).ToListAsync();
+                .Distinct().Select(e => e.UserId).ToListAsync();
 
-            var availableProctors =await _modelContext.UserInfos.Where(e=>e.RoleId==3).Where(u => !notAvailableProctors.Contains(u.UserId))
+            var availableProctors = await _modelContext.UserInfos.Where(e => e.RoleId == 3).Where(u => !notAvailableProctors.Contains(u.UserId))
                 .Select(e => new ProctorReservationDTO()
                 {
 
-                    Email = e.Credential!=null ? e.Credential.Email:"",
+                    Email = e.Credential != null ? e.Credential.Email : "",
                     FirstName = e.FirstName,
                     LastName = e.LastName,
                     UserId = e.UserId
                 }).ToListAsync();
 
-             if (availableProctors is null) {
+            if (availableProctors is null)
+            {
 
                 throw new Exception("availableProctors not found");
-             }
+            }
 
-            return  availableProctors;
+            return availableProctors;
 
         }
 
@@ -219,8 +220,8 @@ namespace Exam_Guardian.infra.Repository
         {
             List<Tuple<TimeSpan, TimeSpan>> reservations = await FetchReservations(dateTime);
             int numberOfProctors = await _modelContext.UserInfos.CountAsync(r => r.RoleId == UserRoleConstant.Proctor);
-            List<string> availableSlots = GetAvailableSlots("00:00", "23:59", duration, reservations, numberOfProctors);
-
+            var procotrWork = await _modelContext.ProctorWorkTimes.FirstOrDefaultAsync();
+            List<string> availableSlots = GetAvailableSlots(procotrWork.WorkFrom, procotrWork.WorkTo, duration, reservations, numberOfProctors);
             var availableTimeDTOs = availableSlots.Select(slot =>
             {
                 var times = slot.Split(' ');
@@ -327,7 +328,7 @@ namespace Exam_Guardian.infra.Repository
 
         public async Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetails()
         {
-            return await _modelContext.ExamReservations.Include(e=>e.ReservationInvoice).Include(e => e.Exam)
+            return await _modelContext.ExamReservations.Include(e => e.ReservationInvoice).Include(e => e.Exam)
 
                 .Select(e => new ExamReservationDetailsDTO
                 {
@@ -335,9 +336,9 @@ namespace Exam_Guardian.infra.Repository
                     StudentEmail = e.Email,
                     StudentName = e.StudentName,
                     Value = e.ReservationInvoice.Value,
-                    Score=e.Score,
-                    EndTime=e.EndDate,
-                    StartTime=e.StartDate,
+                    Score = e.Score,
+                    EndTime = e.EndDate,
+                    StartTime = e.StartDate,
                     CreatedAt = e.CreatedAt
                 }).ToListAsync();
         }
@@ -357,7 +358,7 @@ namespace Exam_Guardian.infra.Repository
                     EndTime = e.EndDate,
                     StartTime = e.StartDate,
                     CreatedAt = e.CreatedAt
-                }).Where(e=>e.StudentEmail==studentEmail).ToListAsync();
+                }).Where(e => e.StudentEmail == studentEmail).ToListAsync();
         }
 
 

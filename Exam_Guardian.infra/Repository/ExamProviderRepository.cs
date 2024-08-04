@@ -37,7 +37,8 @@ namespace Exam_Guardian.infra.Repository
                 ExamProviderName = e.User.FirstName,
                 State = e.User.State != null ? e.User.State.StatusName : "PENDING",
                 UserId=e.User.UserId,
-                ExamProviderEmail=e.User.Credential.Email
+                ExamProviderEmail=e.User.Credential.Email,
+                CommercialRecordImg=e.CommercialRecordImg
             }).ToListAsync();
 
         }

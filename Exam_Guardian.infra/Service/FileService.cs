@@ -55,7 +55,7 @@ namespace Exam_Guardian.infra.Service
                 await image.CopyToAsync(fileStream);
             }
 
-            return $"/uploads/{uniqueFileName}";
+            return $"uploads/{uniqueFileName}";
         }
 
 
@@ -86,7 +86,7 @@ namespace Exam_Guardian.infra.Service
                 await file.CopyToAsync(stream);
             }
 
-            return $"/uploads/{fileName}";
+            return $"uploads/{fileName}";
         }
 
     }

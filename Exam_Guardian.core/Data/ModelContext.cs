@@ -40,7 +40,8 @@ namespace Exam_Guardian.core.Data
         public virtual DbSet<UserInfo> UserInfos { get; set; } = null!;
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
         public virtual DbSet<UserState> UserStates { get; set; } = null!;
-
+        
+        public virtual DbSet<ProctorWorkTime> ProctorWorkTimes { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -901,7 +902,28 @@ namespace Exam_Guardian.core.Data
                     .HasColumnName("UPDATED_AT")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP\n   ");
             });
+            modelBuilder.Entity<ProctorWorkTime>(entity =>
+            {
+                entity.HasKey(e => e.ProctorWorkTimesId)
+                    .HasName("SYS_C0016660");
 
+                entity.ToTable("PROCTOR_WORK_TIMES");
+
+                entity.Property(e => e.ProctorWorkTimesId)
+                    .HasColumnType("NUMBER")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("PROCTOR_WORK_TIMES_ID");
+
+                entity.Property(e => e.WorkFrom)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("WORK_FROM");
+
+                entity.Property(e => e.WorkTo)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("WORK_TO");
+            });
             OnModelCreatingPartial(modelBuilder);
         }
 

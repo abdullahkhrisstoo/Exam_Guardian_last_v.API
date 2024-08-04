@@ -134,6 +134,7 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IRoomReservationImageService, RoomReservationImageService>();
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<PdfService>();
+            builder.Services.AddScoped<IProctorWorkTimesRepository, ProctorWorkTimesRepository>();
             //todo: repo
             builder.Services.AddScoped<IExamProviderRepository, ExamProviderRepository>();
             builder.Services.AddScoped<ICardRepository, CardRepository>();
@@ -153,6 +154,7 @@ namespace Exam_Guardian.API
             builder.Services.AddScoped<IReservationInvoiceRepository, ReservationInvoiceRepository>();
             builder.Services.AddScoped<IIdentificationImageRepository, IdentificationImageRepository>();
             builder.Services.AddScoped<IRoomReservationImageRepository, RoomReservationImageRepository>();
+            builder.Services.AddScoped<IProctorWorkTimesService,ProctorWorkTimesService>();
             // Register services
 
             ServiceLocator.ServiceProvider = builder.Services.BuildServiceProvider();

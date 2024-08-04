@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Exam_Guardian.API.Controllers
 {
@@ -19,16 +20,23 @@ namespace Exam_Guardian.API.Controllers
         private readonly IExamReservationService _examReservationService;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IExamService _examService;
+        private readonly IExamInfoService _examInfoService;
         private readonly IExamProviderLinkService _examProviderLinkService;
+        private readonly IAuthService _authService;
         public ExamReservationController(IExamReservationService examReservationService,
             IHttpClientFactory httpClientFactory,
             IExamService examService,
-            IExamProviderLinkService examProviderLinkService)
+            IExamProviderLinkService examProviderLinkService,
+            IAuthService authService,
+            IExamInfoService examInfoService)
         {
             _examReservationService = examReservationService;
             _httpClientFactory = httpClientFactory;
             _examService = examService;
             _examProviderLinkService = examProviderLinkService;
+            _authService = authService;
+       
+            _examInfoService = examInfoService;
         }
 
 
@@ -94,6 +102,68 @@ namespace Exam_Guardian.API.Controllers
             catch (Exception ex)
             {
                 return this.ApiResponseServerError(ex, new { ExamReservationId = id });
+            }
+        }
+        [HttpGet]
+        //[CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
+        public async Task<IActionResult> GetExamDashToStudent(string token, decimal reservationId)
+        {
+            try
+            {
+                var examReservation = await _examReservationService.GetExamReservationById((int)reservationId);
+
+                if (examReservation is null || examReservation.ExamId is null) {
+
+                    return Redirect("");
+                }
+                if (examReservation.StudentTokenEmail is null || examReservation.StudentTokenEmail!= token)
+                {
+                    return Redirect("");
+                }
+
+                var exam=await _examInfoService.GetExamByIdAsync(examReservation.ExamId.Value);
+                var newToken = _authService.GenerateStudentTokenToExam(examReservation,exam);
+
+           
+                var pagePath = $"http://localhost:4200/examination/student-test?token={newToken}";
+
+                return Redirect(pagePath);
+            }
+            catch (Exception ex)
+            {
+                return Redirect("");
+            }
+        }
+        [HttpGet]
+        //[CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
+        public async Task<IActionResult> GetExamDashToProctor(string token, decimal reservationId)
+        {
+            try
+            {
+                var examReservation = await _examReservationService.GetExamReservationById((int)reservationId);
+
+                if (examReservation is null || examReservation.ExamId is null)
+                {
+
+                    return Redirect("");
+                }
+                if (examReservation.UniqueKey is null || examReservation.UniqueKey != token)
+                {
+
+                    return Redirect("");
+                }
+
+                var exam = await _examInfoService.GetExamByIdAsync(examReservation.ExamId.Value);
+                var newToken = _authService.GenerateProctorTokenToExam(examReservation, exam);
+
+
+                var pagePath = $"http://localhost:4200/examination/proctor?token={newToken}";
+
+                return Redirect(pagePath);
+            }
+            catch (Exception ex)
+            {
+                return Redirect("");
             }
         }
 
