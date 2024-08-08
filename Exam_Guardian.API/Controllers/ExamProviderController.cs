@@ -3,6 +3,9 @@ using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.core.Utilities.UserRole;
+using Exam_Guardian.infra.Service;
+using Exam_Guardian.infra.Utilities;
+using Exam_Guardian.infra.Utilities.States;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,10 +17,12 @@ namespace Exam_Guardian.API.Controllers
     public class ExamProviderController : ControllerBase
     {
         private readonly IExamService _examService;
+        private readonly IEmailService _emailService;
 
-        public ExamProviderController(IExamService examService)
+        public ExamProviderController(IExamService examService,IEmailService emailService)
         {
             _examService = examService;
+            _emailService = emailService;
         }
        
 
@@ -158,8 +163,32 @@ namespace Exam_Guardian.API.Controllers
         {
             try
             {
+                
+
                 var result = await _examService.UpdateExamProviderState(updateExamProviderStateDTO);
-              
+
+
+
+                var examProviderDTO = (await _examService.GetAllExamProviders()).FirstOrDefault(e=>e.ExamProviderId==updateExamProviderStateDTO.ExamProviderId);
+
+                if (examProviderDTO == null) {
+
+                    return NotFound("");
+                }
+
+
+               var emailBody= HtmlContentGenerator.GenerateProviderNotificationEmail(examProviderDTO.ExamProviderName, (int)updateExamProviderStateDTO.StateId, $"{AppConstant.BASE_URL_ANGULAR}/home/contact");
+
+                   await _emailService.SendEmail(new SendEmailViewModel()
+                    {
+                       Title= "Update on Your Status",
+                       Body= emailBody,
+                       Receiver=examProviderDTO.ExamProviderEmail,
+                       IsHtml=true,
+
+                       
+                    });
+
                 return this.ApiResponseOk("ExamProvider updated successfully", result);
             }
             catch (Exception ex)

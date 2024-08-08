@@ -58,10 +58,10 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllReservationInvoicesDetails()
+        public async Task<IActionResult> GetAllReservationInvoicesDetails(int page,int size)
         {
-            var result = await _service.GetAllReservationInvoicesDetails();
-            return this.ApiResponseOk("Reservation Invoices retrived successfully", result);
+            var result = await _service.GetAllReservationInvoicesDetails(page,size);
+            return Ok(result);
         }
     }
 

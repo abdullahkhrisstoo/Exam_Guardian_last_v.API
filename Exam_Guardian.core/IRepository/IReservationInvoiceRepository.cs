@@ -14,7 +14,7 @@ namespace Exam_Guardian.core.IRepository
         Task<int> UpdateReservationInvoice(UpdateReservationInvoiceDTO updateDto);
         Task<ReservationInvoiceDTO> GetReservationInvoiceById(decimal id);
         Task<IEnumerable<ReservationInvoiceDTO>> GetAllReservationInvoices();
-        Task<IEnumerable<ReservationInvoiceDetailsDTO>> GetAllReservationInvoicesDetails();
+        IQueryable<ReservationInvoiceDetailsDTO> GetAllReservationInvoicesDetails();
     }
 
 }

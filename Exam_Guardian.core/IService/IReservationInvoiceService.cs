@@ -1,4 +1,5 @@
 ﻿using Exam_Guardian.core.DTO;
+using Exam_Guardian.core.Wrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Exam_Guardian.core.IService
         Task<ReservationInvoiceDTO> GetReservationInvoiceById(decimal id);
         Task<IEnumerable<ReservationInvoiceDTO>> GetAllReservationInvoices();
 
-        Task<IEnumerable<ReservationInvoiceDetailsDTO>> GetAllReservationInvoicesDetails();
+        Task<PaginatedResult<ReservationInvoiceDetailsDTO>> GetAllReservationInvoicesDetails(int page, int size);
     }
 
 }

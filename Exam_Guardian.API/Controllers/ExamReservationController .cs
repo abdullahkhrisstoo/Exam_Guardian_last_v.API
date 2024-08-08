@@ -1,4 +1,5 @@
 ﻿using Exam_Guardian.api.ResponseHandler;
+using Exam_Guardian.API.hubs;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
 using Exam_Guardian.core.Utilities.CalimHandler;
@@ -8,6 +9,7 @@ using Exam_Guardian.infra.Service;
 using Exam_Guardian.infra.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Net;
 using System.Text.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -24,12 +26,15 @@ namespace Exam_Guardian.API.Controllers
         private readonly IExamInfoService _examInfoService;
         private readonly IExamProviderLinkService _examProviderLinkService;
         private readonly IAuthService _authService;
+
+        private readonly IHubContext<ReservationNotificationHub> _hubContext;
         public ExamReservationController(IExamReservationService examReservationService,
             IHttpClientFactory httpClientFactory,
             IExamService examService,
             IExamProviderLinkService examProviderLinkService,
             IAuthService authService,
-            IExamInfoService examInfoService)
+            IExamInfoService examInfoService,
+            IHubContext<ReservationNotificationHub> hubContext)
         {
             _examReservationService = examReservationService;
             _httpClientFactory = httpClientFactory;
@@ -38,6 +43,7 @@ namespace Exam_Guardian.API.Controllers
             _authService = authService;
        
             _examInfoService = examInfoService;
+            _hubContext= hubContext;
         }
 
 
@@ -328,9 +334,27 @@ namespace Exam_Guardian.API.Controllers
                         var data = root.GetProperty("data");
                         examReservationPaymentDTO.Price = data.GetProperty("price").GetDecimal();
                         examReservationPaymentDTO.ExamDuration = (int)data.GetProperty("examDuration").GetDecimal();
-                        return this.ApiResponseOk("exam booked successfully", await _examReservationService.CreateProcessExamReservation(examReservationPaymentDTO));
-                        //return Ok(Content(root.GetRawText(), "application/json").Content);
-                        // return RedirectHelper.RedirectByRoleName("Profile", "Admin");
+
+                        var reservationDetails = new ReservationInvoiceDetailsDTO
+                        {
+                            StudentName = examReservationPaymentDTO.StudentName,
+                            StudentEmail = examReservationPaymentDTO.StudentEmail,
+                            ExamName = examReservationPaymentDTO.ExamName,
+                            ExamProviderName = "Deya United Company",
+                            Value = examReservationPaymentDTO.Price,
+                            CreatedAt = DateTime.Now
+                        };
+                        var effect=  await _examReservationService.CreateProcessExamReservation(examReservationPaymentDTO);
+                        //try
+                        //{
+                        //    await _hubContext.Clients.Group("Admins").SendAsync("ReceiveReservationNotification", reservationDetails);
+
+                        //}
+                        //catch (Exception e) { }
+
+
+                        return this.ApiResponseOk("exam booked successfully",effect);
+                    
                     }
                     else
                     {
@@ -353,8 +377,12 @@ namespace Exam_Guardian.API.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetNot() {
 
-
+            await _hubContext.Clients.Group("Admins").SendAsync("ReceiveReservationNotification", "thank you");
+            return Ok(1);
+        }
     
 
         [HttpGet("{key}")]

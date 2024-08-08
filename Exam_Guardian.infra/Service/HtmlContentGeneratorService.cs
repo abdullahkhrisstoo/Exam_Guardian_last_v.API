@@ -1,4 +1,5 @@
 ﻿using Exam_Guardian.core.DTO;
+using Exam_Guardian.infra.Utilities.States;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -530,8 +531,123 @@ namespace Exam_Guardian.infra.Service
         }
 
 
+        public static string GenerateProviderNotificationEmail(string name, int state, string contactLink)
+        {
+            string subject;
+            string message;
 
+            switch (state)
+            {
+                case UserStateConst.Approved:
+                    subject = "Your Application has been Approved";
+                    message = $@"
+                    <h2>Hello {name},</h2>
+                    <p>We are pleased to inform you that your application to be an exam provider has been approved.</p>
+                    <p>If you have any questions, feel free to contact us.</p>";
+                    break;
+
+                case UserStateConst.Rejected:
+                    subject = "Your Application has been Rejected";
+                    message = $@"
+                    <h2>Hello {name},</h2>
+                    <p>We regret to inform you that your application to be an exam provider has been rejected.</p>
+                    <p>If you have any questions, feel free to contact us.</p>";
+                    break;
+
+                case UserStateConst.Activate:
+                    subject = "Your Provider Status is Active";
+                    message = $@"
+                    <h2>Hello {name},</h2>
+                    <p>We are happy to inform you that your status as an exam provider is now active.</p>
+                    <p>If you have any questions, feel free to contact us.</p>";
+                    break;
+
+                case UserStateConst.Deactivate:
+                    subject = "Your Provider Status has been Deactivated";
+                    message = $@"
+                    <h2>Hello {name},</h2>
+                    <p>We want to inform you that your status as an exam provider has been deactivated.</p>
+                    <p>If you have any questions, feel free to contact us.</p>";
+                    break;
+
+                default:
+                    subject = "Update on Your Provider Status";
+                    message = $@"
+                    <h2>Hello {name},</h2>
+                    <p>We have an update regarding your status as an exam provider. Please contact us for more details.</p>";
+                    break;
+            }
+
+            return $@"
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>{subject}</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: #f4f4f4 !important;
+        }}
+        .container {{
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            background-color: #ffffff !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+        }}
+        .header {{
+            background-color: #007bff !important;
+            color: #ffffff !important;
+            padding: 20px !important;
+            text-align: center !important;
+        }}
+        .content {{
+            padding: 20px !important;
+        }}
+        .footer {{
+            background-color: #f1f1f1 !important;
+            text-align: center !important;
+            padding: 10px !important;
+            font-size: 14px !important;
+        }}
+        .button {{
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #ffffff !important;
+            background-color: #007bff !important;
+            text-decoration: none !important;
+            border-radius: 5px !important;
+        }}
+        .button:hover {{
+            background-color: #0056b3 !important;
+        }}
+    </style>
+</head>
+<body>
+    <div class=""container"">
+        <div class=""header"">
+            <h2>{subject}</h2>
+        </div>
+        <div class=""content"">
+            {message}
+            <a href=""{contactLink}"" class=""button"">Contact Us</a>
+        </div>
+        <div class=""footer"">
+            <p>&copy; 2024 Exam Provider System. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>";
+        }
 
     }
 
 }
+
+

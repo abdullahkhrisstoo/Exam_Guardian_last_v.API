@@ -120,14 +120,14 @@ namespace Exam_Guardian.infra.Repository
         
         public async Task<int> UpdateComplementByStudent(UpdateComplementDTO updateComplementViewModel)
         {
-            var complement = await _modelContext.Complements.FindAsync(updateComplementViewModel.ComplementId);
+            var complement = await _modelContext.Complements.FirstOrDefaultAsync(e => e.ExamReservationId == updateComplementViewModel.ExamReservationId);
             complement.StudentDesc = updateComplementViewModel.StudentDesc;
             return await _modelContext.SaveChangesAsync();
         }
 
         public async Task<int> UpdateComplementByProctor(UpdateComplementDTO updateComplementViewModel)
         {
-            var complement = await _modelContext.Complements.FindAsync(updateComplementViewModel.ComplementId);
+            var complement = await _modelContext.Complements.FirstOrDefaultAsync(e=>e.ExamReservationId == updateComplementViewModel.ExamReservationId);
             complement.ProctorDesc = updateComplementViewModel.ProctorDesc;
             return await _modelContext.SaveChangesAsync();
         }

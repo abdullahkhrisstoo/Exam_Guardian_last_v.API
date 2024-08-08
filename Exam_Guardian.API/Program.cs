@@ -22,6 +22,9 @@ using Exam_Guardian.API.Attributes;
 using Exam_Guardian.infra.Common;
 using signalRtc.hubs;
 using Exam_Guardian.infra.Utilities;
+using Exam_Guardian.API.hubs;
+using Exam_Guardian.API.middleware;
+using System.Security.Claims;
 
 namespace Exam_Guardian.API
 {
@@ -45,15 +48,46 @@ namespace Exam_Guardian.API
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x => x.TokenValidationParameters = new TokenValidationParameters
+            }).AddJwtBearer(options =>
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = TokenConstant.symmetricSecurityKey,
-                ClockSkew = TimeSpan.Zero
-            }); ;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = TokenConstant.symmetricSecurityKey,
+                    NameClaimType = ClaimTypes.NameIdentifier 
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (context.HttpContext.Request.Path.StartsWithSegments("/reservationNotificationHub"))
+                        {
+                            var accessToken = context.Request.Query["access_token"].FirstOrDefault();
+                          
+                            if (!string.IsNullOrEmpty(accessToken))
+                            {
+                                context.Token = accessToken;
+                            }
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+            //    .AddJwtBearer(x => 
+
+            //x.TokenValidationParameters = new TokenValidationParameters
+            //{
+            //    ValidateIssuer = false,
+            //    ValidateAudience = false,
+            //    ValidateLifetime = true,
+            //    ValidateIssuerSigningKey = true,
+            //    IssuerSigningKey = TokenConstant.symmetricSecurityKey,
+            //    ClockSkew = TimeSpan.Zero,
+
+            //}); ;
 
 
 
@@ -181,7 +215,7 @@ namespace Exam_Guardian.API
             builder.WebHost.ConfigureKestrel(options =>
             {
                 // Specify the IP address and port here
-                options.Listen(System.Net.IPAddress.Parse("192.168.1.17"), 1111); // Replace with your IP and port
+                options.Listen(System.Net.IPAddress.Parse("192.168.100.67"), 1111); // Replace with your IP and port
             });
 
             var app = builder.Build();
@@ -196,6 +230,7 @@ namespace Exam_Guardian.API
             app.UseSwagger();
             app.UseSwaggerUI();
             app.UseStaticFiles();
+         //   app.UseMiddleware<JwtTokenLoggingMiddleware>();
             app.UseRouting(); // Add this line to enable routing
 
 
@@ -207,6 +242,7 @@ namespace Exam_Guardian.API
          
             app.UseCors("AllowAngularDev");
             app.MapHub<SignalRtcHub>("/signalingHub");
+            app.MapHub<ReservationNotificationHub>("/reservationNotificationHub");
             //app.UseEndpoints(endpoints =>
             //{
             //    endpoints.MapHub<VideoCallHub>("/videoCallHub");

@@ -23,5 +23,15 @@ namespace signalRtc.hubs
             await Clients.Others.SendAsync("ReceiveIceCandidate", user, candidate);
             Console.WriteLine("ReceiveIceCandidate");
         }
+
+
+        public async Task SendFormComplaintToUser()
+        {
+            await Clients.Others.SendAsync("ReciveFormComplaint");
+            Console.WriteLine("ReceiveIceCandidate");
+        }
+
+
+
     }
 }

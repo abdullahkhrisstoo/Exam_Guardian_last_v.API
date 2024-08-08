@@ -78,9 +78,9 @@ namespace Exam_Guardian.core.IRepository
             }).ToListAsync();
         }
 
-        public async Task<IEnumerable<ReservationInvoiceDetailsDTO>> GetAllReservationInvoicesDetails()
+        public  IQueryable<ReservationInvoiceDetailsDTO> GetAllReservationInvoicesDetails()
         {
-            return await _context.ReservationInvoices.Include(e=>e.ExamReservation)
+            return _context.ReservationInvoices.Include(e=>e.ExamReservation)
                 .Select(e => new ReservationInvoiceDetailsDTO
             {
                 ExamName=e.ExamReservation.Exam.ExamTitle,
@@ -90,7 +90,7 @@ namespace Exam_Guardian.core.IRepository
                 CreatedAt = e.CreatedAt,
                 ExamProviderName=e.ExamReservation.Exam.ExamProvider.User.FirstName
 
-            }).ToListAsync();
+            });
         }
 
     }

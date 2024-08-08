@@ -2,8 +2,11 @@
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Wrapper;
 using Exam_Guardian.infra.Repository;
 using Exam_Guardian.infra.Utilities;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -167,8 +170,7 @@ namespace Exam_Guardian.infra.Service
                 IsHtml = true
 
             });
-
-            return 1;
+             return 1;
 
         }
 
@@ -313,7 +315,6 @@ namespace Exam_Guardian.infra.Service
         {
             return await _examReservationRepository.GetAllExamReservationsDetails();
         }
-
         public async Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetailsBy(string studentName)
         {
             return await _examReservationRepository.GetAllExamReservationsDetailsBy(studentName);

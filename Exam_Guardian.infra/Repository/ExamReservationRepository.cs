@@ -6,6 +6,7 @@ using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.Mapper;
 using Exam_Guardian.core.Utilities.PackagesConstants;
 using Exam_Guardian.core.Utilities.UserRole;
+using Exam_Guardian.core.Wrapper;
 using Exam_Guardian.infra.Common;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;

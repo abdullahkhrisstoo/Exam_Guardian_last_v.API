@@ -1,6 +1,7 @@
 ﻿using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Wrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,9 +44,9 @@ namespace Exam_Guardian.infra.Service
             return await _repository.GetAllReservationInvoices();
         }
 
-        public async Task<IEnumerable<ReservationInvoiceDetailsDTO>> GetAllReservationInvoicesDetails()
+        public async Task<PaginatedResult<ReservationInvoiceDetailsDTO>> GetAllReservationInvoicesDetails(int page, int size)
         {
-            return await _repository.GetAllReservationInvoicesDetails();
+            return await _repository.GetAllReservationInvoicesDetails().ToPaginatedList(page,size);
         }
     }
 
