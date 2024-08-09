@@ -24,6 +24,9 @@ namespace Exam_Guardian.core.IService
         Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetails();
         Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetailsBy(string studentName);
 
+        Task<ExamReservationDTO> GetExamReservationByExamInfoId(decimal id);
+
+
 
     }
 }

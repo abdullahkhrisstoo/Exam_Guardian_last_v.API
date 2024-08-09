@@ -215,7 +215,7 @@ namespace Exam_Guardian.API
             builder.WebHost.ConfigureKestrel(options =>
             {
                 // Specify the IP address and port here
-                options.Listen(System.Net.IPAddress.Parse("192.168.100.67"), 1111); // Replace with your IP and port
+                options.Listen(System.Net.IPAddress.Parse("192.168.1.17"), 1111); // Replace with your IP and port
             });
 
             var app = builder.Build();
