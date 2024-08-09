@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.core.IRepository;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.CalimHandler;
+using Exam_Guardian.core.Utilities.UserRole;
 
 namespace Exam_Guardian.API.Controllers
 {
@@ -19,6 +21,7 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpPost]
+
         public async Task<IActionResult> CreateContactUs([FromBody] ContactU contact)
         {
 
@@ -40,6 +43,8 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult> DeleteContactUs(decimal id)
         {
             try
@@ -61,6 +66,8 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpGet]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult> GetAllContactUs()
         {
             try
@@ -75,6 +82,8 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult> GetContactUsById(decimal id)
         {
             try

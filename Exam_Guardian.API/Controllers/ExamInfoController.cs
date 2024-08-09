@@ -35,6 +35,7 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpPost]
+
         public async Task<ActionResult<ApiResponseModel<ExamInfoDTO>>> CreateExam([FromBody] CreateExamInfoDTO createExamDto)
         {
             var exam = await _examInfoService.CreateExamAsync(createExamDto);
@@ -248,7 +249,7 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpGet]
-        [CheckClaims( UserRoleConstant.SExamer)]
+        //[CheckClaims( UserRoleConstant.SExamer)]
         public async Task<IActionResult> GetExamDetailsWithoutAnswersByName()
         {
             try
@@ -304,7 +305,7 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpGet]
-        [CheckClaims(UserRoleConstant.SAdmin)]
+        //[CheckClaims(UserRoleConstant.SAdmin)]
         public async Task<IActionResult> GetExamDetailsByName(string examName)
         {
             try
@@ -406,7 +407,7 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpPost]
-        [CheckClaims( UserRoleConstant.SExamer)]
+        [CheckClaims(UserRoleConstant.SExamer)]
 
         public async Task<IActionResult> ExamCorrection([FromBody] QuestionCorrectionAnswerListDTO examCorrectionDTO)
         {

@@ -15,5 +15,6 @@ namespace Exam_Guardian.core.IService
         Task<bool> DeleteExamAsync(decimal examId);
         Task<IEnumerable<ExamInfoDTO>> GetExamsByExamProviderIdAsync(decimal examProviderId);
         Task<IEnumerable<ExamInfoDTO>> GetAllExams();
+
     }
 }

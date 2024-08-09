@@ -1,7 +1,9 @@
 ﻿using Exam_Guardian.core.Data;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.CalimHandler;
 using Exam_Guardian.core.Utilities.ResponseHandler;
+using Exam_Guardian.core.Utilities.UserRole;
 using Exam_Guardian.infra.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +26,8 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpPost]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult> CreateAbout([FromBody] AboutDTO aboutDto)
         {
             if (aboutDto == null)
@@ -40,6 +44,8 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult> DeleteAbout(decimal id)
         {
             try
@@ -58,6 +64,7 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpGet("{id}")]
+
         public async Task<IActionResult> GetAboutById(decimal id)
         {
             try
@@ -75,6 +82,7 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpGet]
+        
         public async Task<IActionResult> GetAllAbout()
         {
             try
@@ -89,6 +97,8 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult>  UpdateAbout(decimal id, [FromBody]AboutDTO aboutDto)
         {
             if (aboutDto == null)

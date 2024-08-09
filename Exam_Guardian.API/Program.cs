@@ -129,7 +129,7 @@ namespace Exam_Guardian.API
                 options.AddPolicy("AllowAngularDev",
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200", $"{AppConstant.BASE_URL_ANGULAR}", "https://localhost:7236", "https://localhost:7185", "http://localhost:5236")
+                        builder.WithOrigins("http://localhost:4200", $"{AppConstant.BASE_URL_ANGULAR}", "https://localhost:7236", "https://localhost:7185", "http://localhost:5236", "https://exam-provider-mvc.geeksfreelancer.online", "https://test-deaa.geeksfreelancer.online")
                                .AllowAnyHeader()
                                .AllowAnyMethod()
                                .AllowCredentials(); // Allow credentials (cookies, authorization headers)
@@ -212,11 +212,11 @@ namespace Exam_Guardian.API
             //}));
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.WebHost.ConfigureKestrel(options =>
-            {
+           // builder.WebHost.ConfigureKestrel(options =>
+          //  {
                 // Specify the IP address and port here
-                options.Listen(System.Net.IPAddress.Parse("192.168.100.67"), 1111); // Replace with your IP and port
-            });
+//                options.Listen(System.Net.IPAddress.Parse("192.168.1.17"), 1111); // Replace with your IP and port
+//});
 
             var app = builder.Build();
             // RotativaConfiguration.Setup(app.Environment.WebRootPath, @"C:\\Program Files\\wkhtmltopdf\\bin");
@@ -231,6 +231,7 @@ namespace Exam_Guardian.API
             app.UseSwaggerUI();
             app.UseStaticFiles();
          //   app.UseMiddleware<JwtTokenLoggingMiddleware>();
+            app.UseCors("AllowAngularDev");
             app.UseRouting(); // Add this line to enable routing
 
 
@@ -240,7 +241,6 @@ namespace Exam_Guardian.API
             app.UseAuthentication();
             app.UseAuthorization();
          
-            app.UseCors("AllowAngularDev");
             app.MapHub<SignalRtcHub>("/signalingHub");
             app.MapHub<ReservationNotificationHub>("/reservationNotificationHub");
             //app.UseEndpoints(endpoints =>

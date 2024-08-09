@@ -134,7 +134,7 @@ namespace Exam_Guardian.API.Controllers
                     Value=plan.PlanPrice
                 });
 
-                //await _unitOfWork.CommitTransactionAsync();
+                await _unitOfWork.CommitTransactionAsync();
 
 
                 await _emailService.SendEmail(new SendEmailViewModel
