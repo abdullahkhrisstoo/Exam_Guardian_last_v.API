@@ -31,7 +31,13 @@ namespace signalRtc.hubs
             Console.WriteLine("ReceiveIceCandidate");
         }
 
+        public async Task SendRejected()
+        {
+            await Clients.Others.SendAsync("ReceiveRejected");
+            Console.WriteLine("ReceiveIceCandidate");
+        }
 
+        
 
     }
 }
