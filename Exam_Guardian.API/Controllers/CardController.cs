@@ -1,6 +1,8 @@
 ﻿using Exam_Guardian.core.Data;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.CalimHandler;
+using Exam_Guardian.core.Utilities.UserRole;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Exam_Guardian.API.Controllers
@@ -17,6 +19,8 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpPost]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult> CreateCard(CreateCardDTO createCardDto)
         {
             await _cardService.CreateCard(createCardDto);
@@ -24,6 +28,9 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpGet("{id}")]
+        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
+
         public async Task<IActionResult> GetCardById(decimal id)
         {
             var card = await _cardService.GetCardById(id);
@@ -33,6 +40,8 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult> UpdateCard(decimal id, Card card)
         {
             if (id != card.CardId)
@@ -43,6 +52,8 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult> DeleteCard(decimal id)
         {
             await _cardService.DeleteCard(id);

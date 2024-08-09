@@ -113,7 +113,7 @@ namespace Exam_Guardian.API.Controllers
         }
         [HttpGet]
         //[CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
-        public async Task<IActionResult> GetExamDashToStudent(string token, decimal reservationId)
+        public  async Task<IActionResult> GetExamDashToStudent(string token, decimal reservationId)
         {
             try
             {
@@ -128,19 +128,38 @@ namespace Exam_Guardian.API.Controllers
                     return NotFound("");
                 }
 
-                var exam=await _examInfoService.GetExamByIdAsync(examReservation.ExamId.Value);
+                var exam = await _examInfoService.GetExamByIdAsync(examReservation.ExamId.Value);
                 var newToken = _authService.GenerateStudentTokenToExam(examReservation,exam);
 
-           
                 var pagePath = $"{AppConstant.BASE_URL_ANGULAR}/examination/student-test?token={newToken}";
+                if (examReservation.StartDate.HasValue)
+                {
+                    var examStartTime = examReservation.StartDate.Value;
+                    var currentTime = DateTime.UtcNow;
+                    //if (currentTime >= examStartTime.AddMinutes(-30) && currentTime <= examStartTime)
+                    //{
+                    return Redirect(pagePath);
+                    //}
+                    //else
+                    //{
+                    //    return Redirect(AppConstant.BASE_URL_ANGULAR);
+                    //}
+                }
+                else {
+                    return BadRequest(AppConstant.BASE_URL_ANGULAR);
+                }
+                
 
-                return Redirect(pagePath);
+               
+
             }
             catch (Exception ex)
             {
                 return Redirect("");
             }
         }
+        
+        
         [HttpGet]
         //[CheckClaimsAttribute( UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetExamDashToProctor(string token, decimal reservationId)
@@ -345,12 +364,12 @@ namespace Exam_Guardian.API.Controllers
                             CreatedAt = DateTime.Now
                         };
                         var effect=  await _examReservationService.CreateProcessExamReservation(examReservationPaymentDTO);
-                        //try
-                        //{
-                        //    await _hubContext.Clients.Group("Admins").SendAsync("ReceiveReservationNotification", reservationDetails);
+                        try
+                        {
+                            await _hubContext.Clients.Group("Admins").SendAsync("ReceiveReservationNotification", reservationDetails);
 
-                        //}
-                        //catch (Exception e) { }
+                        }
+                        catch (Exception e) { }
 
 
                         return this.ApiResponseOk("exam booked successfully",effect);
@@ -426,7 +445,7 @@ namespace Exam_Guardian.API.Controllers
 
                 return BadRequest("Key is wrong");
             }
-            var result = await _examReservationService.GetAllExamReservationsDetails();
+            var result = (await _examReservationService.GetAllExamReservationsDetailsByExamProvider(examProvider.ExamProviderId));
 
 
             return this.ApiResponseOk("All exam reservations retrieved successfully", result);

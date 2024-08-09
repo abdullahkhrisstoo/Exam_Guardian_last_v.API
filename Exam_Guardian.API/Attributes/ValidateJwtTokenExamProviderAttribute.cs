@@ -13,50 +13,49 @@ namespace Exam_Guardian.API.Controllers
     {
 
         private IExamService _examService;
-       
+
+        //todo: custom cliam
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             try
             {
-                var  _examService = ServiceLocator.ServiceProvider.GetService<IExamService>();
-            var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
-            if (string.IsNullOrEmpty(token))
-            {
-                context.Result = new UnauthorizedResult();
-                return;
-            }
+                var _examService = ServiceLocator.ServiceProvider.GetService<IExamService>();
+                var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+                if (string.IsNullOrEmpty(token))
+                {
+                    context.Result = new UnauthorizedResult();
+                    return;
+                }
+                var companyClaim = ExtractCompanyClaimFromToken(token);
 
-            var companyClaim = ExtractCompanyClaimFromToken(token);
-          
 
-            var examProvider = (await _examService.GetAllExamProviderByExamProviderName(companyClaim));
+                var examProvider = (await _examService.GetAllExamProviderByExamProviderName(companyClaim));
 
-            if (examProvider is null) {
-                context.Result = new UnauthorizedResult();
-                return;
-            }
-            var key = examProvider.ExamProviderUniqueKey;
+                if (examProvider is null)
+                {
+                    context.Result = new UnauthorizedResult();
+                    return;
+                }
+                var key = examProvider.ExamProviderUniqueKey;
 
-            if (key == null)
-            {
-                context.Result = new UnauthorizedResult();
-                return;
-            }
+                if (key == null)
+                {
+                    context.Result = new UnauthorizedResult();
+                    return;
+                }
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = secretKey,
+                    ClockSkew = TimeSpan.Zero
+                };
 
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-            var tokenHandler = new JwtSecurityTokenHandler();
 
-            var validationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = secretKey,
-                ClockSkew = TimeSpan.Zero
-            };
-
-            
                 tokenHandler.ValidateToken(token, validationParameters, out _);
             }
             catch

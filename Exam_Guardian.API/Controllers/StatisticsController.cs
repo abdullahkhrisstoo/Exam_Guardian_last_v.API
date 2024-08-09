@@ -20,6 +20,7 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpGet]
+
         public async Task<IActionResult> GetAllStatistics()
         {
             try

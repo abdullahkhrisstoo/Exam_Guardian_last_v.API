@@ -22,7 +22,11 @@ namespace Exam_Guardian.core.IService
         Task<IEnumerable<ExamReservationProctorDTO>> GetAllExamReservationsByProctorId(decimal userId);
         Task<IEnumerable<AvailableTimeDTO>> GetAvailableTimesByDate(DateTime dateTime, int duration, bool is24HourFormat);
         Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetails();
+        Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetailsByExamProvider(decimal companyId);
         Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetailsBy(string studentName);
+
+        Task<ExamReservationDTO> GetExamReservationByExamInfoId(decimal id);
+
 
 
     }

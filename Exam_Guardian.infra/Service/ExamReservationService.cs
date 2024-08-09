@@ -319,6 +319,17 @@ namespace Exam_Guardian.infra.Service
         {
             return await _examReservationRepository.GetAllExamReservationsDetailsBy(studentName);
         }
+
+
+        public async Task<ExamReservationDTO> GetExamReservationByExamInfoId(decimal id)
+        {
+            return await _examReservationRepository.GetExamReservationByExamInfoId(id);
+        }
+
+        public async Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetailsByExamProvider(decimal company)
+        {
+            return await _examReservationRepository.GetAllExamReservationsDetailsByExamProvider(company);
+        }
     }
 
 

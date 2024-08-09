@@ -1,6 +1,7 @@
 ﻿using Exam_Guardian.core.Data;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.CalimHandler;
 using Exam_Guardian.core.Utilities.ResponseHandler;
 using Exam_Guardian.core.Utilities.UserRole;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +24,7 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpPost]
+
         public async Task<IActionResult> CreateComplement([FromBody] CreateComplementDTO createComplementViewModel)
         {
             try
@@ -54,6 +56,8 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpDelete("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult> DeleteComplement(int id)
         {
             try
@@ -70,6 +74,7 @@ namespace Exam_Guardian.API.Controllers
 
         [HttpGet("{id}")]
         // [CheckClaimsAttribute(UserRoleConstant.SProctor)]//each proctor can see his own complement
+
         public async Task<IActionResult> GetComplementById(int id)
         {
             try
@@ -89,7 +94,7 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpGet]
-        //[CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetAllComplements()
         {
             try
@@ -109,7 +114,8 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpGet("{examReservationId}")]
-        // [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin, UserRoleConstant.SProctor, UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetComplementByExamReservationId(int examReservationId)
         {
             try
@@ -130,7 +136,7 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpGet("{proctorId}")]
-        //   [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+        [CheckClaimsAttribute(UserRoleConstant.SProctor,UserRoleConstant.SAdmin , UserRoleConstant.SExamProvider)]
         public async Task<IActionResult> GetComplementsByProctorId(int proctorId)
         {
             try
@@ -161,6 +167,8 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpPut]
+        //[CheckClaimsAttribute(UserRoleConstant.SExamer, UserRoleConstant.StudentAuth)]
+
         public async Task<IActionResult> UpdateComplementByStudent([FromBody] UpdateComplementDTO updateComplementViewModel)
         {
             try
@@ -176,6 +184,8 @@ namespace Exam_Guardian.API.Controllers
 
 
         [HttpPut]
+        //[CheckClaimsAttribute( UserRoleConstant.SProctor)]
+
         public async Task<IActionResult> UpdateComplementByProctor([FromBody] UpdateComplementDTO updateComplementViewModel)
         {
             try

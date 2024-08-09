@@ -71,14 +71,14 @@ namespace Exam_Guardian.infra.Repository
         {
             DynamicParameters param = new();
 
+
             var existingExamReservation = await _modelContext.ExamReservations.FindAsync(updateExamReservationViewModel.ExamReservationId);
             if (existingExamReservation == null)
             {
-
-                throw new KeyNotFoundException("Exam reservation not found.");
+                throw new KeyNotFoundException("Exam reservation not found");
             }
 
-
+            //todo
             var studentTokenEmail = updateExamReservationViewModel.StudentTokenEmail ?? existingExamReservation.StudentTokenEmail;
             var startDate = updateExamReservationViewModel.StartDate ?? existingExamReservation.StartDate;
             var endDate = updateExamReservationViewModel.EndDate ?? existingExamReservation.EndDate;
@@ -362,7 +362,57 @@ namespace Exam_Guardian.infra.Repository
                 }).Where(e => e.StudentEmail == studentEmail).ToListAsync();
         }
 
+        public async Task<ExamReservationDTO> GetExamReservationByExamInfoId(decimal id)
+        {
+            var examReservation = await _modelContext.ExamReservations
+                .Include(er => er.Exam)
+                .Include(er => er.User) 
+                .FirstOrDefaultAsync(er => er.ExamId == id); 
 
+            if (examReservation == null)
+            {
+                return null; 
+            }
+
+            var examReservationDTO = new ExamReservationDTO
+            {
+                ExamReservationId = examReservation.ExamReservationId,
+                StudentTokenEmail = examReservation.StudentTokenEmail,
+                StartDate = examReservation.StartDate,
+                EndDate = examReservation.EndDate,
+                ProctorTokenEmail = examReservation.ProctorTokenEmail,
+                UniqueKey = examReservation.UniqueKey,
+                UserId = examReservation.UserId,
+                CreatedAt = examReservation.CreatedAt,
+                UpdatedAt = examReservation.UpdatedAt,
+                StudentName = examReservation.StudentName,
+                Phone = examReservation.Phone,
+                Score = examReservation.Score,
+                Email = examReservation.Email,
+                ExamId = examReservation.ExamId
+            };
+
+            return examReservationDTO;
+        }
+
+        public async Task<IEnumerable<ExamReservationDetailsDTO>> GetAllExamReservationsDetailsByExamProvider(decimal companyId)
+        {
+            return await _modelContext.ExamReservations
+                .Where(e => e.Exam!=null &&  e.Exam.ExamProviderId==companyId)
+                .Include(e => e.ReservationInvoice).Include(e => e.Exam)
+
+          .Select(e => new ExamReservationDetailsDTO
+          {
+              ExamName = e.Exam.ExamTitle,
+              StudentEmail = e.Email,
+              StudentName = e.StudentName,
+              Value = e.ReservationInvoice.Value,
+              Score = e.Score,
+              EndTime = e.EndDate,
+              StartTime = e.StartDate,
+              CreatedAt = e.CreatedAt
+          }).ToListAsync();
+        }
     }
 
 

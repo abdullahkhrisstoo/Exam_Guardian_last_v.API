@@ -1,7 +1,9 @@
 ﻿using Exam_Guardian.core.Data;
 using Exam_Guardian.core.DTO;
 using Exam_Guardian.core.IService;
+using Exam_Guardian.core.Utilities.CalimHandler;
 using Exam_Guardian.core.Utilities.ResponseHandler;
+using Exam_Guardian.core.Utilities.UserRole;
 using Exam_Guardian.infra.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,9 +26,11 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpPost]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult> CreateAbout([FromBody] AboutDTO aboutDto)
         {
-            if (aboutDto == null)
+            if (aboutDto == null) 
                 return this.ApiResponseBadRequest("About data is required.", new{ });
             try
             {
@@ -40,6 +44,8 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult> DeleteAbout(decimal id)
         {
             try
@@ -58,12 +64,13 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpGet("{id}")]
+
         public async Task<IActionResult> GetAboutById(decimal id)
         {
             try
             {
                 var about = await _aboutService.getAboutById(id);
-                if (about == null)
+                if (about == null) 
                     return this.ApiResponseNotFound($"About with Id {id} not found.", new { });
 
                 return this.ApiResponseOk("about retrived successfully",about);
@@ -75,6 +82,7 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpGet]
+        
         public async Task<IActionResult> GetAllAbout()
         {
             try
@@ -89,6 +97,8 @@ namespace Exam_Guardian.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [CheckClaimsAttribute(UserRoleConstant.SAdmin)]
+
         public async Task<IActionResult>  UpdateAbout(decimal id, [FromBody]AboutDTO aboutDto)
         {
             if (aboutDto == null)
